@@ -1,0 +1,36 @@
+
+.logoview {
+	margin: 0 auto;
+}
+.logoview>._img {
+	max-width: 80%;
+}
+.logoimg {
+	width: 250rpx;
+	height: 250rpx;
+}
+.wmsfont {
+	margin: 0 auto;
+	font-size: 45rpx;
+}
+.input-text {
+	border: 1rpx solid rgba(9, 9, 9, 9);
+	border-radius: 50rpx;
+	margin: 0 auto;
+	width: 75%;
+	margin-top: 50rpx;
+	padding: 15rpx;
+}
+.input-row {
+	border: 1rpx solid rgba(9, 9, 9, 9);
+	border-radius: 50rpx;
+	margin: 0 auto;
+	width: 75%;
+	margin-top: 50rpx;
+	padding: 15rpx;
+}
+.primary {
+	border-radius: 50rpx;
+	width: 85%;
+}
+
