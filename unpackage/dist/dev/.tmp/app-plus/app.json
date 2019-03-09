@@ -1,12 +1,13 @@
 {
   "pages": [
     "pages/login/login",
-    "pages/pwd/pwd"
+    "pages/pwd/pwd",
+    "pages/index/index"
   ],
   "subPackages": [],
   "window": {
     "navigationBarTextStyle": "white",
-    "navigationBarBackgroundColor": "#0faeff",
+    "navigationBarBackgroundColor": "",
     "backgroundColor": "#fbf9fe"
   },
   "usingComponents": {},
