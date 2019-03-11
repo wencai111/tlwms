@@ -1,6 +1,0 @@
-<import src="/node-modules/@dcloudio/uni-ui/lib/uni-grid/uni-grid.vue.wxml" />
-<import src="/node-modules/@dcloudio/uni-ui/lib/uni-list/uni-list.vue.wxml" />
-<import src="/node-modules/@dcloudio/uni-ui/lib/uni-list-item/uni-list-item.vue.wxml" />
-
-<template name="53de7bab-default-53de7bab-2"><template title="退出登录" show-extra-icon="true" data="{{...$root['0'], ...$root[$kk+'53de7bab-1'],$root}}" is="05ed3a57"></template></template>
-
