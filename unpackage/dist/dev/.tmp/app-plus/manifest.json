@@ -4,13 +4,13 @@
     "iPhone",
     "iPad"
   ],
-  "id": "",
+  "id": "__UNI__88DAD17",
   "name": "tlwms",
   "version": {
     "name": "1.0.0",
     "code": "100"
   },
-  "description": "登录模板",
+  "description": "上海通罗仓储物流系统",
   "launch_path": "__uniappservice.html",
   "developer": {
     "name": "",
@@ -36,7 +36,7 @@
     "statusbar": {
       "immersed": "supportedDevice",
       "style": "light",
-      "background": ""
+      "background": "#0faeff"
     },
     "distribute": {
       "google": {
@@ -74,7 +74,12 @@
         }
       }
     },
-    "arguments": "{\"name\":\"登录\",\"query\":\"\",\"id\":0,\"pathName\":\"pages/login/login\"}",
-    "allowsInlineMediaPlayback": true
+    "allowsInlineMediaPlayback": true,
+    "safearea": {
+      "background": "#ffffff",
+      "bottom": {
+        "offset": "auto"
+      }
+    }
   }
 }

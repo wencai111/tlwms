@@ -20,22 +20,7 @@
         min-height: 100%;
         display: flex;
     }
-
-    /* #ifdef MP-BAIDU */
-    page {
-        width: 100%;
-        height: 100%;
-        display: block;
-    }
-
-    swan-template {
-        width: 100%;
-        min-height: 100%;
-        display: flex;
-    }
-
-    /* #endif */
-
+  
     .content {
         display: flex;
         flex: 1;

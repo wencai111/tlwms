@@ -1,134 +1,132 @@
 <template>
 	<view class="content">
-		<view class="logoview">
-			<image class="logoimg" src="../../static/img/tlwmslogo.png"></image>
+		<view class="logo-row"><image src="../../static/logo.png"></image></view>
+		<view class="wms-name">
+			<text>{{ systemName }}</text>
 		</view>
-		<view class="wmsfont">
-			<text>{{text}}</text>
-		</view>
-		<view class="input-text">
-			<input class="m-input" type="text" v-model="account" placeholder="账号"></input>
-		</view>
-		<view class="input-row">
-			<input type="password" v-model="password" placeholder="请输入密码"></input>
+		<view class="input-group">
+			<view class="input-row border">
+				<text class="title">账号：</text>
+				<m-input
+					class="m-input"
+					type="text"
+					clearable
+					focus
+					v-model="account"
+					placeholder="请输入账号"
+				></m-input>
+			</view>
+			<view class="input-row">
+				<text class="title">密码：</text>
+				<m-input
+					type="password"
+					displayable
+					v-model="password"
+					placeholder="请输入密码"
+				></m-input>
+			</view>
 		</view>
 		<view class="btn-row">
-			<button type="primary" class="primary" @click="bindLogin">登录</button>
+			<button type="primary" class="primary" @tap="bindLogin">登录</button>
 		</view>
 	</view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				text: "上海通罗WMS仓库管理系统",
-				account: '', //请输入你的姓名
-				password: '', //请输入你的密码
+import { appLogin } from '@/api/user.js';
+import { parseForRule } from '@/libs/util.js';
+import service from '../../service.js';
+import { mapState, mapMutations } from 'vuex';
+import mInput from '../../components/m-input.vue';
 
-			}
+export default {
+	data() {
+		return {
+			systemName: '上海通罗WMS仓库管理系统',
+			account: '',
+			password: '',
+			positionTop: 0
+		};
+	},
+	components: {
+		mInput
+	},
+	computed: mapState(['forcedLogin']),
+	methods: {
+		...mapMutations(['login']),
+		initPosition() {
+			// 使用 absolute 定位，并且设置 bottom 值进行定位。软键盘弹出时，底部会因为窗口变化而被顶上来。
+			// 反向使用 top 进行定位，可以避免此问题。
+			this.positionTop = uni.getSystemInfoSync().windowHeight - 100;
 		},
-		methods: {
-			bindLogin() {
-				uni.showLoading({
-					title: '加载中',
+		bindLogin() {
+			//参数校验
+			if (!this.account || this.account.length <= 0) {
+				uni.showToast({
+					icon: 'none',
+					title: '账号不能为空！'
 				});
-				setTimeout(function() {
-					uni.hideLoading();
-				}, 2000);
-// 				if (!this.account) {
-// 					uni.showModal({
-// 						"title": "温馨提示",
-// 						"content": "请输入账号！"
-// 					});
-// 					return;
-// 				}
-// 				if (!this.password) {
-// 					uni.showModal({
-// 						"title": "温馨提示",
-// 						"content": "请输入密码！"
-// 					});
-// 					return;
-// 				}
-				uni.request({
-					url: "http://101.132.97.79:8001/common/wms_Server_Data.asp?action=login",
-					type: "POST",
-					data: {
-						username: "admin",
-						password: "admin123",
-					},
-					dataType: "JSON",
-					success: (res) => {
-						console.log(JSON.stringify(res));
-						var temp1='{"success":true}';
-						var temp="{success:true,msg:'登录成功！',UserID:1}";
-						var result1 = JSON.parse(temp1);
-							console.log("dfdfdf");
-						console.log(JSON.stringify(result1));
-							var result2 = JSON.parse(temp);
-						console.log(JSON.stringify(result1));
-						console.log(JSON);
-						if (result.success) {
-							console.log("fdfd");
-							// this.$router.push()//首页，跳转
-							// url:
-
-						} else {
-							uni.showModal({
-								"title": "温馨提示",
-								"content": "账号或者密码不正确！"
-							});
-						}
-					},
-					fail: (res) => {
-						console.log("fail"+JSON.stringify(res))
-					}
-
+				return;
+			}
+			if (!this.password || this.password.length <= 0) {
+				uni.showToast({
+					icon: 'none',
+					title: '密码不能为空！'
 				});
+				return;
+			}
+			//系统登录
+			appLogin(this.account, this.password).then(data => {
+				var [error, res] = data;
+				var result = parseForRule(res.data);
+				console.log('res:' + JSON.stringify(res));
+				console.log('error:' + error);
+				if (result.success) {
+					service.addUser({
+						account: this.account,
+						password: this.password,
+						id: result.UserID
+					});
+					this.toMain(this.account);
+				} else {
+					uni.showToast({
+						icon: 'none',
+						title: '用户账号或密码不正确'
+					});
+				}
+			});
+		},
+		toMain(userName) {
+			this.login(userName);
+			/**
+			 * 强制登录时使用reLaunch方式跳转过来
+			 * 返回首页也使用reLaunch方式
+			 */
+			if (this.forcedLogin) {
+				uni.reLaunch({
+					url: '../main/main'
+				});
+			} else {
+				uni.navigateBack();
 			}
 		}
+	},
+	onLoad() {
+		this.initPosition();
 	}
+};
 </script>
 
 <style>
-	.logoview {
-		margin: 0 auto;
-	}
-
-	.logoview>img {
-		max-width: 80%;
-	}
-
-	.logoimg {
-		width: 250upx;
-		height: 250upx;
-	}
-
-	.wmsfont {
-		margin: 0 auto;
-		font-size: 45upx;
-	}
-
-	.input-text {
-		border: 1upx solid rgba(9, 9, 9, 9);
-		border-radius: 50upx;
-		margin: 0 auto;
-		width: 75%;
-		margin-top: 50upx;
-		padding: 15upx;
-	}
-
-	.input-row {
-		border: 1upx solid rgba(9, 9, 9, 9);
-		border-radius: 50upx;
-		margin: 0 auto;
-		width: 75%;
-		margin-top: 50upx;
-		padding: 15upx;
-	}
-
-	.primary {
-		border-radius: 50upx;
-		width: 85%;
-	}
+.logo-row {
+	margin: 0 auto;
+}
+.logo-row >image {
+	width: 250upx;
+	height: 250upx;
+}
+.wms-name {
+	margin: 0 auto;
+	font-size: 45upx;
+}
 </style>

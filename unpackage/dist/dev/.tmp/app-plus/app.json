@@ -1,20 +1,33 @@
 {
   "pages": [
-    "pages/login/login",
-    "pages/pwd/pwd",
-    "pages/index/index"
+    "pages/main/main",
+    "pages/login/login"
   ],
   "subPackages": [],
   "window": {
     "navigationBarTextStyle": "white",
-    "navigationBarBackgroundColor": "",
+    "navigationBarBackgroundColor": "#0faeff",
     "backgroundColor": "#fbf9fe"
   },
   "usingComponents": {},
   "tabBar": {
     "color": "#7a7e83",
     "selectedColor": "#0faeff",
-    "backgroundColor": "#ffffff"
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/main/main",
+        "text": "出库",
+        "iconPath": "static/img/home.png",
+        "selectedIconPath": "static/img/homeHL.png"
+      },
+      {
+        "pagePath": "pages/user/user",
+        "text": "入库",
+        "iconPath": "static/img/user.png",
+        "selectedIconPath": "static/img/userHL.png"
+      }
+    ]
   },
   "splashscreen": {
     "alwaysShowBeforeRender": true,
