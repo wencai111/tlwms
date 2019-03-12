@@ -94,4 +94,21 @@
     button.primary {
         background-color: #0faeff;
     }
+	
+	.example{
+        padding: 0 30upx 30upx;
+    }
+	.example-title {
+		font-size: 32upx;
+        line-height: 32upx;
+		color: #777;
+		margin: 40upx 25upx;
+        position: relative;
+	}
+    .example .example-title{
+        margin: 40upx 0;
+    }
+    .example-body{
+        padding: 0 40upx;
+    }
 </style>

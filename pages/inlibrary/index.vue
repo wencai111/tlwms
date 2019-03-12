@@ -1,18 +1,26 @@
 <template>
-	<view class="content"><button type="primary" v-on:click="scanCode">扫描</button></view>
+	<view class="content">
+		<button type="primary" v-on:click="scanCode">扫描</button>
+		<view></view>
+	</view>
 </template>
 
 <script>
+import { checkLocal } from '@/api/inlibrary.js';
 import { mapState } from 'vuex';
 import { authAccount } from '@/libs/util.js';
 
 export default {
 	data() {
-		return {};
+		return {
+			MNumber:'',
+			LocalID:''
+		};
 	},
 	computed: mapState(['forcedLogin', 'hasLogin', 'userName']),
 	methods: {
 		scanCode: function() {
+			uni.showLoading({ title: '加载中'});
 			uni.scanCode({
 				onlyFromCamera: true,
 				success: function(res) {

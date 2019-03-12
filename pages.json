@@ -13,6 +13,12 @@
 			}
 		},
 		{
+			"path": "pages/inlibrary/inway",
+			"style": {
+				"navigationBarTitleText": "入库方式"
+			}
+		},
+		{
 			"path": "pages/inlibrary/index",
 			"style": {
 				"navigationBarTitleText": "入库"

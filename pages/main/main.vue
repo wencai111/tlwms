@@ -33,7 +33,7 @@ export default {
 				{
 					image: '/static/img/inLibrary.png',
 					text: '入库管理',
-					url: '../inlibrary/index'
+					url: '../inlibrary/inway'
 				},
 				{
 					image: '/static/img/outLibrary.png',
