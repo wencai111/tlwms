@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<view v-if="hasLogin" class="hello">
-			<uni-grid :data="menu"></uni-grid>
+			<uni-grid :data="menu" v-on:click="goMainPage"></uni-grid>
 			<view style="height: 40upx;"></view>
 			<uni-list>
 				<uni-list-item
@@ -24,6 +24,7 @@
 <script>
 import { uniGrid, uniList, uniListItem } from '@dcloudio/uni-ui';
 import { mapState } from 'vuex';
+import { authAccount } from '@/libs/util.js';
 
 export default {
 	data() {
@@ -31,39 +32,49 @@ export default {
 			menu: [
 				{
 					image: '/static/img/inLibrary.png',
-					text: '入库管理'
+					text: '入库管理',
+					url: '../inlibrary/index'
 				},
 				{
 					image: '/static/img/outLibrary.png',
-					text: '出库管理'
+					text: '出库管理',
+					fdf: 'fdf',
+					url: '../inlibrary/index'
 				},
 				{
 					image: '/static/img/checkInventory.png',
-					text: '盘点'
+					text: '盘点',
+					url: '../inlibrary/index'
 				},
 				{
 					image: '/static/img/service.png',
-					text: '维修'
+					text: '维修',
+					url: '../inlibrary/index'
 				},
 				{
 					image: '/static/img/transfer.png',
-					text: '转移'
+					text: '转移',
+					url: '../inlibrary/index'
 				},
 				{
 					image: '/static/img/Return.png',
-					text: '退货'
+					text: '退货',
+					url: '../inlibrary/index'
 				},
 				{
 					image: '/static/img/checkQuality.png',
-					text: '质检'
+					text: '质检',
+					url: '../inlibrary/index'
 				},
 				{
 					image: '/static/img/deliveryNote.png',
-					text: '送货单'
+					text: '送货单',
+					url: '../inlibrary/index'
 				},
 				{
 					image: '/static/img/query.png',
-					text: '查询'
+					text: '查询',
+					url: '../inlibrary/index'
 				}
 			]
 		};
@@ -74,29 +85,25 @@ export default {
 		uniListItem
 	},
 	computed: mapState(['forcedLogin', 'hasLogin', 'userName']),
-	onLoad() {
-		console.log('登录状态：' + this.hasLogin);
-		if (!this.hasLogin) {
-			uni.showModal({
-				title: '未登录',
-				content: '您未登录，需要登录后才能继续',
-				showCancel: false,
-				success: res => {
-					if (res.confirm) {
-						// 如果需要强制登录，使用reLaunch方式
-						if (this.forcedLogin) {
-							uni.reLaunch({
-								url: '../login/login'
-							});
-						} else {
-							uni.navigateTo({
-								url: '../login/login'
-							});
-						}
-					}
+	methods: {
+		goMainPage: function(e) {
+			console.log(JSON.stringify(e));
+			uni.navigateTo({
+				url: this.$data.menu[e.index].url,
+				// url:'../main/main',
+				success:(e)=>{
+					console.log("fdfd:"+JSON.stringify(e))
+				},
+				fail: (e) => {
+										console.log("fd2fd:"+JSON.stringify(e))
 				}
 			});
+			console.log("end")
 		}
+	},
+	onLoad() {
+		console.log('登录状态：' + this.hasLogin);
+		authAccount(this.hasLogin,this.forcedLogin,this.userName);
 	}
 };
 </script>
