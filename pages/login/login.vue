@@ -91,7 +91,7 @@ export default {
 				} else {
 					uni.showToast({
 						icon: 'none',
-						title: '用户账号或密码不正确'
+						title: result.msg
 					});
 				}
 			});
