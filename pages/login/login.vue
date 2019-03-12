@@ -77,7 +77,6 @@ export default {
 			}
 			//系统登录
 			appLogin(this.account, this.password).then(data => {
-				//测试tapd 关联 github
 				var [error, res] = data;
 				var result = parseForRule(res.data);
 				console.log('res:' + JSON.stringify(res));
