@@ -7,6 +7,12 @@
 			}
 		},
 		{
+			"path": "pages/task/task",
+			"style": {
+				"navigationBarTitleText": "任务"
+			}
+		},
+		{
 			"path": "pages/main/main",
 			"style": {
 				"navigationBarTitleText": "首页"
