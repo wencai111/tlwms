@@ -21,7 +21,7 @@
 		{
 			"path": "pages/inlibrary/index",
 			"style": {
-				"navigationBarTitleText": "入库"
+				"navigationBarTitleText": "物料码入库"
 			}
 		}
 
