@@ -1,9 +1,9 @@
 <template>
 	<view class="content">
-		<view class="example-title">包含描述信息</view>
+		<view class="example-title">选择入库方式</view>
 		<uni-list>
 			<uni-list-item title="包装码入库" note="扫描包装码入库"></uni-list-item>
-			<uni-list-item title="物料码入库" note="扫描物料码入库"></uni-list-item>
+			<uni-list-item title="物料码入库" note="扫描物料码入库" v-on:click="startPackageInlibrary"></uni-list-item>
 		</uni-list>
 	</view>
 </template>
@@ -16,8 +16,16 @@ export default {
 	data() {
 		return {};
 	},
-	components:{uniList,uniListItem},
+	components: { uniList, uniListItem },
 	computed: mapState(['forcedLogin', 'hasLogin', 'userName']),
+	methods: {
+		startMaterialsInlibrary: function() {
+			// uni.navigateTo({url:'/pages/inlibrary/index'});
+		},
+		startPackageInlibrary: function() {
+			uni.navigateTo({ url: '/pages/inlibrary/index' });
+		}
+	},
 	onLoad() {
 		console.log('登录状态：' + this.hasLogin);
 		authAccount(this.hasLogin, this.forcedLogin, this.userName);
@@ -26,8 +34,8 @@ export default {
 </script>
 
 <style>
-	.example-title{
-		border-left:#007AFF solid 6upx ;
-		padding-left: 18upx;
-		}
+.example-title {
+	border-left: #007aff solid 6upx;
+	padding-left: 18upx;
+}
 </style>
