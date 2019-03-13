@@ -17,7 +17,7 @@ export default {
 		return {};
 	},
 	components: { uniList, uniListItem },
-	computed: mapState(['forcedLogin', 'hasLogin', 'userName']),
+	computed: mapState(['forcedLogin', 'hasLogin', 'userName','code']),
 	methods: {
 		startMaterialsInlibrary: function() {
 			// uni.navigateTo({url:'/pages/inlibrary/index'});
@@ -27,7 +27,9 @@ export default {
 		}
 	},
 	onLoad() {
+		debugger;
 		console.log('登录状态：' + this.hasLogin);
+		console.log(this.code); 
 		authAccount(this.hasLogin, this.forcedLogin, this.userName);
 	}
 };
