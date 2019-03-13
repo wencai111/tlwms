@@ -20,22 +20,7 @@
         min-height: 100%;
         display: flex;
     }
-
-    /* #ifdef MP-BAIDU */
-    page {
-        width: 100%;
-        height: 100%;
-        display: block;
-    }
-
-    swan-template {
-        width: 100%;
-        min-height: 100%;
-        display: flex;
-    }
-
-    /* #endif */
-
+  
     .content {
         display: flex;
         flex: 1;
@@ -108,5 +93,22 @@
 
     button.primary {
         background-color: #0faeff;
+    }
+	
+	.example{
+        padding: 0 30upx 30upx;
+    }
+	.example-title {
+		font-size: 32upx;
+        line-height: 32upx;
+		color: #777;
+		margin: 40upx 25upx;
+        position: relative;
+	}
+    .example .example-title{
+        margin: 40upx 0;
+    }
+    .example-body{
+        padding: 0 40upx;
     }
 </style>
