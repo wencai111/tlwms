@@ -95,7 +95,7 @@ export default {
 					console.log("fdfd:"+JSON.stringify(e))
 				},
 				fail: (e) => {
-										console.log("fd2fd:"+JSON.stringify(e))
+				console.log("fd2fd:"+JSON.stringify(e))
 				}
 			});
 			console.log("end")
