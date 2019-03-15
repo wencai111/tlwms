@@ -45,7 +45,7 @@ export default {
 	data() {
 		return {
 			//测试数据
-			testData:["{id:'W',code:'1001030001-B12',codeid:'1',count:12}","{'K','B1','1'}"],
+			testData:["{id:'W',code:'1001030001-B12',codeid:'1',count:12}","{'K','B1','1'}","{id:'W',code:'1001030001-B12',codeid:'1',count:12}","{'K','B1','1'}","{id:'W',code:'1001030001-B12',codeid:'1',count:12}","{'K','B1','1'}","{id:'W',code:'1001030001-B12',codeid:'1',count:12}","{'K','B1','1'}"],
 			testIndex:0,
 			//非测试数据
 			materials: inlibraryModel,
@@ -134,7 +134,7 @@ export default {
 			console.log('接口：开始检查库位');
 					this.materials.addStorage(storage);
 					this.currentSteps = 2;
-					console.log("scanMaterial：打印最后的结果："+JSON.stringify()(this.materials))
+					console.log("scanMaterial：打印最后的结果："+JSON.stringify(this.materials))
 			//非测试
 			return;
 			
@@ -171,7 +171,7 @@ export default {
 					this.materials.addMew(result);
 				} else {
 					let flag = true;
-					for (var i = 0; i < this.materials.materialStorages; i++) {
+					for (var i = 0; i < this.materials.materialStorages.length; i++) {
 						if (this.materials.materialStorages[i].code == result.code) {
 							this.materials.addMaterial(i, result);
 							console.log('物料相加成功！');

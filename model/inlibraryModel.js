@@ -90,7 +90,7 @@ const inlibraryModel = {
 	//叠加物料
 	addMaterial: function(index, data) {
 		debugger;
-		this.materialStorages[index].addMaterial(materialStorage)
+		this.materialStorages[index].addMaterial(data)
 		this.waitInlibrarymaterial = {
 			code: data.code,
 			index: index
