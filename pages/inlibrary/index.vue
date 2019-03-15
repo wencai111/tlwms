@@ -7,14 +7,14 @@
 			</button>
 			<view class="productContainer">
 				<view class="Materialcombined">总计:{{total}}</view>
-				<uni-card v-bind:title="item.code" v-if="materials.length>0" v-for="item in materials" :key="item.code" thumbnail="http://img-cdn-qiniu.dcloud.net.cn/new-page/uni.png"
-				 v-bind:extra="item.totalAmount" note="Tips">
-					<label>dfdfddfd</label>
-					<!-- <label>
-					     <view>{{item.id}}
-						 <view class="materialnumber">{{item.count}}</view>
-						 </view>
-				   </label> -->
+				<uni-card v-bind:title="item.code" v-if="materials.length>0" v-for="(item,index) in materials" v-bind:key="index"
+				 thumbnail="http://img-cdn-qiniu.dcloud.net.cn/new-page/uni.png" v-bind:extra="item.totalAmount" note="Tips">
+					<view v-bind="count = $index"></view>
+					<label v-for="(detail,innerIndex) in item.items" v-bind:key="innerIndex">是的
+						<view>{{detail.id}}
+							<view class="materialnumber">{{item.totalAmount}}</view>
+						</view>
+					</label>
 				</uni-card>
 			</view>
 			<button type="primary" v-bind:disabled="!isCanInlibrary" @click="confirm">确认入库</button>
@@ -23,6 +23,7 @@
 </template>
 
 <script>
+	import '@/model/inlibraryModel.js'
 	import {
 		parseForRule
 	} from '@/libs/util.js'
@@ -43,6 +44,7 @@
 	export default {
 		data() {
 			return {
+				// tempMaterials: [{"物料名称":"","总数量":"",items:[{"物料名称":"","物料数量":"","是否已经入库":false,"库位地址":""}}],
 				materials: [],
 				products: [],
 				currentSteps: 0, //当前执行步骤，
@@ -108,6 +110,49 @@
 					},
 				});
 			},
+			scanWarehouse: function(data) {
+				console.log("扫入库码：" + JSON.stringify(data))
+				this.$data.currentSteps = 2;
+				// this.$data.currentSteps = 2;
+				console.log("输出数组值" + JSON.stringify(this.$data.materials))
+				var _this = this;
+				checkLocal(this.MNumber, this.LocalID).then(data => {
+					var [error, res] = data;
+					console.log('res:' + JSON.stringify(res));
+					console.log('error:' + JSON.stringify(error));
+					var result = parseForRule(res.data);
+					if (result.success) {
+						console.log('asd' + JSON.stringify(result));
+						console.log('123456' + JSON.stringify(result.success));
+						 if (_this.LocalID = _this.localID) {
+							uni.showToast({
+								icon: 'id',
+								title: '库位已满',
+							});
+							this.$data.currentSteps = 1;
+							console.log("1556" + res.ResponseText);
+							// bug
+						} 
+						else if (_this.$data.materials =_this.$data.materials) {
+							console.log("请扫入库码：" + JSON.stringify(data))
+							uni.showToast({
+							icon: 'id',
+							title: '请扫描正确二维码',
+							});
+							this.$data.currentSteps = 1;
+							// return;
+							}
+						else{
+							uni.showToast({
+								icon: 'id',
+								title: '可以入库',
+							});
+							console.log("1123" + res.ResponseText);
+						}
+
+					} else {}
+				});
+			},
 			scanMaterial: function(res) {
 				// {id:'W',code:'1001030001-B12',codeid:'1',count:12}
 				console.log('res' + res);
@@ -148,20 +193,14 @@
 					this.$data.currentSteps = 1;
 				}
 			},
-			scanWarehouse: function(data) {
-				console.log("扫入库码：" + JSON.stringify(data))
-				this.$data.currentSteps = 2;
-				console.log("输出数组值" + JSON.stringify(this.$data.materials))
-			},
 			//确定入库
-			sureInlibrary: function() {
-
-			},
+			sureInlibrary: function() {},
 			confirm() {
+				var _this = this;
 				this.$data.currentSteps = 3;
 				uni.showToast({
-					icon: 'none',
-					title: '入库已完成请返回！'
+					icon: 'id',
+					title: '入库成功',
 				});
 			},
 			onLoad() {

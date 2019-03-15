@@ -6,6 +6,7 @@
   		return eval('(' + data + ')')
   	} catch (e) {
 		try{
+			console.log("parse转化前："+JSON.stringify(data))
 			return JSON.parse(data)
 		}
 		catch(e){
