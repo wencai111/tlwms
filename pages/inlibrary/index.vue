@@ -5,6 +5,26 @@
 			<button type="primary" v-bind:disabled="currentSteps > 2" v-on:click="scanCode">
 				<text>{{ btnMessage }}</text>
 			</button>
+			<uni-card
+					v-bind:title="item.code"
+					v-if="materials.materialStorages.length > 0"
+					v-for="(item, index_) in materials.materialStorages"
+					v-bind:key="item.id"
+					thumbnail="http://img-cdn-qiniu.dcloud.net.cn/new-page/uni.png"
+					v-bind:extra="item.totalAmount"
+					note="物料入库">
+					<text  v-if="item.storages!=null" >
+						<!-- <view>{{item.code}}</view> -->
+						dfdf
+					</text>
+					<!-- <view v-for="item1 in item.storages" v-if="item.storages" v-bind:key="item1.id">
+						<view>{{item.code}}</view>
+						<view>dfdf</view>
+					</view> -->
+        </uni-card>
+			
+			
+			
 			<!-- 			 <uni-list-item v-bind:title="item.code" v-for="(item,index) in testData" v-bind:key="index" show-arrow="false">
 				 <view>{{item.code}}</view>
 				 <view v-for="(detail,innerIndex) in item.items" v-bind:key="innerIndex">
@@ -20,11 +40,11 @@
 					</view>
 				</uni-collapse-item>
 			</uni-collapse> -->
-			<view v-for="(item,index) in testData" v-bind:key="index">
+		<!-- 	<view v-for="(item,index) in testData" v-bind:key="index">
 				<view v-for="(detail,innerIndex) in item.items" v-bind:key="innerIndex">
 					{{detail.wlmc}}
 				</view>
-			</view>
+			</view> -->
 		</view>
 		<button type="primary" v-bind:disabled="!sureInlibrary" @click="sureInlibrary">
 			确认入库
@@ -38,7 +58,7 @@
 
 <script>
 	import {
-		uniSteps
+		uniSteps,uniCard ,uniList,uniListItem,
 	} from '@dcloudio/uni-ui'
 	import inlibraryModel from '@/model/inlibraryModel.js';
 	import {
@@ -53,15 +73,12 @@
 	import {
 		authAccount
 	} from '@/libs/util.js';
-	import {
-		uniList,
-		uniListItem,
-	} from '@dcloudio/uni-ui';
-
 	export default {
 		data() {
 			return {
 				//测试数据
+				devText:"开发展示",
+				devArr:['1','2','3'],
 				testData: ["{id: '1',code: '物料1',codeid: '2',count: 12}", " {id: '1',code: '货架A',codeid: '1'}",
 					"{id: '1',code: '物料1',codeid: '2',count: 12}", "{id: '2',code: '货架B',codeid: '2'}",
 					"{id: '2',code: '物料2',codeid: '2',count: 8}", "{id: '3',code:'货架C',codeid: '3'}"
@@ -86,7 +103,7 @@
 			};
 		},
 		components: {
-			uniSteps
+			uniSteps,uniCard ,uniList,uniListItem
 		},
 		computed: {
 			...mapState(['forcedLogin', 'hasLogin', 'userName']),
