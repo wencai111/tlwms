@@ -64,10 +64,12 @@ function materialStorageModel(option) {
 	}
 	//增加入库操作
 	this.addStorage = function(storage) {
-
-		this.storages[this.storages.length - 1].id = this.storages.length.toString();
-		this.storages[this.storages.length - 1].code = "code" + this.storages.length.toString();
-		this.storages[this.storages.length - 1].codeid = "codeid" + this.storages.length.toString();
+// 		this.storages[this.storages.length - 1].id = this.storages.length.toString();
+// 		this.storages[this.storages.length - 1].code = "code" + this.storages.length.toString();
+// 		this.storages[this.storages.length - 1].codeid = "codeid" + this.storages.length.toString();
+		this.storages[this.storages.length - 1].id = storage. id;
+		this.storages[this.storages.length - 1].code = storage.code;
+		this.storages[this.storages.length - 1].codeid = storage.codeid;
 	}
 	this.init(option);
 }
@@ -82,7 +84,7 @@ const inlibraryModel = {
 		index: 0
 	}, //当前等待入库的物料
 	//新增物料入库模型对象
-	addMew: function(data) {
+	addNew: function(data) {
 
 		this.materialStorages.push(new this.materialStorage(data));
 		this.waitInlibrarymaterial = {
@@ -103,7 +105,7 @@ const inlibraryModel = {
 	addStorage: function(data) {
 		console.log('123' + this.materialStorages.length);
 		console.log('123' + this.waitInlibrarymaterial.index);
-		this.materialStorages[this.waitInlibrarymaterial.index] = data; //
+		this.materialStorages[this.waitInlibrarymaterial.index].addStorage(data); //
 		this.waitInlibrarymaterial = null;
 	}
 };
