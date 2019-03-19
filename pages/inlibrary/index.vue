@@ -39,11 +39,9 @@ export default {
 	data() {
 		return {
 			//测试数据
-			devText: '开发展示',
-			devArr: ['1', '2', '3'],
 			testData: [
 				"{id: '1',code: '物料1',codeid: '2',count: 12}",
-				" {id: '1',code: '货架A',codeid: '1'}",
+				"{id: '1',code: '货架A',codeid: '1'}",
 				"{id: '1',code: '物料1',codeid: '2',count: 12}",
 				"{id: '2',code: '货架B',codeid: '2'}",
 				"{id: '2',code: '物料2',codeid: '2',count: 8}",
@@ -220,11 +218,11 @@ export default {
 				title: '入库成功'
 			});
 		},
-		logMessage: function() {},
-		onLoad() {
-			console.log('登录状态：' + this.hasLogin);
-			authAccount(this.hasLogin, this.forcedLogin, this.userName);
-		}
+		logMessage: function() {}
+	},
+	onLoad() {
+		console.log('登录状态：' + this.hasLogin);
+		authAccount(this.hasLogin, this.forcedLogin, this.userName);
 	}
 };
 </script>

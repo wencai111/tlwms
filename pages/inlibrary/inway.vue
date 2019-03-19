@@ -23,7 +23,8 @@ export default {
 			// uni.navigateTo({url:'/pages/inlibrary/index'});
 		},
 		startPackageInlibrary: function() {
-			uni.navigateTo({ url: '/pages/inlibrary/index' });
+			uni.redirectTo({ url: '/pages/inlibrary/index' });
+		//	uni.navigateTo({ url: '/pages/inlibrary/index' });
 		}
 	},
 	onLoad() {
