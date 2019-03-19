@@ -5,8 +5,8 @@
 			<button type="primary" v-bind:disabled="currentSteps > 2" v-on:click="scanCode">
 				<text>{{ btnMessage }}</text>
 			</button>
-			<view v-if="materials.materialStorages.length > 0">
-				<view class="uni-card" v-for="(parent, index_) in materials.materialStorages" v-bind:key="parent.id">
+			<view v-if="materials.pickMaterialModels.length > 0">
+				<view class="uni-card" v-for="(parent, index_) in materials.pickMaterialModels" v-bind:key="parent.id">
 					<view class="uni-card__header">
 						<view class="uni-card__header-title-text">{{parent.code}}</view>
 						<view class="uni-card__header-extra-text" >{{parent.TotalAmount}}</view>
@@ -23,14 +23,13 @@
 			<button type="primary" v-bind:disabled="!sureInlibrary" @click="sureInlibrary">
 				确认入库
 			</button>
-			<button type="primary" @click="logMessage">浏览器打印值</button>
 		</view>
 	</view>
 </template>
 
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
-import inlibraryModel from '@/model/inlibraryModel.js';
+import outlibraryModel from '@/model/outlibraryModel.js';
 import { parseForRule } from '@/libs/util.js';
 import { checkLocal } from '@/api/inlibrary.js';
 import { mapState } from 'vuex';
@@ -49,18 +48,18 @@ export default {
 			],
 			testIndex: 0,
 			//非测试数据
-			materials: inlibraryModel,
+			materials: outlibraryModel,
 			products: [],
 			currentSteps: 0, //当前执行步骤，
 			steps: [
 				{
+					title: '扫拣货单'
+				},
+				{
 					title: '扫物料码'
 				},
 				{
-					title: '扫库位码'
-				},
-				{
-					title: '入库完成'
+					title: '拣货完成'
 				}
 			],
 			MNumber: '',
@@ -84,14 +83,14 @@ export default {
 		},
 		btnMessage() {
 			if (this.$data.currentSteps == 0) {
-				return '扫描物料码';
+				return '扫描拣货单';
 			} else if (this.$data.currentSteps == 1) {
-				return '扫描入库码';
+				return '扫描物料码';
 			} else if (this.$data.currentSteps == 2) {
 				return '继续扫描物料码';
 				console.log(入库码);
 			} else if (this.$data.currentSteps > 2) {
-				return '已经完成入库操作';
+				return '已经完成拣货操作';
 			}
 		}
 	},
@@ -137,7 +136,7 @@ export default {
 			// var storage = {};
 			// this.LocalID = 1; //由于二维码返回的json对象不规范，值写死
 			console.log('接口：开始检查库位');
-			this.materials.addStorage(storage);
+			_this.materials.addStorage(storage);
 			this.currentSteps = 2;
 			console.log('scanMaterial：打印最后的结果：' + JSON.stringify(this.materials));
 			//非测试
@@ -150,7 +149,7 @@ export default {
 				console.log('error:' + JSON.stringify(error));
 				var result = parseForRule(res.data);
 				if (result.success) {
-					this.materials.addStorage(storage);
+					_this.materials.addStorage(storage);//错误
 					this.$data.currentSteps = 2;
 					console.log('scanMaterial：打印最后的结果：' + JSON.parse(this.materials));
 				} else {
@@ -171,23 +170,16 @@ export default {
 			if (result.code) {
 				console.log('错误33' + JSON.stringify(result.code));
 
-				if (this.materials.materialStorages.length <= 0) {
+				if (this.materials.pickMaterialModels.length <= 0) {
 					console.log('首次新增物料入库模型对象');
 					this.materials.addNew(result);
-					// 						this.$data.testData.push({
-					// 							code: result.code,
-					// 							totalAmount: result.totalAmount,
-					// 							codeid: result.codeid,
-					// 							items: [result],
-					// 							bank: result.bank,
-					// 						});
+					console.log('asdasdas');
+
 				} else {
 					let flag = true;
-					for (var i = 0; i < this.materials.materialStorages.length; i++) {
-						if (this.materials.materialStorages[i].code == result.code) {
+					for (var i = 0; i < this.materials.pickMaterialModels.length; i++) {
+						if (this.materials.pickMaterialModels[i].code == result.code) {
 							this.materials.addMaterial(i, result);
-							// testData.totalAmount = testData.totalAmount + result.count;
-							// testData.items.push(result);
 							console.log('物料相加成功！');
 							flag = false;
 							return;
@@ -195,13 +187,6 @@ export default {
 					}
 					if (flag) {
 						this.materials.addNew(result);
-						// 							this.$data.testData.push({
-						// 								code: result.code,
-						// 								codeid: result.codeid,
-						// 								totalAmount: result.totalAmount,
-						// 								items: [result],
-						// 								bank: result.bank,
-						// 							});
 					}
 				}
 				this.MNumber = result.code;
@@ -215,7 +200,7 @@ export default {
 			this.$data.currentSteps = 3;
 			uni.showToast({
 				icon: 'id',
-				title: '入库成功'
+				title: '拣货成功'
 			});
 		},
 		logMessage: function() {}

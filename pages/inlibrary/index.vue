@@ -23,7 +23,7 @@
 			<button type="primary" v-bind:disabled="!sureInlibrary" @click="sureInlibrary">
 				确认入库
 			</button>
-			<button type="primary" @click="logMessage">浏览器打印值</button>
+<!-- 			<button type="primary" @click="logMessage">浏览器打印值</button> -->
 		</view>
 	</view>
 </template>
@@ -138,10 +138,10 @@ export default {
 			// this.LocalID = 1; //由于二维码返回的json对象不规范，值写死
 			console.log('接口：开始检查库位');
 			this.materials.addStorage(storage);
-			this.currentSteps = 2;
+			this.$data.currentSteps = 2;
 			console.log('scanMaterial：打印最后的结果：' + JSON.stringify(this.materials));
 			//非测试
-			return;
+			// return;
 
 			checkLocal(this.MNumber, this.LocalID).then(data => {
 				console.log('接口：开始检查库位');
@@ -151,7 +151,7 @@ export default {
 				var result = parseForRule(res.data);
 				if (result.success) {
 					this.materials.addStorage(storage);
-					this.$data.currentSteps = 2;
+				
 					console.log('scanMaterial：打印最后的结果：' + JSON.parse(this.materials));
 				} else {
 					uni.showToast({
@@ -159,9 +159,11 @@ export default {
 						title: result.message
 					});
 				}
+				this.$data.currentSteps = 2;
 			});
 		},
 		scanMaterial: function(res) {
+			this.$data.currentSteps = 1;
 			// {id:'W',code:'1001030001-B12',codeid:'1',count:12}
 			console.log('开始处理物料码' + JSON.stringify(res));
 			var result = parseForRule(res);
@@ -174,20 +176,11 @@ export default {
 				if (this.materials.materialStorages.length <= 0) {
 					console.log('首次新增物料入库模型对象');
 					this.materials.addNew(result);
-					// 						this.$data.testData.push({
-					// 							code: result.code,
-					// 							totalAmount: result.totalAmount,
-					// 							codeid: result.codeid,
-					// 							items: [result],
-					// 							bank: result.bank,
-					// 						});
 				} else {
 					let flag = true;
 					for (var i = 0; i < this.materials.materialStorages.length; i++) {
 						if (this.materials.materialStorages[i].code == result.code) {
 							this.materials.addMaterial(i, result);
-							// testData.totalAmount = testData.totalAmount + result.count;
-							// testData.items.push(result);
 							console.log('物料相加成功！');
 							flag = false;
 							return;
@@ -195,17 +188,9 @@ export default {
 					}
 					if (flag) {
 						this.materials.addNew(result);
-						// 							this.$data.testData.push({
-						// 								code: result.code,
-						// 								codeid: result.codeid,
-						// 								totalAmount: result.totalAmount,
-						// 								items: [result],
-						// 								bank: result.bank,
-						// 							});
 					}
 				}
 				this.MNumber = result.code;
-				this.$data.currentSteps = 1;
 				console.log('scanMaterial：打印最后的结果：' + JSON.stringify(this.materials));
 			}
 		},
