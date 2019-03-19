@@ -5,14 +5,21 @@
 			<button type="primary" v-bind:disabled="currentSteps > 2" v-on:click="scanCode">
 				<text>{{ btnMessage }}</text>
 			</button>
-			<uni-collapse accordion="false">
-				<uni-collapse-item v-bind:title="item.code" v-for="(item,index) in testData" v-bind:key="index" open="true">
+			<!-- 			 <uni-list-item v-bind:title="item.code" v-for="(item,index) in testData" v-bind:key="index" show-arrow="false">
+				 <view>{{item.code}}</view>
+				 <view v-for="(detail,innerIndex) in item.items" v-bind:key="innerIndex">
+				 	{{detail.wlmc}}
+				 </view>
+			 </uni-list-item> -->
+
+			<!-- 	<uni-collapse accordion="false">
+				<uni-collapse-item v-bind:title="item.code" v-for="(item,index) in testData" v-bind:key="index">
 					<view>{{item.code}}</view>
 					<view v-for="(detail,innerIndex) in item.items" v-bind:key="innerIndex">
 						{{detail.wlmc}}
 					</view>
 				</uni-collapse-item>
-			</uni-collapse>
+			</uni-collapse> -->
 			<view v-for="(item,index) in testData" v-bind:key="index">
 				<view v-for="(detail,innerIndex) in item.items" v-bind:key="innerIndex">
 					{{detail.wlmc}}
@@ -30,6 +37,9 @@
 </template>
 
 <script>
+	import {
+		uniSteps
+	} from '@dcloudio/uni-ui'
 	import inlibraryModel from '@/model/inlibraryModel.js';
 	import {
 		parseForRule
@@ -44,52 +54,18 @@
 		authAccount
 	} from '@/libs/util.js';
 	import {
-		uniSteps,
-		uniCollapse,
-		uniCollapseItem
+		uniList,
+		uniListItem,
 	} from '@dcloudio/uni-ui';
 
 	export default {
 		data() {
 			return {
 				//测试数据
-				testData: [{
-					"id": 1,
-					"codeid": 4,
-					"count": 5,
-					"code": "1001030001-B12",
-					"totalAmount": 12,
-					"bank": "KA",
-					"items": [{
-						"id": 1,
-						"wlmc": "物料名称1",
-						"sfrk": "是"
-					}, {
-						"id": 1,
-						"wlmc": "物料名称2",
-						"sfrk": "否"
-					}]
-				}, {
-					"id": 1,
-					"codeid": 5,
-					"count": 4,
-					"code": "1001030001-B13",
-					"totalAmount": 13,
-					"bank": "KA",
-					"items": [{
-						"id": 1,
-						"wlmc": "物料名称1",
-						"sfrk": "是"
-					}, {
-						"id": 1,
-						"wlmc": "物料名称2",
-						"sfrk": "否"
-					}]
-				}],
-				// 					"{id:'2',code:'1001030001-B12B',codeid:'2',count:'8',totalAmount:'12'}", "{'KA','B2','2'}",
-				// 					"{id:'3',code:'1001030001-B12C',codeid:'3',count:4}", "{'KB','B3','3'}",
-				// 					"{id:'4',code:'1001030001-B12D',codeid:'4',count:5}", "{'KC','B4','4'}"
-				// testData: [{id:'4',code:'1001030001-B12D',codeid:'4',count:'5',code:'1001030001-B12',totalAmount:'12'}
+				testData: ["{id: '1',code: '物料1',codeid: '2',count: 12}", " {id: '1',code: '货架A',codeid: '1'}",
+					"{id: '1',code: '物料1',codeid: '2',count: 12}", "{id: '2',code: '货架B',codeid: '2'}",
+					"{id: '2',code: '物料2',codeid: '2',count: 8}", "{id: '3',code:'货架C',codeid: '3'}"
+				],
 				testIndex: 0,
 				//非测试数据
 				materials: inlibraryModel,
@@ -110,9 +86,7 @@
 			};
 		},
 		components: {
-			uniSteps,
-			uniCollapse,
-			uniCollapseItem
+			uniSteps
 		},
 		computed: {
 			...mapState(['forcedLogin', 'hasLogin', 'userName']),
@@ -172,10 +146,11 @@
 			scanWarehouse: function(res) {
 				console.log('开始处理入库码：' + JSON.stringify(res));
 				var _this = this;
-				// var storage = parseForRule(res);
-				var storage = {};
-				this.LocalID = 1; //由于二维码返回的json对象不规范，值写死
+				var storage = parseForRule(res);
+				_this.LocalID=res.id;
 				//测试使用
+				// var storage = {};
+			    // this.LocalID = 1; //由于二维码返回的json对象不规范，值写死
 				console.log('接口：开始检查库位');
 				this.materials.addStorage(storage);
 				this.currentSteps = 2;
@@ -214,20 +189,20 @@
 
 					if (this.materials.materialStorages.length <= 0) {
 						console.log('首次新增物料入库模型对象');
-						this.materials.addMew(result);
-						this.$data.testData.push({
-							code: result.code,
-							totalAmount: result.totalAmount,
-							codeid: result.codeid,
-							items: [result],
-							bank: result.bank,
-						});
+						this.materials.addNew(result);
+// 						this.$data.testData.push({
+// 							code: result.code,
+// 							totalAmount: result.totalAmount,
+// 							codeid: result.codeid,
+// 							items: [result],
+// 							bank: result.bank,
+// 						});
 					} else {
 						let flag = true;
 						for (var i = 0; i < this.materials.materialStorages.length; i++) {
 							if (this.materials.materialStorages[i].code == result.code) {
 								this.materials.addMaterial(i, result);
-								testData.totalAmount = testData.totalAmount + result.count;
+								// testData.totalAmount = testData.totalAmount + result.count;
 								// testData.items.push(result);
 								console.log('物料相加成功！');
 								flag = false;
@@ -235,14 +210,14 @@
 							}
 						}
 						if (flag) {
-							this.material.addMew(result);
-							this.$data.testData.push({
-								code: result.code,
-								codeid: result.codeid,
-								totalAmount: result.totalAmount,
-								items: [result],
-								bank: result.bank,
-							});
+							this.materials.addNew(result);
+// 							this.$data.testData.push({
+// 								code: result.code,
+// 								codeid: result.codeid,
+// 								totalAmount: result.totalAmount,
+// 								items: [result],
+// 								bank: result.bank,
+// 							});
 						}
 					}
 					this.MNumber = result.code;
