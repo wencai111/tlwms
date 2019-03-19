@@ -25,15 +25,15 @@ function storageModel() {
  *案例：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
  */
 function materialStorageModel(option) {
-	debugger;
+
 	this.id = "";
 	this.code = "";
 	this.codeid = "";
 	this.TotalAmount = '';
 	this.storages = []; //入库集合
 	this.finishInlibrary = false; //是否存在物料没有入库
-	this.init = function(option) {
-		debugger;
+	this.init = function(option) { //构造一个函数实例
+
 		if (option.code || option.code != "") {
 			this.code = option.code;
 		}
@@ -51,11 +51,11 @@ function materialStorageModel(option) {
 		this.storages.push(storage)
 	}
 	//增加物料
-	this.addMaterial = function(material) {
-		debugger;
-		this.TotalAmount = this.TotalAmount + material.count;
+	this.addMaterial = function(material) { //？？
+
 		let storage = new storageModel();
 		storage.amount = material.count;
+		this.TotalAmount = this.TotalAmount + material.count; //总数相加
 		this.storages.push(storage)
 		return {
 			"success": true,
@@ -64,10 +64,10 @@ function materialStorageModel(option) {
 	}
 	//增加入库操作
 	this.addStorage = function(storage) {
-		debugger;
+
 		this.storages[this.storages.length - 1].id = this.storages.length.toString();
-		this.storages[this.storages.length - 1].code = "code"+this.storages.length.toString();
-		this.storages[this.storages.length - 1].codeid = "codeid"+this.storages.length.toString();
+		this.storages[this.storages.length - 1].code = "code" + this.storages.length.toString();
+		this.storages[this.storages.length - 1].codeid = "codeid" + this.storages.length.toString();
 	}
 	this.init(option);
 }
@@ -77,10 +77,13 @@ const inlibraryModel = {
 	storage: storageModel,
 	materialStorage: materialStorageModel,
 	materialStorages: [],
-	waitInlibrarymaterial: null, //当前等待入库的物料
+	waitInlibrarymaterial: {
+		code: 36,
+		index: 0
+	}, //当前等待入库的物料
 	//新增物料入库模型对象
 	addMew: function(data) {
-		debugger;
+
 		this.materialStorages.push(new this.materialStorage(data));
 		this.waitInlibrarymaterial = {
 			code: data.code,
@@ -89,7 +92,7 @@ const inlibraryModel = {
 	},
 	//叠加物料
 	addMaterial: function(index, data) {
-		debugger;
+
 		this.materialStorages[index].addMaterial(data)
 		this.waitInlibrarymaterial = {
 			code: data.code,
@@ -98,8 +101,9 @@ const inlibraryModel = {
 	},
 	//物料入库
 	addStorage: function(data) {
-		debugger;
-		this.materialStorages[this.waitInlibrarymaterial.index].addStorage(data);
+		console.log('123' + this.materialStorages.length);
+		console.log('123' + this.waitInlibrarymaterial.index);
+		this.materialStorages[this.waitInlibrarymaterial.index] = data; //
 		this.waitInlibrarymaterial = null;
 	}
 };
