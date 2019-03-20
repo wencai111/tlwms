@@ -26,13 +26,18 @@ function pickMaterialModel(option) {
 	debugger;
 	this.pickModel = new pickModel();
 	this.materialModel = new materialModel();
+      this.storages = [];                      //入库集合
 	this.finishPick = false; //是否拣货完成
 	this.init = function(option) { //构造一个函数实例
+	
+	var storage = new materialModel();
+	storage.amount = this.TotalAmount;
+	this.storages.push(storage)
 	}
 	//增加物料
 	this.addPick = function(material) { //？？
 		debugger;
-		let storage = new storageModel();
+		let storage = new materialModel();
 		storage.amount = material.count;
 		this.TotalAmount = this.TotalAmount + material.count; //总数相加
 		this.storages.push(storage)
@@ -44,9 +49,9 @@ function pickMaterialModel(option) {
 	//增加入库操作
 	this.addMaterial = function(storage) {
 		debugger;
-		this.storages[this.storages.length - 1].id = storage.id;
-		this.storages[this.storages.length - 1].code = storage.code;
-		this.storages[this.storages.length - 1].codeid = storage.codeid;
+		this.storages.id = storage.id;
+		this.storages.code = storage.code;
+		this.storages.codeid = storage.codeid;
 	}
 	this.init(option);
 }
@@ -69,7 +74,7 @@ const inlibraryModel = {
 			index: this.pickMaterialModels.length - 1
 		}
 	},
-	//叠加出库
+	//叠加入库
 	addPick: function(index, data) {
 		debugger;
 		this.pickMaterialModels[index].addPick(data)
