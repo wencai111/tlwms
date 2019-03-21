@@ -8,14 +8,14 @@
 			<view v-if="materials.pickMaterialModels.length > 0">
 				<view class="uni-card" v-for="(parent, index_) in materials.pickMaterialModels" v-bind:key="parent.TlJpdID">
 					<view class="uni-card__header">
-						<view class="uni-card__header-title-text">{{parent.MName}}</view>
+						<view class="uni-card__header-title-text">{{parent.TlJpdID}}</view>
 						<view class="uni-card__header-extra-text">{{parent.MNumber}}</view>
 					</view>
 					<view class="uni-card__content uni-card__content--pd">
-						<view v-for="child in parent.storages" v-bind:key="child.id" class="wxc-list">
-							<view class="wxc-list-title-text">{{child.id==''?'请扫库位码':'已对应库位码'}}<text style="color: #0FAEFF;margin-left: 4px;">{{child.code}}</text>
+						<view v-for="child in materials.pickMaterialModels" v-bind:key="child.TlJpdID" class="wxc-list">
+							<view class="wxc-list-title-text">{{child.id==''?'请扫库位码':'已对应库位码'}}<text style="color: #0FAEFF;margin-left: 4px;">{{child.TlJpdID}}</text>
 							</view>
-							<view class="wxc-list-extra-text">{{child.amount}}</view>
+							<view class="wxc-list-extra-text">{{child.BillNum}}</view>
 						</view>
 					</view>
 					<view class="uni-card__footer">物料拣货</view>
@@ -44,7 +44,7 @@
 	} from '@/api/inlibrary.js';
 		import {
 		Pickingport
-	} from '@/api/inlibrary.js';
+	} from '@/api/outlibrary.js';
 	import {
 		mapState
 	} from 'vuex';
@@ -155,7 +155,7 @@
 				});
 			},
 			scanPick: function(res) {
-				Pickingport(this.TlJpdID, this.OperBillNum,this.BillNum,this.MNumber,this.MName,this.OutPackage,this.Qty).then(data => {
+				Pickingport(this.result).then(data => {
 					console.log('检查是否存在值');
 				var result = parseForRule(res);
 				if (res) {
@@ -171,6 +171,7 @@
 							this.materials.addNew(result);
 						}
 					}
+					this.MNumber = result.OperBillNum;
 					console.log('scanMaterial：打印最后的结果：' + JSON.stringify(result));
 				}
 				})

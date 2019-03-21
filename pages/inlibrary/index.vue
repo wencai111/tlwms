@@ -57,10 +57,10 @@
 			return {
 				//测试数据
 				testData: [
-// 					"{id: '1',code: '物料1',codeid: '2',count: 18}",
-// 					"{'K','A2-6层-06',1934,1}", "{id: '1',code: '物料1',codeid: '2',count: 18}",
-// 					"{'K','A2-6层-06',1934,1}", "{id: '1',code: '物料1',codeid: '2',count: 18}",
-// 					"{'K','A2-6层-06',1934,1}",
+					"{id: '1',code: '物料1',codeid: '2',count: 18}",
+					"{'K','A2-6层-06',1934,1}", "{id: '1',code: '物料1',codeid: '2',count: 18}",
+					"{'K','A2-6层-06',1934,1}", "{id: '1',code: '物料1',codeid: '2',count: 18}",
+					"{'K','A2-6层-06',1934,1}",
 				],
 				testIndex: 0,
 				//非测试数据
@@ -115,16 +115,16 @@
 			scanCode: function() {
 				var _this = this;
 				//测试使用
-// 				if (this.testIndex < this.testData.length) {
-// 					if (this.testIndex % 2 == 0) {
-// 						_this.scanMaterial(this.testData[this.testIndex]);
-// 						this.testIndex++;
-// 					} else {
-// 						_this.scanWarehouse(this.testData[this.testIndex]);
-// 						this.testIndex++;
-// 					}
-// 				} else {}
-// 				return;
+				if (this.testIndex < this.testData.length) {
+					if (this.testIndex % 2 == 0) {
+						_this.scanMaterial(this.testData[this.testIndex]);
+						this.testIndex++;
+					} else {
+						_this.scanWarehouse(this.testData[this.testIndex]);
+						this.testIndex++;
+					}
+				} else {}
+				return;
 				//非测试使用
 				uni.scanCode({
 					onlyFromCamera: true,
