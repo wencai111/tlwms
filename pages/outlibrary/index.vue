@@ -9,11 +9,11 @@
 				<view class="uni-card" v-for="(parent, index_) in materials.pickMaterialModels" v-bind:key="parent.id">
 					<view class="uni-card__header">
 						<view class="uni-card__header-title-text">{{parent.code}}</view>
-						<view class="uni-card__header-extra-text">{{parent.TotalAmount}}</view>
+						<view class="uni-card__header-extra-text">{{parent.codeid}}</view>
 					</view>
 					<view class="uni-card__content uni-card__content--pd">
 						<view v-for="child in parent.storages" v-bind:key="child.id" class="wxc-list">
-							<view class="wxc-list-title-text">{{child.id==''?'请继续扫描物料码':'已对应拣货单'}}<text style="color: #0FAEFF;margin-left: 4px;">{{child.code}}</text>
+							<view class="wxc-list-title-text">{{child.id==''?'请继续扫描物料码':'已对应物料码'}}<text style="color: #0FAEFF;margin-left: 4px;">{{child.code}}</text>
 							</view>
 							<view class="wxc-list-extra-text">{{child.amount}}</view>
 						</view>
@@ -53,12 +53,8 @@
 			return {
 				//测试数据
 				testData: [
-					"{id: '1',code: '物料1',codeid: '2',count: 12}",
-					"{id: '1',code: '货架A',codeid: '1'}",
-					"{id: '1',code: '物料1',codeid: '2',count: 12}",
-					"{id: '2',code: '货架B',codeid: '2'}",
-					"{id: '2',code: '物料2',codeid: '2',count: 8}",
-					"{id: '3',code:'货架C',codeid: '3'}"
+					"{id: '1',code: '1001030001-B12',codeid: '2',count: 12}",
+					"{id: '1',code: '1001030001-B12',codeid: '2',count: 12}",
 				],
 				testIndex: 0,
 				//非测试数据
@@ -131,27 +127,25 @@
 								_this.scanMaterial(res.result);
 							} else if (_this.$data.currentSteps == 1) {
 								_this.scanWarehouse(res.result);
-							} else if (_this.$data.currentSteps == 2) {
-								_this.scanMaterial(res.result);
-							}
+							} 
+// 							else if (_this.$data.currentSteps == 2) {
+// 								_this.scanMaterial(res.result);
+// 							}
 						} else {}
 					}
 				});
 			},
 			scanMaterial: function(res) {
-
 				// {id:'W',code:'1001030001-B12',codeid:'1',count:12}
 				console.log('开始处理物料码' + JSON.stringify(res));
 				var result = parseForRule(res);
-				console.log('错误1' + JSON.stringify(result));
-				console.log('错误2' + typeof result);
-				console.log('错误22' + JSON.stringify(result.code));
-				if (result.code) {
-					console.log('错误33' + JSON.stringify(result.code));
+				console.log('错误1' + JSON.stringify(res));
+				if (res) {
+					console.log('错误33' + JSON.stringify(res));
                    this.$data.currentSteps = 2;//自动完成拣货（）
 					if (this.materials.pickMaterialModels.length <= 0) {
-						console.log('首次新增物料入库模型对象');
-						this.materials.addNew(result);
+						console.log('首次新增拣货单对象');
+						this.materials.addNew(res);
 						console.log('asdasdas');
 						this.$data.currentSteps = 1;
 					} else {
@@ -177,7 +171,7 @@
 				console.log('开始处理入库码：' + JSON.stringify(res));
 				var _this = this;
 				var storage = parseForRule(res);
-				_this.LocalID = res.id;
+				// _this.LocalID = res.id;
 				// 测试使用
 // 				var storage = {};
 // 				this.LocalID = 1; //由于二维码返回的json对象不规范，值写死
@@ -187,7 +181,6 @@
 				console.log('scanMaterial：最后的结果：' + JSON.stringify(this.materials));
 				//非测试
 				return;
-
 // 				checkLocal(this.MNumber, this.LocalID).then(data => {
 // 					console.log('接口：开始检查库位');
 // 					var [error, res] = data;

@@ -6,7 +6,7 @@ function pickModel() {
 	this.id = "";
 	this.code = "";
 	this.codeid = '';
-	this.amount = 0;
+	// this.amount = 0;
 }
 /**
  *物料模型对象
@@ -24,20 +24,20 @@ function materialModel() {
  */
 function pickMaterialModel(option) {
 	debugger;
-	this.pickModel = "",
-	this.materialModel = "",
+	this.pickModel =new pickModel();
+	this.materialModel =new materialModel();
       this.storages = [];                      //入库集合
 	this.finishPick = false; //是否拣货完成
 	this.init = function(option) { //构造一个函数实例
-		if (option.code || option.code != "") {
-		this.code = option.code;
-	}
-	if (option.codeid || option.codeid != "") {
-		this.codeid = option.codeid;
-	}
-	if (option.id || option.id != "") {
-		this.id = option.id;
-	}
+// 		if (option.code || option.code != "") {
+// 		this.code = option.code;
+// 	}
+// 	if (option.codeid || option.codeid != "") {
+// 		this.codeid = option.codeid;
+// 	}
+// 	if (option.id || option.id != "") {
+// 		this.id = option.id;
+// 	}
 	if (option.count || option.count != "") {
 		this.TotalAmount = option.count;
 	}
