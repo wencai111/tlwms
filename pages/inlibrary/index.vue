@@ -62,8 +62,6 @@
 // 					"{'K','A2-6层-06',1934,1}", "{id: '1',code: '物料1',codeid: '2',count: 18}",
 // 					"{'K','A2-6层-06',1934,1}",
 				],
-
-
 				testIndex: 0,
 				//非测试数据
 				materials: inlibraryModel,
@@ -160,14 +158,8 @@
 				console.log('scanMaterial：打印最后的结果：' + JSON.stringify(this.materials));
 				//非测试
 				// return;
-
 				checkLocal(this.MNumber, this.LocalID, this.Quan).then(data => {
-					// 					if (this.TotalAmount > this.code.codeid) {
-					// 						uni.showToast({
-					// 							icon: 'id',
-					// 							title: "库位已满"
-					// 						});
-					// 					}
+
 					console.log('接口：开始检查库位');
 					var [error, res] = data;
 					console.log('res:' + JSON.stringify(res));

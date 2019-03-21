@@ -10,6 +10,7 @@
 			console.log("parse转化前："+JSON.stringify(data))
 			return JSON.parse(data)
 		}
+	
 		catch(e){
 			console.log("json 转化为js 错误：" + JSON.stringify(e))
   		return {};
