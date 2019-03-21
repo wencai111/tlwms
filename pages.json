@@ -62,8 +62,8 @@
 		"current": 0, //当前激活的模式(list 的索引项)
 		"list": [
 			{
-				"name": "入库出库", //模式名称
-				"path": "pages/inlibrary/index", //启动页面，必选
+				"name": "物料出库", //模式名称
+				"path": "pages/outlibrary/index", //启动页面，必选
 				"query": "" //启动参数，在页面的onLoad函数里面得到
 			}
 		]

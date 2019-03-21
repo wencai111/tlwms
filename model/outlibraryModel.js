@@ -24,20 +24,32 @@ function materialModel() {
  */
 function pickMaterialModel(option) {
 	debugger;
-	this.pickModel = new pickModel();
-	this.materialModel = new materialModel();
+	this.pickModel = "",
+	this.materialModel = "",
       this.storages = [];                      //入库集合
 	this.finishPick = false; //是否拣货完成
 	this.init = function(option) { //构造一个函数实例
-	
-	var storage = new materialModel();
+		if (option.code || option.code != "") {
+		this.code = option.code;
+	}
+	if (option.codeid || option.codeid != "") {
+		this.codeid = option.codeid;
+	}
+	if (option.id || option.id != "") {
+		this.id = option.id;
+	}
+	if (option.count || option.count != "") {
+		this.TotalAmount = option.count;
+	}
+	var storage = new pickModel();
+	debugger;
 	storage.amount = this.TotalAmount;
 	this.storages.push(storage)
 	}
 	//增加物料
 	this.addPick = function(material) { //？？
 		debugger;
-		let storage = new materialModel();
+		let storage = new pickModel();
 		storage.amount = material.count;
 		this.TotalAmount = this.TotalAmount + material.count; //总数相加
 		this.storages.push(storage)
@@ -49,19 +61,20 @@ function pickMaterialModel(option) {
 	//增加入库操作
 	this.addMaterial = function(storage) {
 		debugger;
-		this.storages.id = storage.id;
-		this.storages.code = storage.code;
-		this.storages.codeid = storage.codeid;
+		this.storages[this.storages.length - 1].id = storage.id;
+		this.storages[this.storages.length - 1].code = storage.code;
+		this.storages[this.storages.length - 1].codeid = storage.codeid;
 	}
 	this.init(option);
 }
 
 const inlibraryModel = {
-	pick: pickModel,
 	material: materialModel,
+	storage: pickModel,
 	pickMaterial: pickMaterialModel,
 	pickMaterialModels: [],
 	waitOutlibraryPick: {
+		
 		code: '',
 		index: 0
 	}, //当前等待出库的拣货单

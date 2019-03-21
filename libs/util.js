@@ -2,6 +2,7 @@
    * @description 不规则接口返回json转化为对象
    */
   export const parseForRule = (data) => {
+	  debugger;
   	try {
   		return eval('(' + data + ')')
   	} catch (e) {
@@ -41,4 +42,21 @@
   			}
   		});
   	}
+  }
+/**
+   * @description 库位码转换函数
+   */  
+  export const parseWarehouseCode = (code) => {
+	  console.log(code);
+	  var result=null;
+	  debugger;
+	  var  arr=code.split(",");
+	  if(arr.length<=4&&code.length<=28){
+		  result={};
+		  result["id"]=arr[0];
+		  result["code"]=arr[1];
+		  result["codeid"]=arr[2];
+	  }else{
+		  }
+	  return result;
   }

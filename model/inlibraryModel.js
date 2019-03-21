@@ -52,7 +52,7 @@ function materialStorageModel(option) {
 	}
 	//增加物料
 	this.addMaterial = function(material) { //？？
-
+debugger;
 		let storage = new storageModel();
 		storage.amount = material.count;
 		this.TotalAmount = this.TotalAmount + material.count; //总数相加

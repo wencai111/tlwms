@@ -21,7 +21,7 @@
 					<view class="uni-card__footer">物料拣货</view>
 				</view>
 			</view>
-			<button type="primary" v-bind:disabled="!sureInlibrary" @click="sureInlibrary">
+			<button type="primary" v-bind:disabled="!sureInlibrarydelivery" @click="sureInlibrary">
 				确认提交
 			</button>
 		</view>
@@ -57,8 +57,8 @@
 					"{id: '1',code: '货架A',codeid: '1'}",
 					"{id: '1',code: '物料1',codeid: '2',count: 12}",
 					"{id: '2',code: '货架B',codeid: '2'}",
-					// "{id: '2',code: '物料2',codeid: '2',count: 8}",
-// 					"{id: '3',code:'货架C',codeid: '3'}"
+					"{id: '2',code: '物料2',codeid: '2',count: 8}",
+					"{id: '3',code:'货架C',codeid: '3'}"
 				],
 				testIndex: 0,
 				//非测试数据
@@ -87,7 +87,7 @@
 		},
 		computed: {
 			...mapState(['forcedLogin', 'hasLogin', 'userName']),
-			isCanInlibrary() {
+			sureInlibrarydelivery() {
 				if (this.$data.currentSteps == 2) {
 					return true;
 				} else {
@@ -111,16 +111,16 @@
 			scanCode: function() {
 				var _this = this;
 				//测试使用
-				if (this.testIndex < this.testData.length) {
-					if (this.testIndex % 2 == 0) {
-						_this.scanMaterial(this.testData[this.testIndex]);
-						this.testIndex++;
-					} else {
-						_this.scanWarehouse(this.testData[this.testIndex]);
-						this.testIndex++;
-					}
-				} else {}
-				return;
+// 				if (this.testIndex < this.testData.length) {
+// 					if (this.testIndex % 2 == 0) {
+// 						_this.scanMaterial(this.testData[this.testIndex]);
+// 						this.testIndex++;
+// 					} else {
+// 						_this.scanWarehouse(this.testData[this.testIndex]);
+// 						this.testIndex++;
+// 					}
+// 				} else {}
+// 				return;
 				//非测试使用
 				uni.scanCode({
 					onlyFromCamera: true,
