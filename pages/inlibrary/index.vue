@@ -57,10 +57,10 @@
 			return {
 				//测试数据
 				testData: [
-					"{id: '1',code: '物料1',codeid: '2',count: 18}",
-					"{'K','A2-6层-06',1934,1}", "{id: '1',code: '物料1',codeid: '2',count: 18}",
-					"{'K','A2-6层-06',1934,1}", "{id: '1',code: '物料1',codeid: '2',count: 18}",
-					"{'K','A2-6层-06',1934,1}",
+// 					"{id: '1',code: '物料1',codeid: '2',count: 18}",
+// 					"{'K','A2-6层-06',1934,1}", "{id: '1',code: '物料1',codeid: '2',count: 18}",
+// 					"{'K','A2-6层-06',1934,1}", "{id: '1',code: '物料1',codeid: '2',count: 18}",
+// 					"{'K','A2-6层-06',1934,1}",
 				],
 				testIndex: 0,
 				//非测试数据
@@ -115,16 +115,16 @@
 			scanCode: function() {
 				var _this = this;
 				//测试使用
-				if (this.testIndex < this.testData.length) {
-					if (this.testIndex % 2 == 0) {
-						_this.scanMaterial(this.testData[this.testIndex]);
-						this.testIndex++;
-					} else {
-						_this.scanWarehouse(this.testData[this.testIndex]);
-						this.testIndex++;
-					}
-				} else {}
-				return;
+// 				if (this.testIndex < this.testData.length) {
+// 					if (this.testIndex % 2 == 0) {
+// 						_this.scanMaterial(this.testData[this.testIndex]);
+// 						this.testIndex++;
+// 					} else {
+// 						_this.scanWarehouse(this.testData[this.testIndex]);
+// 						this.testIndex++;
+// 					}
+// 				} else {}
+// 				return;
 				//非测试使用
 				uni.scanCode({
 					onlyFromCamera: true,
@@ -153,7 +153,8 @@
 				// 				var storage = {};
 				// 				this.LocalID = 1; //由于二维码返回的json对象不规范，值写死
 				console.log('接口：开始检查库位');
-				this.materials.addStorage(storage);
+				this.materials.addStorage(data);
+				console.log(data)
 				this.$data.currentSteps = 2;
 				console.log('scanMaterial：打印最后的结果：' + JSON.stringify(this.materials));
 				//非测试

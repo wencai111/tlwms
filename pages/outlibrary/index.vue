@@ -6,14 +6,14 @@
 				<text>{{ btnMessage }}</text>
 			</button>
 			<view v-if="materials.pickMaterialModels.length > 0">
-				<view class="uni-card" v-for="(parent, index_) in materials.pickMaterialModels" v-bind:key="parent.TlJpdID">
+				<view class="uni-card" v-for="(parent, index_) in materials.pickMaterialModels" v-bind:key="parent.id">
 					<view class="uni-card__header">
-						<view class="uni-card__header-title-text">{{parent.TlJpdID}}</view>
-						<view class="uni-card__header-extra-text">{{parent.MNumber}}</view>
+						<view class="uni-card__header-title-text">{{parent.OperBillNum}}</view>
+						<view class="uni-card__header-extra-text">{{parent.BillNum}}</view>
 					</view>
 					<view class="uni-card__content uni-card__content--pd">
-						<view v-for="child in materials.pickMaterialModels" v-bind:key="child.TlJpdID" class="wxc-list">
-							<view class="wxc-list-title-text">{{child.id==''?'请扫库位码':'已对应库位码'}}<text style="color: #0FAEFF;margin-left: 4px;">{{child.TlJpdID}}</text>
+						<view v-for="child in materials.pickModel" v-bind:key="child.id" class="wxc-list">
+							<view class="wxc-list-title-text">{{child.id==''?'请扫库位码':'已对应库位码'}}<text style="color: #0FAEFF;margin-left: 4px;">{{child.OperBillNum}}</text>
 							</view>
 							<view class="wxc-list-extra-text">{{child.BillNum}}</view>
 						</view>
@@ -45,6 +45,9 @@
 		import {
 		Pickingport
 	} from '@/api/outlibrary.js';
+			import {
+		SureStockOut
+	} from '@/api/Outbound.js';
 	import {
 		mapState
 	} from 'vuex';
@@ -156,22 +159,24 @@
 			},
 			scanPick: function(res) {
 				Pickingport(this.result).then(data => {
-					console.log('检查是否存在值');
+					console.log('检查是否存在值'+ JSON.stringify(data));
 				var result = parseForRule(res);
 				if (res) {
 					console.log('错误33' + JSON.stringify(res));
                    this.$data.currentSteps = 2;//自动完成拣货（）
 					if (this.materials.pickMaterialModels.length <= 0) {
-						this.materials.addNew(result);
+						
+						this.materials.addNew(data);
+						
 						console.log('asdasdas');
 						this.$data.currentSteps = 1;
 					} else {
 						let flag = true;
 						if (flag) {
-							this.materials.addNew(result);
+							this.materials.addNew(data);
 						}
 					}
-					this.MNumber = result.OperBillNum;
+					// this.MNumber = result.OperBillNum;
 					console.log('scanMaterial：打印最后的结果：' + JSON.stringify(result));
 				}
 				})
@@ -185,17 +190,20 @@
 							var storage = parseWarehouseCode(res);
 							_this.LocalID = res.id;
 							console.log('接口：开始检查库位');
-							// this.materials.addMaterial(storage);
+							
+							this.materials.addMaterial(result);
+							
+							console.log(result);
 							this.$data.currentSteps = 2;
 							console.log('scanMaterial：打印最后的结果：' + JSON.stringify(res));
-							checkLocal(this.MNumber, this.LocalID, this.Quan).then(data => {
+							checkLocal(this.MNumber, this.LocalID).then(data => {
 								console.log('接口：开始检查库位');
 								var [error, res] = data;
 								console.log('res:' + JSON.stringify(res));
 								console.log('error:' + JSON.stringify(error));
 								// var result = parseForRule(res.data);
 								if (data.request) {
-									this.materials.addMaterial(storage);
+									this.materials.addMaterial(option);
 			//判断货架是否已满
 									console.log('scanMaterial：打印最后的结果：' + JSON.parse(this.materials));
 								} else {
@@ -203,15 +211,17 @@
 								// this.$data.currentSteps = 2;
 							});
 						},
-
 			//确定入库
-			sureInlibrary: function() {
+			sureInlibrary: function(res) {
+				SureStockOut(this.result).then(data => {
+				var result = parseForRule(res);
 				var _this = this;
 				this.$data.currentSteps = 3;
 				uni.showToast({
 					icon: 'id',
-					title: '拣货成功'
+					title: ''
 				});
+				})
 			},
 			logMessage: function() {}
 		},

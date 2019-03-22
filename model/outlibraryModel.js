@@ -40,15 +40,16 @@ function pickModel(option) {
 	this.init(option);
 }
 /**
- *物料模型对象
+ *货架模型对象
  *案例：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
  */
-function materialModel(option) {
+function materialModel(option)  {
+	debugger;
 	this.id = "";
 	this.code = "";
 	this.codeid = '';
-	this.count = 0;
-		this.init = function(option) { //构造一个函数实例
+	this.amount = 0;
+			this.init = function(option) { //构造一个函数实例
 		if (option.id || option.id != "") {
 			this.id = option.id;
 		}
@@ -62,78 +63,73 @@ function materialModel(option) {
 	}
 	this.init(option);
 }
+
 /**
  *物料入库模型对象
  *案例：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
  */
 function pickMaterialModel(option) {
-	debugger;
-	this.pickModel =new pickModel(option);
+debugger;
+this.pickModel =new pickModel(option);
 	this.materialModel =new materialModel(option);
-      // this.storages = [];                      //入库集合
+      // this.storages = [];
 	this.finishPick = false; //是否拣货完成
 	this.init = function(option) { //构造一个函数实例
 	this.pickModel= new pickModel(option);
 	}
-	//出库
+	//增加拣货单
 	this.addPick = function(material) { //？？
-	var option= JSON.parse(option)
-	
 		debugger;
 		let storage = new pickModel();
 		storage.amount = material.count;
-		// this.TotalAmount = this.TotalAmount + material.count; //总数相加
-		this.pickModel=pickModel
+		this.pickModel= new pickModel(option);
 		return {
 			"success": true,
 			"message": "新增成功"
 		}
 	}
 	//增加入库操作
-// 	this.addMaterial = function(storage) {
-// 		debugger;
-// 		this.storages[this.storages.length - 1].id = storage.id;
-// 		this.storages[this.storages.length - 1].code = storage.code;
-// 		this.storages[this.storages.length - 1].codeid = storage.codeid;
-// 	}
+	this.addMaterial = function(storage) {
+		this.pickModel.id = storage. id;
+		this.pickModel.code = storage.code;
+		this.pickModel.codeid = storage.codeid;
+	}
 	this.init(option);
 }
 
-const inlibraryModel = {
-	material: materialModel,
-	storage: pickModel,
+const outlibraryModel = {
+	material: pickModel,
+	storage: materialModel,
 	pickMaterial: pickMaterialModel,
 	pickMaterialModels: [],
 	waitOutlibraryPick: {
-		code: '',
+		code: 36,
 		index: 0
-	}, //当前等待出库的拣货单
-	//新增打包物料模型对象
+	}, //当前等待入库的物料
+	//新增物料入库模型对象
 	addNew: function(data) {
-		debugger;
+debugger;
 		this.pickMaterialModels.push(new this.pickMaterial(data));
 		this.waitOutlibraryPick = {
-			Qty: data.Qty,
+			code: data.code,
 			index: this.pickMaterialModels.length - 1
 		}
 	},
-	//叠加入库
+	//叠
 	addPick: function(index, data) {
-		debugger;
 		this.pickMaterialModels[index].addPick(data)
 		this.waitOutlibraryPick = {
 			code: data.code,
 			index: index
 		}
 	},
-	//物料入库
-// 	addMaterial: function(data) {
-// 		debugger;
-// 		console.log('123' + this.pickMaterialModels.length);
-// 		console.log('123' + this.waitOutlibraryPick.index);
-// 		this.pickMaterialModels[this.waitOutlibraryPick.index].addMaterial(data); //
-// 		this.waitOutlibraryPick = null;
-// 	}
+	// 物料入库
+	addMaterial: function(data) {
+		console.log('123' + this.pickMaterialModels.length);
+		console.log('123' + this.waitOutlibraryPick.index);
+		this.pickMaterialModels[this.waitOutlibraryPick.index].addMaterial(data); //
+		this.waitOutlibraryPick = null;
+	}
 };
 //到处对象
-export default inlibraryModel;
+export default outlibraryModel;
