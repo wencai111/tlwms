@@ -1,0 +1,44 @@
+<template>
+	<view class="content">
+		<view class="example-title">选择出库方式</view>
+		<uni-list>
+			<uni-list-item title="包装码出库" note="扫描包装码出库"></uni-list-item>
+			<uni-list-item title="拣货码出库" note="扫拣货码出库库" v-on:click="startPackageInlibrary"></uni-list-item>
+		</uni-list>
+	</view>
+</template>
+
+<script>
+import { mapState } from 'vuex';
+import { authAccount } from '@/libs/util.js';
+import { uniList, uniListItem } from '@dcloudio/uni-ui';
+export default {
+	data() {
+		return {};
+	},
+	components: { uniList, uniListItem },
+	computed: mapState(['forcedLogin', 'hasLogin', 'userName','code']),
+	methods: {
+		startMaterialsInlibrary: function() {
+			// uni.navigateTo({url:'/pages/inlibrary/index'});
+		},
+		startPackageInlibrary: function() {
+			uni.redirectTo({ url: '/pages/outlibrary/index' });
+		//	uni.navigateTo({ url: '/pages/inlibrary/index' });
+		}
+	},
+	onLoad() {
+		debugger;
+		console.log('登录状态：' + this.hasLogin);
+		console.log(this.code); 
+		authAccount(this.hasLogin, this.forcedLogin, this.userName);
+	}
+};
+</script>
+
+<style>
+.example-title {
+	border-left: #007aff solid 6upx;
+	padding-left: 18upx;
+}
+</style>
