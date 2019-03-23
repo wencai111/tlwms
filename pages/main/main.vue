@@ -39,7 +39,7 @@ export default {
 					image: '/static/img/outLibrary.png',
 					text: '出库管理',
 					fdf: 'fdf',
-					url: '../inlibrary/index'
+					url: '../outlibrary/inway'
 				},
 				{
 					image: '/static/img/checkInventory.png',

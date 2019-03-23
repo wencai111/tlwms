@@ -25,7 +25,6 @@ function storageModel() {
  *案例：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
  */
 function materialStorageModel(option) {
-debugger;
 	this.id = "";
 	this.code = "";
 	this.codeid = "";
@@ -52,7 +51,6 @@ debugger;
 	}
 	//增加物料
 	this.addMaterial = function(material) { //？？
-debugger;
 		let storage = new storageModel();
 		storage.amount = material.count;
 		this.TotalAmount = this.TotalAmount + material.count; //总数相加
@@ -85,7 +83,6 @@ const inlibraryModel = {
 	}, //当前等待入库的物料
 	//新增物料入库模型对象
 	addNew: function(data) {
-debugger;
 		this.materialStorages.push(new this.materialStorage(data));
 		this.waitInlibrarymaterial = {
 			code: data.code,
@@ -107,7 +104,20 @@ debugger;
 		console.log('123' + this.waitInlibrarymaterial.index);
 		this.materialStorages[this.waitInlibrarymaterial.index].addStorage(data); //
 		this.waitInlibrarymaterial = null;
+	},
+	generateModel:function(){
+		if(this.materialStorages.length>0){
+			return {
+			"MNumber": this.materialStorages[0].code,
+			"Quan": this.materialStorages[0].TotalAmount,
+			"LocalID": this.materialStorages[0].storages[0].codeid,
+		};
+		}
+		else{
+			return null;
+		}
 	}
+
 };
 //到处对象
 export default inlibraryModel;

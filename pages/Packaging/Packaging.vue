@@ -143,15 +143,12 @@
 				});
 			},
 			scanWarehouse: function(res) {
-
 				console.log('开始处理入库码：' + JSON.stringify(res));
 				var _this = this;
 				debugger;
 				var storage = parseWarehouseCode(res);
 				_this.LocalID = res.id;
 				//测试使用
-				// 				var storage = {};
-				// 				this.LocalID = 1; //由于二维码返回的json对象不规范，值写死
 				console.log('接口：开始检查库位');
 				this.materials.addStorage(data);
 				console.log(data)
@@ -169,7 +166,6 @@
 					if (data.request) {
 						this.materials.addStorage(storage);
 //判断货架是否已满
-						console.log('scanMaterial：打印最后的结果：' + JSON.parse(this.materials));
 					} else {
 						uni.showToast({
 							icon: 'id',

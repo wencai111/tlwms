@@ -52,7 +52,7 @@
 	  var result=null;
 	  debugger;
 	  var  arr=code.split(",");
-	  if(arr.length<=4&&code.length<=28){
+	  if(arr.length<=4){
 		  result={};
 		  result["id"]=arr[0];
 		  result["code"]=arr[1];

@@ -25,12 +25,20 @@
 				"navigationBarTitleText": "入库方式"
 			}
 		},
+		
 		{
 			"path": "pages/inlibrary/index",
 			"style": {
 				"navigationBarTitleText": "物料码入库"
 			}
-		},{
+		},
+			{
+			"path": "pages/outlibrary/inway",
+			"style": {
+				"navigationBarTitleText": "出库方式"
+			}
+		},
+		{
 			"path": "pages/outlibrary/index",
 			"style": {
 				"navigationBarTitleText": "拣货单"

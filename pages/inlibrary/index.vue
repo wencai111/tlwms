@@ -13,9 +13,10 @@
 					</view>
 					<view class="uni-card__content uni-card__content--pd">
 						<view v-for="child in parent.storages" v-bind:key="child.id" class="wxc-list">
-							<view class="wxc-list-title-text">{{child.id==''?'请继续扫描入库码':'已对应货架'}}<text style="color: #0FAEFF;margin-left: 4px;">{{child.code}}</text>
+							<view class="wxc-list-title-text">{{child.id==''?'请继续扫描入库码':'已对应货架'}}
+								<text style="color: #0FAEFF;margin-left: 4px;">{{child.code}}</text>
 							</view>
-							<view class="wxc-list-extra-text">{{child.codeid}}</view>
+							<view class="wxc-list-extra-text">{{child.amount}}</view>
 						</view>
 					</view>
 					<view class="uni-card__footer">物料入库</view>
@@ -24,7 +25,7 @@
 			<button type="primary" v-bind:disabled="!sureInlibrarys" @click="sureInlibrary">
 				确认入库
 			</button>
-<!-- 			<button type="primary" @click="logMessage">浏览器打印值</button> -->
+			<!-- 			<button type="primary" @click="logMessage">浏览器打印值</button> -->
 		</view>
 	</view>
 </template>
@@ -41,10 +42,13 @@
 		parseForRule
 	} from '@/libs/util.js';
 	import {
+		inlibrarys
+	} from '@/libs/util.js';
+	import {
 		parseWarehouseCode
 	} from '@/libs/util.js';
 	import {
-		checkLocal
+		checkLocal,saveEmergentInInfo
 	} from '@/api/inlibrary.js';
 	import {
 		mapState
@@ -55,14 +59,6 @@
 	export default {
 		data() {
 			return {
-				//测试数据
-				testData: [
-// 					"{id: '1',code: '物料1',codeid: '2',count: 18}",
-// 					"{'K','A2-6层-06',1934,1}", "{id: '1',code: '物料1',codeid: '2',count: 18}",
-// 					"{'K','A2-6层-06',1934,1}", "{id: '1',code: '物料1',codeid: '2',count: 18}",
-// 					"{'K','A2-6层-06',1934,1}",
-				],
-				testIndex: 0,
 				//非测试数据
 				materials: inlibraryModel,
 				products: [],
@@ -90,7 +86,7 @@
 		computed: {
 			...mapState(['forcedLogin', 'hasLogin', 'userName']),
 			sureInlibrarys() {
-				console.log('isCanInlibrary'+this.$data.currentSteps)
+				console.log('isCanInlibrary' + this.$data.currentSteps)
 				if (this.$data.currentSteps == 2) {
 					return true;
 				} else {
@@ -114,18 +110,6 @@
 		methods: {
 			scanCode: function() {
 				var _this = this;
-				//测试使用
-// 				if (this.testIndex < this.testData.length) {
-// 					if (this.testIndex % 2 == 0) {
-// 						_this.scanMaterial(this.testData[this.testIndex]);
-// 						this.testIndex++;
-// 					} else {
-// 						_this.scanWarehouse(this.testData[this.testIndex]);
-// 						this.testIndex++;
-// 					}
-// 				} else {}
-// 				return;
-				//非测试使用
 				uni.scanCode({
 					onlyFromCamera: true,
 					success: function(res) {
@@ -142,53 +126,14 @@
 					}
 				});
 			},
-			scanWarehouse: function(res) {
-
-				console.log('开始处理入库码：' + JSON.stringify(res));
-				var _this = this;
-				debugger;
-				var storage = parseWarehouseCode(res);
-				_this.LocalID = res.id;
-				//测试使用
-				// 				var storage = {};
-				// 				this.LocalID = 1; //由于二维码返回的json对象不规范，值写死
-				console.log('接口：开始检查库位');
-				this.materials.addStorage(data);
-				console.log(data)
-				this.$data.currentSteps = 2;
-				console.log('scanMaterial：打印最后的结果：' + JSON.stringify(this.materials));
-				//非测试
-				// return;
-				checkLocal(this.MNumber, this.LocalID, this.Quan).then(data => {
-
-					console.log('接口：开始检查库位');
-					var [error, res] = data;
-					console.log('res:' + JSON.stringify(res));
-					console.log('error:' + JSON.stringify(error));
-					// var result = parseForRule(res.data);
-					if (data.request) {
-						this.materials.addStorage(storage);
-//判断货架是否已满
-						console.log('scanMaterial：打印最后的结果：' + JSON.parse(this.materials));
-					} else {
-						uni.showToast({
-							icon: 'id',
-							title: "物料收货成功！"
-						});
-					}
-					// this.$data.currentSteps = 2;
-				});
-			},
 			scanMaterial: function(res) {
 				this.$data.currentSteps = 1;
 				// {id:'W',code:'1001030001-B12',codeid:'1',count:12}
 				console.log('开始处理物料码' + JSON.stringify(res));
 				var result = parseForRule(res);
-				console.log('错误1' + JSON.stringify(result));
-				console.log('错误2' + typeof result);
-				console.log('错误22' + JSON.stringify(result.code));
+				console.log('result' + JSON.stringify(result));
+				console.log('result.code' + JSON.stringify(result.code));
 				if (result.code) {
-					console.log('错误33' + JSON.stringify(result.code));
 					if (this.materials.materialStorages.length <= 0) {
 						console.log('首次新增物料入库模型对象');
 						this.materials.addNew(result);
@@ -209,21 +154,55 @@
 					this.MNumber = result.code;
 					console.log('scanMaterial：打印最后的结果：' + JSON.stringify(this.materials));
 				}
-				// 								if(this.$data.currentSteps = 2){
-				// 									this.sureInlibrary=!this.sureInlibrary;
+			},
+			scanWarehouse: function(res) {
+				console.log('开始处理入库码：' + JSON.stringify(res));
+				var _this = this;
+				var storage = parseWarehouseCode(res);
+				this.LocalID=storage.codeid;
+				console.log("checkLocal入参MNumber："+this.MNumber);
+				console.log("checkLocal入参LocalID："+this.LocalID)
+				checkLocal(this.MNumber, this.LocalID).then(data => {
+					console.log('接口：开始检查库位');
+					var [error, res] = data;
+					console.log('res:' + JSON.stringify(res));
+					console.log('error:' + JSON.stringify(error));
+					var result = parseForRule(res.data);
+					if (result.success) {
+						_this.materials.addStorage(storage);
+						this.currentSteps = 2;
+						console.log('scanMaterial：打印最后的结果：' + JSON.parse(_this.materials));
+					} else {
+						uni.showToast({
+							icon: 'id',
+							title: result.ResponseText
+						});
+					}
+				});
+				console.log('scanMaterial：打印最后的结果：' + JSON.stringify(this.materials));
 			},
 			//确定入库
-			sureInlibrary: function() {
-				var _this = this;
-				this.$data.currentSteps = 3;
-				uni.showToast({
-					icon: 'id',
-					title: '入库成功'
-				});
-			},
-
-			logMessage: function() {}
-
+			sureInlibrary: function(res) {
+				console.log("入参："+JSON.stringify(this.materials.generateModel()));
+				saveEmergentInInfo(this.materials.generateModel()).then(data => {
+					var [error, res] = data;
+					console.log("res:"+JSON.stringify(res))
+					var result = parseForRule(res.data);
+					console.log("result:"+JSON.stringify(result))
+					if (result.success) {
+						this.currentSteps = 3;
+						uni.showToast({
+							icon: 'success',
+							title: result.ResponseText
+						});
+					} else {
+						uni.showToast({
+							icon: 'fail',
+							title: result.ResponseText
+						});
+					}
+				})
+			}
 		},
 		onLoad() {
 			console.log('登录状态：' + this.hasLogin);

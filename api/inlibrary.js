@@ -20,3 +20,17 @@ export const checkLocal = (number, localID) => {
 		},
 	});
 }
+
+/**
+ * @description 紧急入库（没有送货单和包装码，系统打印入库码入库）
+ * 用于提交和保存数据，并更新库存。应用场景是：
+ * 在货物上架之前扫描入库码，提取入库码对应信息并提交
+ */
+export const  saveEmergentInInfo = (data) => {
+	return uni.request({
+		url: domian + 'common/wms_Server_Data.asp?action= SaveEmergentInInfo',
+		type: "POST",
+		dataType: "JSON",
+		data:data ,
+	});
+}
