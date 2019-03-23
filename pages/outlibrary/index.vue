@@ -2,23 +2,24 @@
 	<view class="content">
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
-			<button type="primary" v-bind:disabled="currentSteps > 2" v-on:click="scanCode">
+			<button type="primary" v-bind:disabled="currentSteps > 1" v-on:click="scanCode">
 				<text>{{ btnMessage }}</text>
 			</button>
-			<view v-if="materials.pickMaterialModels.length > 0">
-				<view class="uni-card" v-for="(parent, index_) in materials.pickMaterialModels" v-bind:key="parent.id">
+			<view v-if="materials.pickStorages.length > 0">
+				<view class="uni-card" v-for="(item, index_) in materials.pickStorages" v-bind:key="item.index">
 					<view class="uni-card__header">
-						<view class="uni-card__header-title-text">{{parent.OperBillNum}}</view>
-						<view class="uni-card__header-extra-text">{{parent.BillNum}}</view>
+						<view class="uni-card__header-title-text">{{item.pick.MName}}</view>
+						<view class="uni-card__header-extra-text">{{item.pick.Qty}}</view>
 					</view>
 					<view class="uni-card__content uni-card__content--pd">
-						<view v-for="child in materials.pickModel" v-bind:key="child.id" class="wxc-list">
-							<view class="wxc-list-title-text">{{child.id==''?'请扫库位码':'已对应库位码'}}<text style="color: #0FAEFF;margin-left: 4px;">{{child.OperBillNum}}</text>
+						<view class="wxc-list">
+							<view class="wxc-list-title-text">{{item.storage.id==''?'请扫库位码':'已对应库位码'}}
+								<text style="color: #0FAEFF;margin-left: 4px;">{{item.storage.code}}</text>
 							</view>
-							<view class="wxc-list-extra-text">{{child.BillNum}}</view>
+							<view class="wxc-list-extra-text">{{item.storage.codeid}}</view>
 						</view>
 					</view>
-					<view class="uni-card__footer">物料拣货</view>
+					<view class="uni-card__footer">拣货入库</view>
 				</view>
 			</view>
 			<button type="primary" v-bind:disabled="!sureInlibrarydelivery" @click="sureInlibrary">
@@ -37,39 +38,30 @@
 	} from '@dcloudio/uni-ui';
 	import outlibraryModel from '@/model/outlibraryModel.js';
 	import {
+		inlibrarys
+	} from '@/libs/util.js';
+	import {
 		parseForRule
 	} from '@/libs/util.js';
 	import {
-		checkLocal
-	} from '@/api/inlibrary.js';
-		import {
-		Pickingport
+		getPickGoodsCodeInfo,
+		sureStockOut
 	} from '@/api/outlibrary.js';
-			import {
-		SureStockOut
-	} from '@/api/Outbound.js';
 	import {
 		mapState
 	} from 'vuex';
 	import {
 		authAccount
 	} from '@/libs/util.js';
-		import {
+	import {
 		parseWarehouseCode
 	} from '@/libs/util.js';
 	export default {
 		data() {
 			return {
-				//测试数据
-				testData: [
-					"{TlJpdID:'5',OperBillNum:'MDB2019217-3',BillNum:'PGC2019221-16795',MNumber:'1001040002-B12',MName:'后悬置支架总成',OutPackage:'12',Qty:'24'}",
-					"{id: '1',code: '1001030001-B12',codeid: '2',count: 12}"
-				],
-				testIndex: 0,
-				//非测试数据
 				materials: outlibraryModel,
-				products: [],
 				currentSteps: 0, //当前执行步骤，
+				BillNum:'',
 				steps: [{
 						title: '扫拣货单'
 					},
@@ -79,20 +71,7 @@
 					{
 						title: '拣货完成'
 					}
-				],
-                TlJpdID:'',
-
-                OperBillNum:'',
-
-               BillNum:'',
-
-                MNumber:'',        
-
-                MName:'',
-
-                OutPackage:'',
-
-                Qty:'',
+				]
 			};
 		},
 		components: {
@@ -104,123 +83,99 @@
 		computed: {
 			...mapState(['forcedLogin', 'hasLogin', 'userName']),
 			sureInlibrarydelivery() {
-				if (this.$data.currentSteps == 2) {
+				if (this.currentSteps == 2) {
 					return true;
 				} else {
 					return false;
 				}
 			},
 			btnMessage() {
-				if (this.$data.currentSteps == 0) {
+				if (this.currentSteps == 0) {
 					return '扫描拣货单';
-				} else if (this.$data.currentSteps == 1) {
+				} else if (this.currentSteps == 1) {
 					return '扫描库位码';
-				} 
-				else if (this.$data.currentSteps == 2) {
+				} else if (this.currentSteps == 2) {
 					return '扫描库位码';
 					console.log(入库码);
-				}
-				 else if (this.$data.currentSteps > 2) {
+				} else if (this.currentSteps > 2) {
 					return '已经完成拣货操作';
 				}
 			}
 		},
 		methods: {
 			scanCode: function() {
+				debugger;
 				var _this = this;
-				//测试使用
-				if (this.testIndex < this.testData.length) {
-					if (this.testIndex % 2 == 0) {
-						_this.scanPick(this.testData[this.testIndex]);
-						this.testIndex++;
-					} else {
-						_this.scanWarehouse(this.testData[this.testIndex]);
-						this.testIndex++;
-					}
-				} else {}
-				return;
-				//非测试使用
 				uni.scanCode({
 					onlyFromCamera: true,
 					success: function(res) {
 						console.log('扫码输出内容：' + JSON.stringify(res));
 						if (res && res.result) {
-							if (_this.$data.currentSteps == 0) {
+							if (_this.currentSteps == 0) {
 								_this.scanPick(res.result);
-							} else if (_this.$data.currentSteps == 1) {
+							} else if (_this.currentSteps == 1) {
 								_this.scanWarehouse(res.result);
-							} 
-// 							else if (_this.$data.currentSteps == 2) {
-// 								_this.scanMaterial(res.result);
-// 							}
+							}
+							// 							else if (_this.$data.currentSteps == 2) {
+							// 								_this.scanMaterial(res.result);
+							// 							}
 						} else {}
 					}
 				});
 			},
 			scanPick: function(res) {
-				Pickingport(this.result).then(data => {
-					console.log('检查是否存在值'+ JSON.stringify(data));
-				var result = parseForRule(res);
-				if (res) {
-					console.log('错误33' + JSON.stringify(res));
-                   this.$data.currentSteps = 2;//自动完成拣货（）
-					if (this.materials.pickMaterialModels.length <= 0) {
-						
-						this.materials.addNew(data);
-						
-						console.log('asdasdas');
-						this.$data.currentSteps = 1;
-					} else {
-						let flag = true;
-						if (flag) {
-							this.materials.addNew(data);
-						}
-					}
-					// this.MNumber = result.OperBillNum;
-					console.log('scanMaterial：打印最后的结果：' + JSON.stringify(result));
+				if(res&&res!=""){
+					console.log("res:"+res)
+					this.BillNum=res;
+					getPickGoodsCodeInfo(res).then(data=>{
+						var [error, res] = data;
+						console.log("getPickGoodsCodeInfo.res:"+JSON.stringify(res));
+						console.log("模拟获取拣货单接口返回的数据："+"{TlJpdID:'5',OperBillNum:'MDB2019217-3',BillNum:'PGC2019221-16795',MNumber:'1001040002-B12',MName:'后悬置支架总成',OutPackage:'12',Qty:'24'}");
+						var result = parseForRule("{TlJpdID:'5',OperBillNum:'MDB2019217-3',BillNum:'PGC2019221-16795',MNumber:'1001040002-B12',MName:'后悬置支架总成',OutPackage:'12',Qty:'24'}");
+						//var result = parseForRule(res.data);
+						console.log("result："+JSON.stringify(result))
+					    this.materials.addNew(result);
+						this.currentSteps = 1;
+					});
 				}
-				})
+				else{
+					uni.showToast({
+						icon: 'fail',
+						title: "拣货码不能为空！"
+					});
+				}
 			},
-		
 			scanWarehouse: function(res) {
-				var result = parseForRule(res);
-							console.log('开始处理入库码：' + JSON.stringify(res));
-							var _this = this;
-							debugger;
-							var storage = parseWarehouseCode(res);
-							_this.LocalID = res.id;
-							console.log('接口：开始检查库位');
-							
-							this.materials.addMaterial(result);
-							
-							console.log(result);
-							this.$data.currentSteps = 2;
-							console.log('scanMaterial：打印最后的结果：' + JSON.stringify(res));
-							checkLocal(this.MNumber, this.LocalID).then(data => {
-								console.log('接口：开始检查库位');
-								var [error, res] = data;
-								console.log('res:' + JSON.stringify(res));
-								console.log('error:' + JSON.stringify(error));
-								// var result = parseForRule(res.data);
-								if (data.request) {
-									this.materials.addMaterial(option);
-			//判断货架是否已满
-									console.log('scanMaterial：打印最后的结果：' + JSON.parse(this.materials));
-								} else {
-								}
-								// this.$data.currentSteps = 2;
-							});
-						},
-			//确定入库
-			sureInlibrary: function(res) {
-				SureStockOut(this.result).then(data => {
-				var result = parseForRule(res);
+				debugger;
+				console.log('开始处理入库码：' + JSON.stringify(res));
 				var _this = this;
-				this.$data.currentSteps = 3;
-				uni.showToast({
-					icon: 'id',
-					title: ''
-				});
+				var storage = parseWarehouseCode(res);
+				this.materials.addStorage(storage);
+				this.currentSteps = 2;
+			},
+			//确定入库
+			sureInlibrary: function() {
+				console.log("BillNum:"+this.BillNum)
+				sureStockOut(this.BillNum).then(data => {
+					var [error, res] = data;
+					console.log("data:"+JSON.stringify(data));
+					console.log("res:"+JSON.stringify(res));
+					var result = parseForRule(res.data);
+					var _this = this;
+					console.log(result);
+					if (result.success) {
+						console.log(result);
+						this.$data.currentSteps = 3;
+						uni.showToast({
+							icon: 'success',
+							title: result.ResponseText
+						});
+					} else {
+						uni.showToast({
+							icon: 'fail',
+							title: result.ResponseText
+						});
+					}
 				})
 			},
 			logMessage: function() {}
