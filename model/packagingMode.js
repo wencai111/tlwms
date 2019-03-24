@@ -1,8 +1,8 @@
 /**
- *拣货单模型对象
+ *包装码模型对象
  *案例：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
  */
-// "{TlJpdID:'5',OperBillNum:'MDB2019217-3',BillNum:'PGC2019221-16795',MNumber:'1001040002-B12',MName:'后悬置支架总成',OutPackage:'12',Qty:'24'}",
+// "{'K','B1-A1-1²ã-01','1',1}",
 function pickModel(option) {
 	debugger;
 	this.TlJpdID = "";
@@ -45,12 +45,10 @@ function pickModel(option) {
  *货架模型对象
  *案例：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
  */
-function materialModel(option) {
-	debugger;
+function storageModel(option) {
 	this.id = "";
 	this.code = "";
 	this.codeid = '';
-	this.addStorage = [];
 	this.amount = 0;
 	this.init = function(option) { //构造一个函数实例
 		if (option.id || option.id != "") {
@@ -70,37 +68,26 @@ function materialModel(option) {
 }
 
 /**
- *物料入库模型对象
+ *拣货入库模型对象
  *案例：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
  */
-function pickMaterialModel(option) {
-	this.pickModel = new pickModel(option);
-	this.materialModel = new materialModel();
+function pickStorageModel(option) {
+	this.pick = new pickModel(option);
+	this.storage = new storageModel();
 	this.finishPick = false; //是否拣货完成
-	//增加拣货单
-	this.addPick = function(material) { //？？
-		debugger;
-		let addStorage = new materialModel(option);
-		storage.amount = material.count;
-		this.pickModel = new pickModel(option);
-		return {
-			"success": true,
-			"message": "新增成功"
-		}
-	}
 	//增加拣货
 	this.addStorage = function(storage) {
-		this.addStorage.id = storage.id;
-		this.addStorage.code = storage.code;
-		this.addStorage.codeid = storage.codeid;
+		this.storage.id = storage.id;
+		this.storage.code = storage.code;
+		this.storage.codeid = storage.codeid;
 	}
 }
 
 const outlibraryModel = {
-	material: pickModel,
-	addStorage: materialModel,
-	pickMaterial: pickMaterialModel,
-	pickMaterialModels: [],
+	pick: pickModel,
+	storage: storageModel,
+	pickStorage: pickStorageModel,
+	pickStorages: [],
 	waitOutlibraryPick: {
 		code: 36,
 		index: 0
@@ -108,25 +95,18 @@ const outlibraryModel = {
 	//新增物料入库模型对象
 	addNew: function(data) {
 		debugger;
-		this.pickMaterialModels.push(new this.pickMaterial(data));
+		this.pickStorages.push(new this.pickStorage(data));
 		this.waitOutlibraryPick = {
 			code: data.code,
-			index: this.pickMaterialModels.length - 1
+			index: this.pickStorages.length - 1
 		}
 	},
-	//叠
-	addPick: function(index, data) {
-		this.pickMaterialModels[index].addPick(data)
-		this.waitOutlibraryPick = {
-			code: data.code,
-			index: index
-		}
-	},
-	// 入库
+    // 入库
 	addStorage: function(data) {
-		console.log('123' + this.pickMaterialModels.length);
+		debugger
+		console.log('123' + this.pickStorages.length);
 		console.log('123' + this.waitOutlibraryPick.index);
-		this.pickMaterialModels[this.waitOutlibraryPick.index].addStorage(data); //
+		this.pickStorages[this.waitOutlibraryPick.index].addStorage(data); //
 		this.waitOutlibraryPick = null;
 	}
 };

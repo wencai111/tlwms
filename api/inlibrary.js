@@ -16,7 +16,7 @@ export const checkLocal = (number, localID) => {
 		dataType: "JSON",
 		data: {
 			"MNumber": number,
-			"LocalID": localID,
+			"LocalID": localID
 		},
 	});
 }
