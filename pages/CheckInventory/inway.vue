@@ -1,9 +1,11 @@
 <template>
 	<view class="content">
-		<view class="example-title">选择入库方式</view>
+		<view class="example-title">选择备件方式</view>
 		<uni-list>
-			<uni-list-item title="包装码入库" note="扫描包装码入库" v-on:click="startMaterialsPackaging"></uni-list-item>
-			<uni-list-item title="物料码入库" note="扫描物料码入库" v-on:click="startPackageInlibrary"></uni-list-item>
+			<uni-list-item title="备件下架" note="" v-on:click="startMaterialsCheckInventory"></uni-list-item>
+			<uni-list-item title="备件打包" note="" v-on:click="startPackageCheckInventory"></uni-list-item>
+			<uni-list-item title="备件发货" note="" v-on:click="startMaterialsCheckInventory"></uni-list-item>
+			<uni-list-item title="备件物流查询" note="" v-on:click="startPackageCheckInventory"></uni-list-item>
 		</uni-list>
 	</view>
 </template>
@@ -19,11 +21,11 @@ export default {
 	components: { uniList, uniListItem },
 	computed: mapState(['forcedLogin', 'hasLogin', 'userName','code']),
 	methods: {
-		startMaterialsPackaging: function() {
-			uni.navigateTo({url:'/pages/Packaging/index'});
+		startMaterialsExchange: function() {
+			// uni.navigateTo({url:'/pages/exchange/index'});
 		},
-		startPackageInlibrary: function() {
-			uni.redirectTo({ url: '/pages/inlibrary/index' });
+		startPackageExchange: function() {
+			// uni.redirectTo({ url: '/pages/exchange/index' });
 		//	uni.navigateTo({ url: '/pages/inlibrary/index' });
 		}
 	},

@@ -8,13 +8,13 @@ const {
  * 于扫描包装码入库前，获取包装码对应的信息，
  * 获取后如果连续扫描物料放置在同一库位时，前端需要检查送货单号和物料是否一致，如果一致则累加当前包装数量。不一致则提醒用户错误原因。
  */
-export const GetDeliBillBarcodeInfo = (BarCID) => {
+export const GetDeliBillBarcodeInfo = (BzBarCode) => {
 	return uni.request({
 		url: domian + 'common/wms_Server_Data.asp?action= GetDeliBillBarcodeInfo',
 		type: "POST",
 		dataType: "JSON",
 		data: {
-			BarCID: "BarCID"
+			"BzBarCode": BzBarCode
 		}
 	});
 }

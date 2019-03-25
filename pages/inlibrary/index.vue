@@ -2,7 +2,7 @@
 	<view class="content">
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
-			<button type="primary" v-bind:disabled="currentSteps > 2" v-on:click="scanCode">
+			<button type="primary" v-bind:disabled="currentSteps > 1" v-on:click="scanCode">
 				<text>{{ btnMessage }}</text>
 			</button>
 			<view v-if="materials.materialStorages.length > 0">
@@ -13,15 +13,18 @@
 					</view>
 					<view class="uni-card__content uni-card__content--pd">
 						<view v-for="child in parent.storages" v-bind:key="child.id" class="wxc-list">
-							<view class="wxc-list-title-text">{{child.id==''?'请继续扫描入库码':'已对应货架'}}
+							<view class="wxc-list-title-text">{{child.id==''?'正在等待入库':'已对应货架'}}
 								<text style="color: #0FAEFF;margin-left: 4px;">{{child.code}}</text>
 							</view>
 							<view class="wxc-list-extra-text">{{child.amount}}</view>
 						</view>
 					</view>
-					<view class="uni-card__footer">物料入库</view>
+					<view class="uni-card__footer">物料入库:{{parent.id}}</view>
 				</view>
 			</view>
+			<button type="primary"  v-bind:disabled="!Sweeplocations" @click="Sweeplocation" v-on:click="scanCode">
+				扫库位码
+			</button>
 			<button type="primary" v-bind:disabled="!sureInlibrarys" @click="sureInlibrary">
 				确认入库
 			</button>
@@ -59,6 +62,7 @@
 	export default {
 		data() {
 			return {
+				// testData:{id:'W',code:'1001030001-B12',codeid:'1',count:12},
 				//非测试数据
 				materials: inlibraryModel,
 				products: [],
@@ -93,11 +97,20 @@
 					return false;
 				}
 			},
+			Sweeplocations() {
+				console.log('isCanInlibrary' + this.$data.currentSteps)
+				if (this.$data.currentSteps == 1) {
+				  return true;
+				}
+			      else {
+					return false;
+				}
+			},
 			btnMessage() {
 				if (this.$data.currentSteps == 0) {
 					return '扫描物料码';
 				} else if (this.$data.currentSteps == 1) {
-					return '扫描入库码';
+					return '继续扫描物料码';
 				} else if (this.$data.currentSteps == 2) {
 					return '继续扫描物料码';
 					console.log(入库码);
@@ -110,6 +123,18 @@
 		methods: {
 			scanCode: function() {
 				var _this = this;
+				//测试使用
+// 								if (this.testIndex < this.testData.length) {
+// 									if (this.testIndex % 2 == 0) {
+// 										_this.scanMaterial(this.testData[this.testIndex]);
+// 										this.testIndex++;
+// 									} else {
+// 										_this.scanWarehouse(this.testData[this.testIndex]);
+// 										this.testIndex++;
+// 									}
+// 								} else {}
+// 								return;
+				//非测试使用
 				uni.scanCode({
 					onlyFromCamera: true,
 					success: function(res) {
@@ -118,9 +143,10 @@
 							if (_this.$data.currentSteps == 0) {
 								_this.scanMaterial(res.result);
 							} else if (_this.$data.currentSteps == 1) {
-								_this.scanWarehouse(res.result);
-							} else if (_this.$data.currentSteps == 2) {
 								_this.scanMaterial(res.result);
+							} 
+							else if (_this.$data.currentSteps == 2) {
+								_this.scanWarehouse(res.result);
 							}
 						} else {}
 					}
@@ -128,7 +154,6 @@
 			},
 			scanMaterial: function(res) {
 				this.$data.currentSteps = 1;
-				// {id:'W',code:'1001030001-B12',codeid:'1',count:12}
 				console.log('开始处理物料码' + JSON.stringify(res));
 				var result = parseForRule(res);
 				console.log('result' + JSON.stringify(result));
@@ -155,10 +180,14 @@
 					console.log('scanMaterial：打印最后的结果：' + JSON.stringify(this.materials));
 				}
 			},
+			
+			Sweeplocation: function(res){
+				this.$data.currentSteps = 2;
+			},
 			scanWarehouse: function(res) {
 				console.log('开始处理入库码：' + JSON.stringify(res));
 				var _this = this;
-				var storage = parseWarehouseCode(res);
+			    var storage = parseWarehouseCode(res);
 				this.LocalID=storage.codeid;
 				console.log("checkLocal入参MNumber："+this.MNumber);
 				console.log("checkLocal入参LocalID："+this.LocalID)
@@ -170,7 +199,7 @@
 					var result = parseForRule(res.data);
 					if (result.success) {
 						_this.materials.addStorage(storage);
-						this.currentSteps = 2;
+						// this.currentSteps = 2;
 						console.log('scanMaterial：打印最后的结果：' + JSON.parse(_this.materials));
 					} else {
 						uni.showToast({
@@ -190,15 +219,16 @@
 					var result = parseForRule(res.data);
 					console.log("result:"+JSON.stringify(result))
 					if (result.success) {
-						this.currentSteps = 3;
+						this.$data.currentSteps = 3;
 						uni.showToast({
 							icon: 'success',
-							title: result.ResponseText
+							title: result.ResponseText,
 						});
 					} else {
+						this.$data.currentSteps = 1;
 						uni.showToast({
 							icon: 'fail',
-							title: result.ResponseText
+							title: result.ResponseText,
 						});
 					}
 				})

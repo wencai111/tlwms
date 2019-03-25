@@ -9,7 +9,7 @@ const store = new Vuex.Store({
          * 是否需要强制登录
          */
         forcedLogin: true,
-        hasLogin: false,
+        hasLogin: true,
         userName: ""
     },
     mutations: {
@@ -19,7 +19,7 @@ const store = new Vuex.Store({
         },
         logout(state) {
             state.userName = "";
-            state.hasLogin = false;
+            state.hasLogin =false;
         }
     }
 })

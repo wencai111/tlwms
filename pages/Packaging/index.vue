@@ -2,11 +2,11 @@
 	<view class="content">
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
-			<button type="primary" v-bind:disabled="currentSteps > 2" v-on:click="scanCode">
+			<button type="primary" v-bind:disabled="currentSteps > 1" v-on:click="scanCode">
 				<text>{{ btnMessage }}</text>
 			</button>
-			<view v-if="materials.materialStorages.length > 0">
-				<view class="uni-card" v-for="(parent, index_) in materials.materialStorages" v-bind:key="parent.id">
+			<view v-if="materials.packingStorages.length > 0">
+				<view class="uni-card" v-for="(parent, index_) in materials.packingStorages" v-bind:key="parent.id">
 					<view class="uni-card__header">
 						<view class="uni-card__header-title-text">{{parent.code}}</view>
 						<view class="uni-card__header-extra-text">{{parent.TotalAmount}}</view>
@@ -21,6 +21,9 @@
 					<view class="uni-card__footer">物料入库</view>
 				</view>
 			</view>
+			<button type="primary" v-bind:disabled="!Sweeplocations" @click="Sweeplocation" v-on:click="scanCode">
+				扫库位码
+			</button>
 			<button type="primary" v-bind:disabled="!spackagingandlibrarys" @click="sureInlibrary">
 				确认入库
 			</button>
@@ -36,7 +39,7 @@
 		uniList,
 		uniListItem
 	} from '@dcloudio/uni-ui';
-	import inlibraryModel from '@/model/inlibraryModel.js';
+	import packagingMode from '@/model/packagingMode.js';
 	import {
 		parseForRule
 	} from '@/libs/util.js';
@@ -57,10 +60,12 @@
 		data() {
 			return {
 				//测试数据
-				testData: [],
+				testData: [
+					{BarCID:'484',BillNum:'ASN2019320-1',BzBarCode:'TMLSHZL2019320-484',MNumber:'1001030001-B12',MName:'后悬置总成',InPackage:'12',BzQty:'12',IsScan:'1'}
+				],
 				testIndex: 0,
 				//非测试数据
-				materials: inlibraryModel,
+				materials: packagingMode,
 				BarCID: "",
 				products: [],
 				currentSteps: 0, //当前执行步骤，
@@ -93,11 +98,19 @@
 					return false;
 				}
 			},
+			Sweeplocations() {
+				console.log('isCanInlibrary' + this.$data.currentSteps)
+				if (this.$data.currentSteps == 1) {
+					return true;
+				} else {
+					return false;
+				}
+			},
 			btnMessage() {
 				if (this.$data.currentSteps == 0) {
 					return '扫描包装码';
 				} else if (this.currentSteps == 1) {
-					return '扫描库位码';
+					return '继续扫描包装码';
 				} else if (this.currentSteps == 2) {
 					return '继续扫描包装码';
 					console.log(入库码);
@@ -111,16 +124,16 @@
 			scanCode: function() {
 				var _this = this;
 				//测试使用
-				// 				if (this.testIndex < this.testData.length) {
-				// 					if (this.testIndex % 2 == 0) {
-				// 						_this.scanMaterial(this.testData[this.testIndex]);
-				// 						this.testIndex++;
-				// 					} else {
-				// 						_this.scanWarehouse(this.testData[this.testIndex]);
-				// 						this.testIndex++;
-				// 					}
-				// 				} else {}
-				// 				return;
+				if (this.testIndex < this.testData.length) {
+					if (this.testIndex % 2 == 0) {
+						_this.scanPutIn(this.testData[this.testIndex]);
+						this.testIndex++;
+					} else {
+						_this.scanWarehouse(this.testData[this.testIndex]);
+						this.testIndex++;
+					}
+				} else {}
+				return;
 				//非测试使用
 				uni.scanCode({
 					onlyFromCamera: true,
@@ -130,9 +143,9 @@
 							if (_this.currentSteps == 0) {
 								_this.scanPutIn(res.result);
 							} else if (_this.currentSteps == 1) {
-								_this.scanWarehouse(res.result);
-							} else if (_this.currentSteps == 2) {
 								_this.scanPutIn(res.result);
+							} else if (_this.currentSteps == 2) {
+								_this.scanWarehouse(res.result);
 							}
 						} else {}
 					}
@@ -140,27 +153,18 @@
 			},
 			scanPutIn: function(res) {
 				this.$data.currentSteps = 1;
-				if (res && res != "") {
-					console.log("res:" + res)
-					this.BillNum = res;
-					GetDeliBillBarcodeInfo(res).then(data => {
-						var [error, res] = data;
-						var result = parseForRule();
-					});
-				} else {
-					uni.showToast({
-						icon: 'fail',
-						title: "拣货码不能为空！"
-					});
-				}
-				if (result.code) {
-					if (this.materials.materialStorages.length <= 0) {
+				console.log('开始处理物料码' + JSON.stringify(res));
+				var result = parseForRule(res);
+				console.log('result' + JSON.stringify(result));
+				console.log('result.code' + JSON.stringify(res.BzBarCode));
+				if (res.BzBarCode) {
+					if (this.materials.packingStorages.length <= 0) {
 						console.log('首次新增物料入库模型对象');
 						this.materials.addNew(result);
 					} else {
 						let flag = true;
-						for (var i = 0; i < this.materials.materialStorages.length; i++) {
-							if (this.materials.materialStorages[i].code == result.code) {
+						for (var i = 0; i < this.materials.packingStorages.length; i++) {
+							if (this.materials.packingStorages[i].code == result.code) {
 								this.materials.addMaterial(i, result);
 								console.log('物料相加成功！');
 								flag = true;
@@ -174,7 +178,9 @@
 					this.MNumber = result.code;
 					console.log('scanMaterial：打印最后的结果：' + JSON.stringify(this.materials));
 				}
-
+			},
+			Sweeplocation: function(res) {
+				this.$data.currentSteps = 2;
 			},
 			scanWarehouse: function(res) {
 				debugger;
@@ -186,28 +192,28 @@
 			},
 
 			//确定入库
-			sureInlibrary: function() {
-				console.log("BillNum:" + this.BillNum)
-				SavePutInByDeliBill(this.BillNum).then(data => {
-					var [error, res] = data;
-					var result = parseForRule(res.data);
-					var _this = this;
-					console.log(result);
-					if (result.success) {
-						console.log(result);
-						this.$data.currentSteps = 3;
-						uni.showToast({
-							icon: 'success',
-							title: result.ResponseText
-						});
-					} else {
-						uni.showToast({
-							icon: 'fail',
-							title: result.ResponseText
-						});
-					}
-				})
-			},
+			sureInlibrary: function(res) {
+			console.log("入参："+JSON.stringify(this.materials.generateModel()));
+			saveEmergentInInfo(this.materials.generateModel()).then(data => {
+				var [error, res] = data;
+				console.log("res:"+JSON.stringify(res))
+				var result = parseForRule(res.data);
+				console.log("result:"+JSON.stringify(result))
+				if (result.success) {
+					this.$data.currentSteps = 3;
+					uni.showToast({
+						icon: 'success',
+						title: result.ResponseText,
+					});
+				} else {
+					this.$data.currentSteps = 1;
+					uni.showToast({
+						icon: 'fail',
+						title: result.ResponseText,
+					});
+				}
+			})
+		},
 			logMessage: function() {}
 		},
 		onLoad() {
