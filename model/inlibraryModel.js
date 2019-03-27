@@ -20,20 +20,6 @@ function storageModel() {
 	this.amount = 0;
 }
 
-
-var add=function (res) {
-	if(demo.length>0)
-	
-}
-var addNew=null;
-function addF=
-
-function addNewF=function () {
-	
-}
-add=addF;
-
-addNew=addNewF;
 /**
  *物料入库模型对象
  *案例：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
@@ -59,7 +45,7 @@ function materialStorageModel(option) {
 		if (option.count || option.count != "") {
 			this.TotalAmount = option.count;
 		}
-		var storage = new ();
+		var storage = new materialModel();
 		storage.amount = this.TotalAmount;
 		this.storages.push(storage)
 	}
@@ -76,9 +62,6 @@ function materialStorageModel(option) {
 	}
 	//增加入库操作
 	this.addStorage = function(storage) {
-// 		this.storages[this.storages.length - 1].id = this.storages.length.toString();
-// 		this.storages[this.storages.length - 1].code = "code" + this.storages.length.toString();
-// 		this.storages[this.storages.length - 1].codeid = "codeid" + this.storages.length.toString();
 		this.storages[this.storages.length - 1].id = storage. id;
 		this.storages[this.storages.length - 1].code = storage.code;
 		this.storages[this.storages.length - 1].codeid = storage.codeid;
@@ -87,39 +70,11 @@ function materialStorageModel(option) {
 }
 
 
-
-const inlibraryModel ={
-	var dome= new materialModel()
-	 demo:[];
-	add:function ({"id":"123","code":"fdfd","codeid":"fdfd","count":1}) {
-		if(demo.length>0){
-			dome.count=stonger.count+1;
-// 			this.TotalAmount=this.TotalAmount
-// 			this.data.TotalAmount=data.TotalAmount+data.TotalAmount;
-		}
-		
-	}
-	
-}
-
-
-
-
-
-
 const inlibraryModel = {
-	id:'',
-	code:'',
-	goods:[],
 	material: materialModel,
 	storage: storageModel,
 	materialStorage: materialStorageModel,
-	materialStorages: {},
-	setMartee:function(data){
-		this.id=data.id;
-		goods.push(data.count);
-	},
-	setstora
+	materialStorages: [],
 	waitInlibrarymaterial: {
 		code: 36,
 		index: 0
