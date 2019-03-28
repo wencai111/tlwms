@@ -51,7 +51,7 @@
 	  console.log(code);
 	  var result=null;
 	  debugger;
-	  var  arr=code.split(",");
+	  var arr=code.split(",");
 	  if(arr.length<=4){
 		  result={};
 		  result["id"]=arr[0];

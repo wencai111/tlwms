@@ -1,8 +1,3 @@
-<!-- 新建一个页面：index.vue  ，新建一个 脚本文件：inlibraryModel.js （组装数据模拟数据）    tem plate:展示 inlibraryModel.js脚本文件返回来的模拟数据-->
-<!-- 第一步： index.vue 里面的data 模拟数据组装成一个独立的模型，模型名字inlibraryModel，inlibraryModel模型有code，TotalAmount，goods，codeid，storageName属性 -->
-<!-- 第二步：index.vue 调用inlibraryModel.js文件，inlibraryModel.js 返回 inlibraryModel模型实例化后的inlibraryModel对象-->
-<!-- 第三步：index.vue data 定义变量inlibrary,并赋值等于第二步的返回 inlibraryModel对象-->
-<!-- 第四步：index.vue template 渲染inlibrary变量-->
 <template>
 	<view class="content">
 		<view class="uni-card">
@@ -19,14 +14,14 @@
 				</view>
 			</view>
 			<view class="uni-card__footer">物料名字:{{inlibrary.codeid}}</view>
-	<view class="uni-card__footer">货架名字:{{inlibrary.storageName}}</view>
-	<button type="primary" @click="scanMaterial">
-		确认提交
-	</button>
+			<view class="uni-card__footer">货架名字:{{inlibrary.storageName}}</view>
+			<button type="primary" @click="sureInlibrary">
+				确认提交
+			</button>
 			<button type="primary" @click="scanMaterial">
 				扫物料
 			</button>
-			<button type="primary" @click="setInlibrary">
+			<button type="primary" @click="Sweeplocation">
 				扫入库
 			</button>
 		</view>
@@ -41,12 +36,21 @@
 	} from '@dcloudio/uni-ui';
 	import
 	inlibraryModels
-	from '@/pages/test/inlibaryModel2.js'
+	from '@/pages/test/inlibaryModel3.js';
+	import {
+		checkLocal
+	} from '@/api/inlibrary.js';
+	import {
+		parseForRule
+	} from '@/libs/util.js';
+	import {
+		parseWarehouseCode
+	} from '@/libs/util.js'
 	export default {
 		data() {
 			return {
 				inlibrary: inlibraryModels,
-				index:0
+				index: 0
 			}
 		},
 		methods: {
@@ -54,20 +58,53 @@
 				debugger;
 				console.log("12345")
 			},
-			scanMaterial(){
+			scanMaterial() {
 				debugger;
-				if(this.index==0){
-					this.inlibrary.setMaterial();
-					this.index=this.index+1;
-				}
-				else{
-					this.inlibrary.addGoods();
+				if (this.index == 0) {
+					uni.scanCode({
+						onlyFromCamera: true,
+						success: function(res) {
+							var _this = this;
+							console.log('扫码输出内容：' + JSON.stringify(res));
+							var result = parseForRule(res);
+							if (res && res.result) {
+								console.log('扫码输出内容：' + JSON.stringify(res.result));
+							  _this.inlibrary.setMaterial(res.result);
+								_this.index = _this.index + 1;
+							}
+						}
+					});
+				} 
+				else {
+					uni.scanCode({
+						onlyFromCamera: true,
+						success: function(res) {
+							var _this = this;
+							console.log('扫码输出内容：' + JSON.stringify(res));
+							var result = parseForRule(res);
+							console.log('扫码输出内容：' + JSON.stringify(res.result));
+							if (res && res.result) {
+								_this.inlibrary.addGoods(res.result);
+							}
+						}
+					});
+
 				}
 			},
-			setInlibrary(){
-				this.inlibrary.setInlibrary();
+			Sweeplocation() {
+				uni.scanCode({
+					onlyFromCamera: true,
+					success: function(res) {
+						var _this = this;
+						console.log('扫码输出内容：' + JSON.stringify(res));
+						var result = parseForRule(res);
+						if (res && res.result) {
+							_this.inlibrary.setInlibrary(res.result);
+						}
+					}
+				});
 			}
-			
+
 		}
 	}
 </script>

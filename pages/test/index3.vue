@@ -1,3 +1,8 @@
+<!-- 新建一个页面：index.vue  ，新建一个 脚本文件：inlibraryModel.js （组装数据模拟数据）    tem plate:展示 inlibraryModel.js脚本文件返回来的模拟数据-->
+<!-- 第一步： index.vue 里面的data 模拟数据组装成一个独立的模型，模型名字inlibraryModel，inlibraryModel模型有code，TotalAmount，goods，codeid，storageName属性 -->
+<!-- 第二步：index.vue 调用inlibraryModel.js文件，inlibraryModel.js 返回 inlibraryModel模型实例化后的inlibraryModel对象-->
+<!-- 第三步：index.vue data 定义变量inlibrary,并赋值等于第二步的返回 inlibraryModel对象-->
+<!-- 第四步：index.vue template 渲染inlibrary变量-->
 <template>
 	<view class="content">
 		<view class="uni-card">
@@ -15,10 +20,9 @@
 			</view>
 			<view class="uni-card__footer">物料名字:{{inlibrary.codeid}}</view>
 	<view class="uni-card__footer">货架名字:{{inlibrary.storageName}}</view>
-	<button type="primary" @click="sureInlibrary">
+	<button type="primary" @click="scanMaterial">
 		确认提交
 	</button>
-	
 			<button type="primary" @click="scanMaterial">
 				扫物料
 			</button>
@@ -38,66 +42,31 @@
 	import
 	inlibraryModels
 	from '@/pages/test/inlibaryModel2.js'
-		import {
-		parseForRule
-	} from '@/libs/util.js';
 	export default {
 		data() {
 			return {
-				testData:["{id:'1',code:'1001030001-B12A',codeid:'1',count:12}", "{'K','B1','1'}"],
 				inlibrary: inlibraryModels,
-				index:0,
-				currentSteps: 0,
+				index:0
 			}
 		},
 		methods: {
-			scanCode: function() {
-				debugger;
-				var _this = this;
-				if (this.testIndex < this.testData.length) {
-					console.log("123314")
-					if (this.testIndex % 2 == 0) {
-						_this.scanMaterial(this.testData[this.testIndex]);
-						this.testIndex++;
-					} else {
-						_this.scanWarehouse(this.testData[this.testIndex]);
-						this.testIndex++;
-					}
-				} else {}
-				return;
-				uni.scanCode({
-					onlyFromCamera: true,
-					success: function(res) {
-						console.log('扫码输出内容：' + JSON.stringify(res));
-						if (res && res.result) {
-							if (_this.currentSteps == 0) {
-								_this.scanMaterial(res.result);
-							} else if (_this.currentSteps == 1) {
-								_this.setInlibrary(res.result);
-							}
-						} else {}
-					}
-				});
-			},
-			
 			sureInlibrary() {
+				debugger;
 				console.log("12345")
 			},
-			scanMaterial(res){
-				var _this = this;
-				var storage = parseWarehouseCode(res);
+			scanMaterial(){
+				debugger;
 				if(this.index==0){
-					this.inlibrary.setMaterial(storage);
+					
+					this.inlibrary.setMaterial({"code":"1001030001-B12A","acount":12,"codeid":"后置总重"});
 					this.index=this.index+1;
 				}
 				else{
-					this.inlibrary.addGoods(storage);
+					this.inlibrary.addGoods(24);
 				}
 			},
-			setInlibrary(res){
-				var _this = this;
-				var storage = parseWarehouseCode(res);
-				this.inlibrary.setInlibrary(storage);
+			setInlibrary(){
+				this.inlibrary.setInlibrary("货架");
 			}
 			
 		}
