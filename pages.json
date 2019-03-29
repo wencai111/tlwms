@@ -27,7 +27,7 @@
 		},
 
 		{
-			"path": "pages/test/index4",
+			"path": "pages/test/index5",
 			"style": {
 				"navigationBarTitleText": "物料码入库"
 			}
@@ -153,7 +153,7 @@
 		"current": 0, //当前激活的模式(list 的索引项)
 		"list": [{
 			"name": "入库", //模式名称
-			"path": "pages/test/index4", //启动页面，必选index
+			"path": "pages/test/index5", //启动页面，必选index
 			"query": "" //启动参数，在页面的onLoad函数里面得到
 		}]
 	}

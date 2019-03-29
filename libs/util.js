@@ -51,12 +51,12 @@
 	  console.log(code);
 	  var result=null;
 	  debugger;
-	  var arr=code.split(",");
+	  var arr=code.replace("{","").replace("}","").split(",");
 	  if(arr.length<=4){
 		  result={};
-		  result["id"]=arr[0];
-		  result["code"]=arr[1];
-		  result["codeid"]=arr[2];
+		  result["id"]=arr[0].replace("'","").replace("'","");
+		  result["code"]=arr[1].replace("'","").replace("'","");
+		  result["codeid"]=arr[2].replace("'","").replace("'","");
 	  }else{
 		  }
 	  return result;

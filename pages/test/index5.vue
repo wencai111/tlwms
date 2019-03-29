@@ -16,7 +16,7 @@
 			<view class="uni-card__footer">物料名字:{{inlibrary.code}}</view>
 			<view class="uni-card__footer">货架名字:{{inlibrary.id}}</view>
 			<button type="primary" @click="sureInlibrary">
-				确认提交
+				确认入库
 			</button>
 			<button type="primary" @click="scanMaterial">
 				扫物料
@@ -36,33 +36,47 @@
 	} from '@dcloudio/uni-ui';
 	import
 	inlibraryModels
-	from '@/pages/test/inlibaryModel4.js';
+	from '@/pages/test/inlibaryModel5.js';
 	import {
-		checkLocal
+		checkLocal,
+		saveEmergentInInfo
 	} from '@/api/inlibrary.js';
 	import {
 		parseForRule
 	} from '@/libs/util.js';
 	import {
 		parseWarehouseCode
-	} from '@/libs/util.js'
+	} from '@/libs/util.js';
 	export default {
 		data() {
 			return {
 				inlibrary: inlibraryModels,
-				index: 0
+				index: 0,
+				MNumber: '',
+				LocalID: ''
+
 			}
 		},
 		methods: {
 			sureInlibrary() {
-				debugger;
-				console.log("12345")
+				console.log("入参："+JSON.stringify(this.inlibrary));
+					saveEmergentInInfo(this.inlibrary.setInlibrary()).then(data => {
+						var result = parseForRule(res.data);
+					var [error, res] = data;
+					if (result.success) {
+						uni.showToast({
+							icon: 'success',
+							title: result.ResponseText,
+						});
+					} else {
+						uni.showToast({
+							icon: 'fail',
+							title: result.ResponseText,
+						});
+					}
+				})
 			},
 			scanMaterial() {
-// 				var temp="{'K','B1-A1-1²ã-01','1',1}";
-// 				var temp11 = parseWarehouseCode(temp);
-				// return;
-				
 				if (this.index == 0) {
 					var _this = this;
 					console.log('this定义：' + _this);
@@ -71,13 +85,12 @@
 						success: function(res) {
 							var result = parseForRule(res.result);
 							if (result) {
-							  _this.inlibrary.setMaterial(result);
+								_this.inlibrary.setMaterial(result);
 								_this.index = _this.index + 1;
 							}
 						}
 					});
-				} 
-				else {
+				} else {
 					var _this = this;
 					uni.scanCode({
 						onlyFromCamera: true,
@@ -89,8 +102,7 @@
 								_this.inlibrary.addGoods(result);
 							}
 						}
-					})
-					.success;
+					});
 
 				}
 			},
@@ -100,15 +112,27 @@
 					onlyFromCamera: true,
 					success: function(res) {
 						console.log('扫码输出内容：' + JSON.stringify(res));
-						var result = parseForRule(res.result);
-						var storage = parseWarehouseCode(res.result);
-						if (result) {
-							_this.inlibrary.setInlibrary(storage);
-						}
+							// var result = parseForRule(res.result);
+							var storage = parseWarehouseCode(res.result);
+							this.LocalID = storage.id;
+							console.log("this.MNumber"+this.MNumber);
+							console.log("this.LocalID"+this.LocalID);
+							checkLocal(this.MNumber, this.LocalID).then(data => {
+							var [error,res] = data;
+							console.log("res:"+JSON.stringify(res))
+							var result = parseForRule(res.data);
+							if (result.success) {
+								_this.inlibrary.setInlibrary(storage);
+							} else {
+								uni.showToast({
+									icon: 'none',
+									title: result.ResponseText
+								})
+							}
+						})
 					}
 				});
 			}
-
 		}
 	}
 </script>
