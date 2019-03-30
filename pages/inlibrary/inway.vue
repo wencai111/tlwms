@@ -3,7 +3,7 @@
 		<view class="example-title">选择入库方式</view>
 		<uni-list>
 			<uni-list-item title="包装码入库" note="扫描包装码入库" v-on:click="startMaterialsPackaging"></uni-list-item>
-			<uni-list-item title="物料码入库" note="扫描物料码入库" v-on:click="startPackageInlibrary"></uni-list-item>
+			<uni-list-item title="紧急入库" note="扫描物料码入库" v-on:click="startPackageInlibrary"></uni-list-item>
 		</uni-list>
 	</view>
 </template>
