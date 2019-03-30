@@ -27,9 +27,9 @@
 		},
 
 		{
-			"path": "pages/test/index5",
+			"path": "pages/inlibrary/index",
 			"style": {
-				"navigationBarTitleText": "物料码入库"
+				"navigationBarTitleText": "紧急入库"
 			}
 		},
 		{
