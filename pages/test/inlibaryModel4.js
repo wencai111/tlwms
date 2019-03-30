@@ -20,18 +20,18 @@ function inlibraryModel() {
 		this.id=name.id;
 	}
 };
-generateModel=function(){
-		if(this.materialStorages.length>0){
-			return {
-			"MNumber": this.materialStorages[0].code,
-			"Quan": this.materialStorages[0].TotalAmount,
-			"LocalID": this.materialStorages[0].storages[0].codeid,
-		};
-		}
-		else{
-			return null;
-		}
-	}
+// generateModel=function(){
+// 		if(this.materialStorages.length>0){
+// 			return {
+// 			"MNumber": this.materialStorages[0].code,
+// 			"Quan": this.materialStorages[0].TotalAmount,
+// 			"LocalID": this.materialStorages[0].storages[0].codeid,
+// 		};
+// 		}
+// 		else{
+// 			return null;
+// 		}
+// 	}
 const inlibraryModels = new inlibraryModel();
 
 export default inlibraryModels;
