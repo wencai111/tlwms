@@ -4,8 +4,8 @@
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
 			<view class="uni-card">
 				<view class="uni-card__header">
-					<view class="uni-card__header-title-text">{{exchange.code}}</view>
-					<view class="uni-card__header-extra-text">{{exchange.TotalAmount}}</view>
+					<view class="uni-card__header-title-text">{{outbound.code}}</view>
+					<view class="uni-card__header-extra-text">{{outbound.TotalAmount}}</view>
 					<button type="button" @click="modification">修改</button>
 					<neil-modal :show="show"  title="修改提示" confirm-text="确定" cancel-text="取消">
 						<view style="min-height: 90upx;padding: 32upx 24upx;">
@@ -14,20 +14,20 @@
 					</neil-modal>
 				</view>
 				<view class="uni-card__content uni-card__content--pd">
-					<view class="wxc-list" v-for="item in exchange.goods" v-bind:key="item">
+					<view class="wxc-list" v-for="item in outbound.goods" v-bind:key="item">
 						<view class="wxc-list-title-text">
-							<text style="color: #0FAEFF;margin-left: 4px;">等待入库</text>
+							<text style="color: #0FAEFF;margin-left: 4px;">选择库位</text>
 						</view>
 						<view class="wxc-list-extra-text">{{item}}</view>
 					</view>
 				</view>
-				<view class="uni-card__footer">物料名字:{{exchange.codeid}}</view>
-				<view class="uni-card__footer">货架名字:{{exchange.id}}</view>
+				<view class="uni-card__footer">物料名字:{{outbound.codeid}}</view>
+				<view class="uni-card__footer">货架名字:{{outbound.id}}</view>
 				<button type="primary" @click="sureInlibrary" v-bind:disabled="!sureInlibrarys">
-					确认退换
+					确认出货
 				</button>
-				<button type="primary" @click="scanMaterial" v-bind:disabled="scanMaterials > 1">
-					扫物料
+				<button type="primary" @click="scanMaterial" v-bind:disabled="!scanMaterials">
+					扫物料良品
 				</button>
 				<button type="primary" @click="Sweeplocation" v-bind:disabled="!Sweeplocations">
 					扫入库
@@ -51,25 +51,25 @@
 		parseForRule
 	} from '@/libs/util.js';
 	import
-	exchangeModels
-	from '@/model/exchangeModel.js'
+	outboundModels
+	from '@/model/outboundModel.js'
 	export default {
 		data() {
 			return {
 				// testData: ["{id:'1',code:'1001030001-B12A',codeid:'1',count:12}", "{'K','B1','1'}"],
 				steps: [{
-						title: '扫不良品'
+						title: '扫良品'
 					},
 					{
 						title: '扫库位码'
 					},
 					{
-						title: '入库完成'
+						title: '换货完成'
 					}
 				],
 				currentSteps: 0, //当前执行步骤，
 				index: 0,
-				exchange: exchangeModels,
+				outbound: outboundModels,
 				  show: false,
 			}
 		},
@@ -108,9 +108,9 @@
 			},
 		},
 		methods: {
-			cancel(){
-			window.history.back(-1)
-			},
+// 			cancel(){
+// 			window.history.back(-1)
+// 			},
 			modification(){
 				console.log("2313246")
 				this.show = true;
@@ -123,7 +123,7 @@
 				debugger;
 				if (this.index == 0) {
 					this.$data.currentSteps = 1;
-					this.exchange.setMaterial({
+					this.outbound.setMaterial({
 						id: '1',
 						code: '1001030001-B12A',
 						codeid: '1',
@@ -131,12 +131,12 @@
 					});
 					this.index = this.index + 1;
 				} else {
-					this.exchange.addGoods({count:24});
+					this.outbound.addGoods({count:24});
 				}
 			},
 			Sweeplocation() {
 				this.$data.currentSteps = 2;
-				this.exchange.setInlibrary({
+				this.outbound.setInlibrary({
 					id: 'K',
 					code: 'B1',
 					codeid: '1'
