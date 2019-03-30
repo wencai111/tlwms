@@ -2,37 +2,37 @@
 	<view class="content">
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
-			<view class="uni-card">
-				<view class="uni-card__header">
-					<view class="uni-card__header-title-text">{{exchange.code}}</view>
-					<view class="uni-card__header-extra-text">{{exchange.TotalAmount}}</view>
-					<button type="button" @click="modification">修改</button>
-					<neil-modal :show="show"  title="修改提示" confirm-text="确定" cancel-text="取消">
-						<view style="min-height: 90upx;padding: 32upx 24upx;">
-                            <view style="text-align: center;">请输入个数<input type="text" placeholder="输入个数...."/></view>
-						</view>
-					</neil-modal>
-				</view>
-				<view class="uni-card__content uni-card__content--pd">
-					<view class="wxc-list" v-for="item in exchange.goods" v-bind:key="item">
-						<view class="wxc-list-title-text">
-							<text style="color: #0FAEFF;margin-left: 4px;">等待入库</text>
-						</view>
-						<view class="wxc-list-extra-text">{{item}}</view>
-					</view>
-				</view>
-				<view class="uni-card__footer">物料名字:{{exchange.codeid}}</view>
-				<view class="uni-card__footer">货架名字:{{exchange.id}}</view>
-				<button type="primary" @click="sureInlibrary" v-bind:disabled="!sureInlibrarys">
-					确认退换
-				</button>
-				<button type="primary" @click="scanMaterial" v-bind:disabled="scanMaterials > 1">
-					扫物料
-				</button>
-				<button type="primary" @click="Sweeplocation" v-bind:disabled="!Sweeplocations">
-					扫入库
-				</button>
+			<!-- <view class="uni-card"> -->
+			<view class="uni-card__header">
+				<view class="uni-card__header-title-text">{{exchange.code}}</view>
+				<view class="uni-card__header-extra-text">{{exchange.TotalAmount}}</view>
+				<button type="button" @click="modification">修改</button>
 			</view>
+			<view class="uni-card__content uni-card__content--pd">
+				<view class="wxc-list" v-for="item in exchange.goods" v-bind:key="item">
+					<view class="wxc-list-title-text">
+						<text style="color: #0FAEFF;margin-left: 4px;">等待入库</text>
+					</view>
+					<view class="wxc-list-extra-text">{{item}}</view>
+				</view>
+			</view>
+			<view class="uni-card__footer">物料名字:{{exchange.codeid}}</view>
+			<view class="uni-card__footer">货架名字:{{exchange.id}}</view>
+			<button type="primary" @click="sureInlibrary" v-bind:disabled="!sureInlibrarys">
+				确认退换
+			</button>
+			<button type="primary" @click="scanMaterial" v-bind:disabled="!scanMaterials">
+				扫物料
+			</button>
+			<button type="primary" @click="Sweeplocation" v-bind:disabled="!Sweeplocations">
+				扫入库
+			</button>
+			<neil-modal :show="show" title="修改提示" @confirm="modifierNumber('modifierNumber')">
+				<view style="min-height: 90upx;padding: 32upx 24upx;">
+					<view style="text-align: center;">请输入个数<input type="text" v-model="inputNumber" placeholder="输入个数...." /></view>
+				</view>
+			</neil-modal>
+			<!-- 	</view> -->
 		</view>
 	</view>
 </template>
@@ -50,6 +50,9 @@
 	import {
 		parseForRule
 	} from '@/libs/util.js';
+	import {
+		exchangeStorage
+	} from '@/api/exchange.js'
 	import
 	exchangeModels
 	from '@/model/exchangeModel.js'
@@ -70,7 +73,8 @@
 				currentSteps: 0, //当前执行步骤，
 				index: 0,
 				exchange: exchangeModels,
-				  show: false,
+				show: false,
+				inputNumber: 12
 			}
 		},
 		components: {
@@ -83,7 +87,7 @@
 		computed: {
 			scanMaterials() {
 				console.log('isCanInlibrary' + this.$data.currentSteps)
-				if (this.$data.currentSteps == 3) {
+				if (this.$data.currentSteps == 2 || this.$data.currentSteps == 3) {
 					return false;
 				} else {
 					return true;
@@ -93,7 +97,6 @@
 				console.log('isCanInlibrary' + this.$data.currentSteps)
 				if (this.$data.currentSteps == 1) {
 					return true;
-
 				} else {
 					return false;
 				}
@@ -108,39 +111,83 @@
 			},
 		},
 		methods: {
-			cancel(){
-			window.history.back(-1)
-			},
-			modification(){
+			modification() {
 				console.log("2313246")
 				this.show = true;
 			},
-			sureInlibrary() {
-				this.$data.currentSteps = 3;
-				console.log("123456");
-			},
-			scanMaterial() {
+			scanMaterial: function(res) {
 				debugger;
 				if (this.index == 0) {
-					this.$data.currentSteps = 1;
-					this.exchange.setMaterial({
-						id: '1',
-						code: '1001030001-B12A',
-						codeid: '1',
-						count: 12
+					var _this = this;
+					console.log('this定义：' + _this);
+					uni.scanCode({
+						onlyFromCamera: true,
+						success: function(res) {
+							this.$data.currentSteps = 1;
+							var result = parseForRule(res.result);
+							if (result) {
+								_this.exchange.setMaterial(result);
+								_this.index = _this.index + 1;
+							}
+						}
 					});
-					this.index = this.index + 1;
 				} else {
-					this.exchange.addGoods({count:24});
+					var _this = this;
+					uni.scanCode({
+						onlyFromCamera: true,
+						success: function(res) {
+							console.log('扫码输出内容：' + JSON.stringify(res));
+							var result = parseForRule(res.result);
+							console.log('扫码输出内容：' + JSON.stringify(res.result));
+							if (result) {
+								this.exchange.addGoods(result);
+							}
+						},
+					})
 				}
 			},
-			Sweeplocation() {
+			Sweeplocation: function(res) {
 				this.$data.currentSteps = 2;
-				this.exchange.setInlibrary({
-					id: 'K',
-					code: 'B1',
-					codeid: '1'
+				var _this = this;
+				uni.scanCode({
+					onlyFromCamera: true,
+					success: function(res) {
+						console.log('扫码输出内容：' + JSON.stringify(res));
+						var result = parseForRule(res.result);
+						var storage = parseWarehouseCode(res.result);
+						if (result) {
+							this.exchange.setInlibrary(storage);
+						}
+					}
 				});
+			},
+			sureInlibrary: function() {
+				console.log("LocalID:" + this.LocalID)
+				exchangeStorage(this.LocalID).then(data => {
+					var [error, res] = data;
+					console.log("data:" + JSON.stringify(data));
+					console.log("res:" + JSON.stringify(res));
+					var result = parseForRule(res.data);
+					var _this = this;
+					console.log(result);
+					if (result.success) {
+						console.log(result);
+						this.$data.currentSteps = 3;
+						uni.showToast({
+							icon: 'success',
+							title: result.ResponseText
+						});
+					} else {
+						uni.showToast({
+							icon: 'fail',
+							title: result.ResponseText
+						});
+					}
+				});
+			},
+			modifierNumber() {
+				debugger;
+				console.log(this.inputNumber)
 			}
 		},
 	}

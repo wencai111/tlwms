@@ -2,37 +2,37 @@
 	<view class="content">
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
-			<view class="uni-card">
-				<view class="uni-card__header">
-					<view class="uni-card__header-title-text">{{outbound.code}}</view>
-					<view class="uni-card__header-extra-text">{{outbound.TotalAmount}}</view>
-					<button type="button" @click="modification">修改</button>
-					<neil-modal :show="show"  title="修改提示" confirm-text="确定" cancel-text="取消">
-						<view style="min-height: 90upx;padding: 32upx 24upx;">
-                            <view style="text-align: center;">请输入个数<input type="text" placeholder="输入个数...."/></view>
-						</view>
-					</neil-modal>
-				</view>
-				<view class="uni-card__content uni-card__content--pd">
-					<view class="wxc-list" v-for="item in outbound.goods" v-bind:key="item">
-						<view class="wxc-list-title-text">
-							<text style="color: #0FAEFF;margin-left: 4px;">选择库位</text>
-						</view>
-						<view class="wxc-list-extra-text">{{item}}</view>
-					</view>
-				</view>
-				<view class="uni-card__footer">物料名字:{{outbound.codeid}}</view>
-				<view class="uni-card__footer">货架名字:{{outbound.id}}</view>
-				<button type="primary" @click="sureInlibrary" v-bind:disabled="!sureInlibrarys">
-					确认出货
-				</button>
-				<button type="primary" @click="scanMaterial" v-bind:disabled="!scanMaterials">
-					扫物料良品
-				</button>
-				<button type="primary" @click="Sweeplocation" v-bind:disabled="!Sweeplocations">
-					扫入库
-				</button>
+			<view class="uni-card__header">
+				<view class="uni-card__header-title-text">{{outbound.code}}</view>
+				<view class="uni-card__header-extra-text">{{outbound.TotalAmount}}</view>
 			</view>
+			<view class="uni-card__content uni-card__content--pd">
+				<view class="wxc-list" v-for="(item,index) in outbound.goods" v-bind:key="index">
+					<view class="wxc-list-title-text">
+						<!-- <text style="color: #0FAEFF;margin-left: 4px;">{{item.id==''?'请扫库位码':'已对应库位码'}}</text> -->
+					</view>
+					<view class="wxc-list-extra-text">{{item}}</view>
+					<button type="button" @click="modification(index)">修改</button>
+				</view>
+			</view>
+			<view class="uni-card__footer">物料名字:{{outbound.codeid}}</view>
+			<view class="uni-card__footer">货架名字:{{outbound.id}}</view>
+			<button type="primary" @click="sureInlibrary" v-bind:disabled="!sureInlibrarys">
+				确认出货
+			</button>
+			<button type="primary" @click="scanMaterial" v-bind:disabled="!scanMaterials">
+				扫物料良品
+			</button>
+			<button type="primary" @click="Sweeplocation" v-bind:disabled="!Sweeplocations">
+				扫入库
+			</button>
+			<slot>
+			<neil-modal :show="show" title="修改提示" @confirm="modifierNumber('modifierNumber')" >
+				<view style="min-height: 90upx;padding: 32upx 24upx;">
+					<view style="text-align: center;">请输入个数<input type="number" v-model="currentNumber" placeholder="输入个数...."/></view>
+				</view>
+			</neil-modal>
+			</slot>
 		</view>
 	</view>
 </template>
@@ -70,7 +70,9 @@
 				currentSteps: 0, //当前执行步骤，
 				index: 0,
 				outbound: outboundModels,
-				  show: false,
+				show: false,
+				currentNumber: 12,//当前需要货物需要修改的数量
+				currentIndex:0//当前需要修改数量的货物索引
 			}
 		},
 		components: {
@@ -83,7 +85,7 @@
 		computed: {
 			scanMaterials() {
 				console.log('isCanInlibrary' + this.$data.currentSteps)
-				if (this.$data.currentSteps == 3) {
+				if (this.$data.currentSteps == 2 || this.$data.currentSteps == 3) {
 					return false;
 				} else {
 					return true;
@@ -108,11 +110,8 @@
 			},
 		},
 		methods: {
-// 			cancel(){
-// 			window.history.back(-1)
-// 			},
-			modification(){
-				console.log("2313246")
+			modification(index) {
+				this.currentIndex=index;
 				this.show = true;
 			},
 			sureInlibrary() {
@@ -120,7 +119,6 @@
 				console.log("123456");
 			},
 			scanMaterial() {
-				debugger;
 				if (this.index == 0) {
 					this.$data.currentSteps = 1;
 					this.outbound.setMaterial({
@@ -131,7 +129,7 @@
 					});
 					this.index = this.index + 1;
 				} else {
-					this.outbound.addGoods({count:24});
+					this.outbound.addGoods(24);
 				}
 			},
 			Sweeplocation() {
@@ -141,11 +139,15 @@
 					code: 'B1',
 					codeid: '1'
 				});
+			},
+			modifierNumber(ref) {
+				debugger;
+				this.outbound.modifierNumber(this.currentIndex,this.currentNumber);
+				this.show=false;
 			}
 		},
 	}
 </script>
-
 <style lang="scss">
 	.materialnumber {
 		width: auto;

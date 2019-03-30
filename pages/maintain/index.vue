@@ -3,37 +3,36 @@
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
 			<!-- <view class="uni-card"> -->
-				<view class="uni-card__header">
-					<view class="uni-card__header-title-text">{{servace.code}}</view>
-					<view class="uni-card__header-extra-text">{{servace.TotalAmount}}</view>
-					<button type="button" @click="modification">修改</button>
-
-				</view>
-				<view class="uni-card__content uni-card__content--pd">
-					<view class="wxc-list" v-for="item in servace.goods" v-bind:key="item">
-						<view class="wxc-list-title-text">
-							<text style="color: #0FAEFF;margin-left: 4px;">等待入库</text>
-						</view>
-						<view class="wxc-list-extra-text">{{item}}</view>
+			<view class="uni-card__header">
+				<view class="uni-card__header-title-text">{{maintain.code}}</view>
+				<view class="uni-card__header-extra-text">{{maintain.TotalAmount}}</view>
+				<button type="button" @click="modification">修改</button>
+			</view>
+			<view class="uni-card__content uni-card__content--pd">
+				<view class="wxc-list" v-for="item in maintain.goods" v-bind:key="item">
+					<view class="wxc-list-title-text">
+						<text style="color: #0FAEFF;margin-left: 4px;">等待入库</text>
 					</view>
+					<view class="wxc-list-extra-text">{{item}}</view>
 				</view>
-				<view class="uni-card__footer">物料名字:{{servace.codeid}}</view>
-				<view class="uni-card__footer">货架名字:{{servace.id}}</view>
-				<button type="primary" @click="sureInlibrary" v-bind:disabled="!sureInlibrarys">
-					入库成功
-				</button>
-				<button type="primary" @click="scanMaterial" v-bind:disabled="!scanMaterials">
-					扫良品
-				</button>
-				<button type="primary" @click="Sweeplocation" v-bind:disabled="!Sweeplocations">
-					良品入库
-				</button>
-				<neil-modal :show="show"  title="修改提示"  @confirm="modifierNumber('modifierNumber')">
-					<view style="min-height: 90upx;padding: 32upx 24upx;">
-				        <view style="text-align: center;">请输入个数<input type="text" v-model="inputNumber" placeholder="输入个数...."/></view>
-					</view>
-				</neil-modal>
-		<!-- 	</view> -->
+			</view>
+			<view class="uni-card__footer">物料名字:{{maintain.codeid}}</view>
+			<view class="uni-card__footer">货架名字:{{maintain.id}}</view>
+			<button type="primary" @click="sureInlibrary" v-bind:disabled="!sureInlibrarys">
+				入库成功
+			</button>
+			<button type="primary" @click="scanMaterial" v-bind:disabled="!scanMaterials">
+				扫良品
+			</button>
+			<button type="primary" @click="Sweeplocation" v-bind:disabled="!Sweeplocations">
+				良品入库
+			</button>
+			<neil-modal :show="show" title="修改提示" @confirm="modifierNumber('modifierNumber')">
+				<view style="min-height: 90upx;padding: 32upx 24upx;">
+					<view style="text-align: center;">请输入个数<input type="text" v-model="inputNumber" placeholder="输入个数...." /></view>
+				</view>
+			</neil-modal>
+			<!-- 	</view> -->
 		</view>
 	</view>
 </template>
@@ -52,8 +51,8 @@
 		parseForRule
 	} from '@/libs/util.js';
 	import
-	servaceModels
-	from '@/model/serviceModel.js'
+	maintainModels
+	from '@/model/maintainModel.js'
 	export default {
 		data() {
 			return {
@@ -70,9 +69,9 @@
 				],
 				currentSteps: 0, //当前执行步骤，
 				index: 0,
-				servace: servaceModels,
+				maintain: maintainModels,
 				show: false,
-				inputNumber:12
+				inputNumber: 12
 			}
 		},
 		components: {
@@ -85,7 +84,7 @@
 		computed: {
 			scanMaterials() {
 				console.log('isCanInlibrary' + this.$data.currentSteps)
-				if (this.$data.currentSteps == 2||this.$data.currentSteps == 3) {
+				if (this.$data.currentSteps == 2 || this.$data.currentSteps == 3) {
 					return false;
 				} else {
 					return true;
@@ -109,10 +108,10 @@
 			},
 		},
 		methods: {
-			cancel(){
-			window.history.back(-1)
+			cancel() {
+				window.history.back(-1)
 			},
-			modification(){
+			modification() {
 				console.log("2313246")
 				this.show = true;
 			},
@@ -124,7 +123,7 @@
 				debugger;
 				if (this.index == 0) {
 					this.$data.currentSteps = 1;
-					this.servace.setMaterial({
+					this.maintain.setMaterial({
 						id: '1',
 						code: '1001030001-B12A',
 						codeid: '1',
@@ -132,18 +131,20 @@
 					});
 					this.index = this.index + 1;
 				} else {
-					this.servace.addGoods({count:24});
+					this.maintain.addGoods({
+						count: 24
+					});
 				}
 			},
 			Sweeplocation() {
 				this.$data.currentSteps = 2;
-				this.servace.setInlibrary({
+				this.maintain.setInlibrary({
 					id: 'K',
 					code: 'B1',
 					codeid: '1'
 				});
 			},
-			modifierNumber(){
+			modifierNumber() {
 				debugger;
 				console.log(this.inputNumber)
 			}
