@@ -1,9 +1,11 @@
 <template>
 	<view class="content">
-		<view class="example-title">选择换货方式</view>
+		<view class="example-title">选择拆装方式</view>
 		<uni-list>
-			<uni-list-item title="换货入库" note="换货入库" v-on:click="startMaterialsDismounting"></uni-list-item>
-			<uni-list-item title="换货出库" note="换货出库" v-on:click="startPackageDismounting"></uni-list-item>
+			<uni-list-item title="组装入库" note="组装入库" v-on:click="startMaterialsReturn"></uni-list-item>
+			<uni-list-item title="组装出库" note="组装出库" v-on:click="startPackageReturn"></uni-list-item>
+			<uni-list-item title="分拆入库" note="分拆入库" v-on:click="startMaterialsReturn"></uni-list-item>
+			<uni-list-item title="分拆出库" note="分拆出库" v-on:click="startPackageReturn"></uni-list-item>
 		</uni-list>
 	</view>
 </template>
@@ -19,10 +21,10 @@ export default {
 	components: { uniList, uniListItem },
 	computed: mapState(['forcedLogin', 'hasLogin', 'userName','code']),
 	methods: {
-		startMaterialsDismounting: function() {
+		startMaterialsExchange: function() {
 			uni.navigateTo({url:'/pages/exchange/index'});
 		},
-		startPackageDismounting: function() {
+		startPackageExchange: function() {
 			uni.redirectTo({ url: '/pages/exchange/index' });
 		//	uni.navigateTo({ url: '/pages/inlibrary/index' });
 		}
