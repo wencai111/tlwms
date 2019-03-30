@@ -6,14 +6,14 @@
 			<view class="uni-card__header">
 				<view class="uni-card__header-title-text">{{exchange.code}}</view>
 				<view class="uni-card__header-extra-text">{{exchange.TotalAmount}}</view>
-				<button type="button" @click="modification">修改</button>
 			</view>
 			<view class="uni-card__content uni-card__content--pd">
-				<view class="wxc-list" v-for="item in exchange.goods" v-bind:key="item">
+				<view class="wxc-list" v-for="(item,index) in exchange.goods" v-bind:key="index">
 					<view class="wxc-list-title-text">
 						<text style="color: #0FAEFF;margin-left: 4px;">等待入库</text>
 					</view>
 					<view class="wxc-list-extra-text">{{item}}</view>
+					<button type="button" @click="modification(index)">修改</button>
 				</view>
 			</view>
 			<view class="uni-card__footer">物料名字:{{exchange.codeid}}</view>
@@ -29,10 +29,10 @@
 			</button>
 			<neil-modal :show="show" title="修改提示" @confirm="modifierNumber('modifierNumber')">
 				<view style="min-height: 90upx;padding: 32upx 24upx;">
-					<view style="text-align: center;">请输入个数<input type="text" v-model="inputNumber" placeholder="输入个数...." /></view>
+					<view style="text-align: center;">请输入个数<input type="number" v-model="inputNumber" placeholder="输入个数...." /></view>
 				</view>
 			</neil-modal>
-			<!-- 	</view> -->
+
 		</view>
 	</view>
 </template>
@@ -185,9 +185,11 @@
 					}
 				});
 			},
-			modifierNumber() {
+			modifierNumber(ref) {
 				debugger;
 				console.log(this.inputNumber)
+				this.outbound.modifierNumber(this.currentIndex,this.currentNumber);
+				this.show=false;
 			}
 		},
 	}

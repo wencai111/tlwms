@@ -24,8 +24,6 @@ function outboundModel() {
 		this.TotalAmount =this.TotalAmount+ (parseInt(number)-this.goods[index]) ;//物料总数
 		this.goods[index]=parseInt(number);
 	}
-}
-
-	
+}	
 const outboundModels = new outboundModel();
 export default outboundModels;
