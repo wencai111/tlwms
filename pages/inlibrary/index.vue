@@ -21,6 +21,7 @@
 							</view>
 							<view class="wxc-list-extra-text">{{item}}</view>
 						</view>
+						
 					</view>
 					<view class="uni-card__footer">紧急入库:{{material.code}}<text v-if="material.storage!=null">{{material.storage.code}}</text></view>
 				</view>
@@ -105,7 +106,6 @@
 			},
 			//扫描库位码
 			scanWarehouse: function(res) {
-				debugger;
 				var result={id:'K',code:'A2-6层-06',codeid:'1934'};
 				this.material.addStorage(result)
 				this.currentSteps=2;

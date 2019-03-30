@@ -7,11 +7,7 @@
 					<view class="uni-card__header-title-text">{{exchange.code}}</view>
 					<view class="uni-card__header-extra-text">{{exchange.TotalAmount}}</view>
 					<button type="button" @click="modification">修改</button>
-					<neil-modal :show="show"  title="修改提示" confirm-text="确定" cancel-text="取消">
-						<view style="min-height: 90upx;padding: 32upx 24upx;">
-                            <view style="text-align: center;">请输入个数<input type="text" placeholder="输入个数...."/></view>
-						</view>
-					</neil-modal>
+					
 				</view>
 				<view class="uni-card__content uni-card__content--pd">
 					<view class="wxc-list" v-for="item in exchange.goods" v-bind:key="item">
@@ -34,6 +30,11 @@
 				</button>
 			</view>
 		</view>
+		<neil-modal :show="show"  title="修改提示" confirm-text="确定" cancel-text="取消"  @confirm="changeCount('1233')">
+			<view style="min-height: 90upx;padding: 32upx 24upx;">
+		        <view style="text-align: center;">请输入个数<input type="text" v-model="changeNumber" placeholder="输入个数...."/></view>
+			</view>
+		</neil-modal>
 	</view>
 </template>
 <script>
@@ -69,6 +70,7 @@
 				],
 				currentSteps: 0, //当前执行步骤，
 				index: 0,
+				changeNumber:12,
 				exchange: exchangeModels,
 				  show: false,
 			}
@@ -141,6 +143,10 @@
 					code: 'B1',
 					codeid: '1'
 				});
+			},
+			changeCount(res){
+				debugger;
+				
 			}
 		},
 	}

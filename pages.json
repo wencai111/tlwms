@@ -25,7 +25,12 @@
 				"navigationBarTitleText": "入库方式"
 			}
 		},
-
+		{
+			"path": "pages/inlibrary/index1",
+			"style": {
+				"navigationBarTitleText": "包装码入库"
+			}
+		},
 		{
 			"path": "pages/inlibrary/index",
 			"style": {
@@ -137,6 +142,10 @@
             "style" : {}
         },{
             "path" : "pages/test/index3",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/test/temp/temp",
             "style" : {}
         }
     ],
