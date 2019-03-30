@@ -1,9 +1,9 @@
 <template>
 	<view class="content">
-		<view class="example-title">选择入库方式</view>
+		<view class="example-title">选择退仓方式</view>
 		<uni-list>
-			<uni-list-item title="包装码入库" note="扫描包装码入库" v-on:click="startMaterialsPackaging"></uni-list-item>
-			<uni-list-item title="物料码入库" note="扫描物料码入库" v-on:click="startPackageInlibrary"></uni-list-item>
+			<uni-list-item title="退仓" note="不良品退仓" v-on:click="startMaterialsReturn"></uni-list-item>
+			<uni-list-item title="返厂" note="不良品返厂" v-on:click="startPackageReturn"></uni-list-item>
 		</uni-list>
 	</view>
 </template>
@@ -19,11 +19,11 @@ export default {
 	components: { uniList, uniListItem },
 	computed: mapState(['forcedLogin', 'hasLogin', 'userName','code']),
 	methods: {
-		startMaterialsPackaging: function() {
-			uni.navigateTo({url:'/pages/Packaging/index'});
+		startMaterialsExchange: function() {
+			// uni.navigateTo({url:'/pages/exchange/index'});
 		},
-		startPackageInlibrary: function() {
-			uni.redirectTo({ url: '/pages/inlibrary/index' });
+		startPackageExchange: function() {
+			// uni.redirectTo({ url: '/pages/exchange/index' });
 		//	uni.navigateTo({ url: '/pages/inlibrary/index' });
 		}
 	},

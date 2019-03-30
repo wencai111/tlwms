@@ -45,7 +45,7 @@ function materialStorageModel(option) {
 		if (option.count || option.count != "") {
 			this.TotalAmount = option.count;
 		}
-		var storage = new storageModel();
+		var storage = new materialModel();
 		storage.amount = this.TotalAmount;
 		this.storages.push(storage)
 	}
@@ -62,15 +62,13 @@ function materialStorageModel(option) {
 	}
 	//增加入库操作
 	this.addStorage = function(storage) {
-// 		this.storages[this.storages.length - 1].id = this.storages.length.toString();
-// 		this.storages[this.storages.length - 1].code = "code" + this.storages.length.toString();
-// 		this.storages[this.storages.length - 1].codeid = "codeid" + this.storages.length.toString();
 		this.storages[this.storages.length - 1].id = storage. id;
 		this.storages[this.storages.length - 1].code = storage.code;
 		this.storages[this.storages.length - 1].codeid = storage.codeid;
 	}
 	this.init(option);
 }
+
 
 const inlibraryModel = {
 	material: materialModel,

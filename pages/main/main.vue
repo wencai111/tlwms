@@ -42,39 +42,39 @@ export default {
 					url: '../outlibrary/inway'
 				},
 				{
-					image: '/static/img/checkInventory.png',
+					image: '/static/img/deliveryNote.png',
 					text: '盘点',
-					url: '../inlibrary/index'
+					url: '../deliveryNote/index'
 				},
 				{
 					image: '/static/img/service.png',
 					text: '维修',
-					url: '../inlibrary/index'
+					url: '../service/index'
 				},
 				{
-					image: '/static/img/transfer.png',
-					text: '转移',
-					url: '../inlibrary/index'
+					image: '/static/img/exchange.png',
+					text: '换货',
+					url: '../exchange/inway'
 				},
 				{
 					image: '/static/img/Return.png',
-					text: '退货',
-					url: '../inlibrary/index'
+					text: '不良品',
+					url: '../Return/inway'
 				},
 				{
 					image: '/static/img/checkQuality.png',
 					text: '质检',
-					url: '../inlibrary/index'
+					url: '../checkQuality/index'
 				},
 				{
-					image: '/static/img/deliveryNote.png',
-					text: '送货单',
-					url: '../inlibrary/index'
+					image: '/static/img/CheckInventory.png',
+					text: '备件',
+					url: '../CheckInventory/inway'
 				},
 				{
 					image: '/static/img/query.png',
 					text: '查询',
-					url: '../inlibrary/index'
+					url: '../query/index'
 				}
 			]
 		};

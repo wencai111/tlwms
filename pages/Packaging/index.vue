@@ -2,11 +2,11 @@
 	<view class="content">
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
-			<button type="primary" v-bind:disabled="currentSteps > 2" v-on:click="scanCode">
+			<button type="primary" v-bind:disabled="currentSteps > 1" v-on:click="scanCode">
 				<text>{{ btnMessage }}</text>
 			</button>
-			<view v-if="materials.materialStorages.length > 0">
-				<view class="uni-card" v-for="(parent, index_) in materials.materialStorages" v-bind:key="parent.id">
+			<view v-if="materials.packingStorages.length > 0">
+				<view class="uni-card" v-for="(parent, index_) in materials.packingStorages" v-bind:key="parent.id">
 					<view class="uni-card__header">
 						<view class="uni-card__header-title-text">{{parent.code}}</view>
 						<view class="uni-card__header-extra-text">{{parent.TotalAmount}}</view>
@@ -21,10 +21,13 @@
 					<view class="uni-card__footer">物料入库</view>
 				</view>
 			</view>
-			<button type="primary" v-bind:disabled="!sureInlibrarys" @click="sureInlibrary">
+			<button type="primary" v-bind:disabled="!Sweeplocations" @click="Sweeplocation" v-on:click="scanCode">
+				扫库位码
+			</button>
+			<button type="primary" v-bind:disabled="!spackagingandlibrarys" @click="sureInlibrary">
 				确认入库
 			</button>
-<!-- 			<button type="primary" @click="logMessage">浏览器打印值</button> -->
+			<!-- 			<button type="primary" @click="logMessage">浏览器打印值</button> -->
 		</view>
 	</view>
 </template>
@@ -36,7 +39,7 @@
 		uniList,
 		uniListItem
 	} from '@dcloudio/uni-ui';
-	import inlibraryModel from '@/model/inlibraryModel.js';
+	import packagingMode from '@/model/packagingMode.js';
 	import {
 		parseForRule
 	} from '@/libs/util.js';
@@ -44,8 +47,9 @@
 		parseWarehouseCode
 	} from '@/libs/util.js';
 	import {
-		checkLocal
-	} from '@/api/inlibrary.js';
+		GetDeliBillBarcodeInfo,
+		SavePutInByDeliBill
+	} from '@/api/packaging.js';
 	import {
 		mapState
 	} from 'vuex';
@@ -57,18 +61,16 @@
 			return {
 				//测试数据
 				testData: [
-// 					"{id: '1',code: '物料1',codeid: '2',count: 18}",
-// 					"{'K','A2-6层-06',1934,1}", "{id: '1',code: '物料1',codeid: '2',count: 18}",
-// 					"{'K','A2-6层-06',1934,1}", "{id: '1',code: '物料1',codeid: '2',count: 18}",
-// 					"{'K','A2-6层-06',1934,1}",
+					{BarCID:'484',BillNum:'ASN2019320-1',BzBarCode:'TMLSHZL2019320-484',MNumber:'1001030001-B12',MName:'后悬置总成',InPackage:'12',BzQty:'12',IsScan:'1'}
 				],
 				testIndex: 0,
 				//非测试数据
-				materials: inlibraryModel,
+				materials: packagingMode,
+				BarCID: "",
 				products: [],
 				currentSteps: 0, //当前执行步骤，
 				steps: [{
-						title: '扫物料码'
+						title: '扫包装码'
 					},
 					{
 						title: '扫库位码'
@@ -77,8 +79,7 @@
 						title: '入库完成'
 					}
 				],
-				MNumber: '',
-				LocalID: ''
+
 			};
 		},
 		components: {
@@ -89,9 +90,17 @@
 		},
 		computed: {
 			...mapState(['forcedLogin', 'hasLogin', 'userName']),
-			sureInlibrarys() {
-				console.log('isCanInlibrary'+this.$data.currentSteps)
-				if (this.$data.currentSteps == 2) {
+			spackagingandlibrarys() {
+				console.log('isCanInlibrary' + this.currentSteps)
+				if (this.currentSteps == 2) {
+					return true;
+				} else {
+					return false;
+				}
+			},
+			Sweeplocations() {
+				console.log('isCanInlibrary' + this.$data.currentSteps)
+				if (this.$data.currentSteps == 1) {
 					return true;
 				} else {
 					return false;
@@ -99,13 +108,13 @@
 			},
 			btnMessage() {
 				if (this.$data.currentSteps == 0) {
-					return '扫描物料码';
-				} else if (this.$data.currentSteps == 1) {
-					return '扫描入库码';
-				} else if (this.$data.currentSteps == 2) {
-					return '继续扫描物料码';
+					return '扫描包装码';
+				} else if (this.currentSteps == 1) {
+					return '继续扫描包装码';
+				} else if (this.currentSteps == 2) {
+					return '继续扫描包装码';
 					console.log(入库码);
-				} else if (this.$data.currentSteps > 2) {
+				} else if (this.currentSteps > 2) {
 					return '已经完成入库操作';
 				}
 			}
@@ -115,83 +124,47 @@
 			scanCode: function() {
 				var _this = this;
 				//测试使用
-// 				if (this.testIndex < this.testData.length) {
-// 					if (this.testIndex % 2 == 0) {
-// 						_this.scanMaterial(this.testData[this.testIndex]);
-// 						this.testIndex++;
-// 					} else {
-// 						_this.scanWarehouse(this.testData[this.testIndex]);
-// 						this.testIndex++;
-// 					}
-// 				} else {}
-// 				return;
+				if (this.testIndex < this.testData.length) {
+					if (this.testIndex % 2 == 0) {
+						_this.scanPutIn(this.testData[this.testIndex]);
+						this.testIndex++;
+					} else {
+						_this.scanWarehouse(this.testData[this.testIndex]);
+						this.testIndex++;
+					}
+				} else {}
+				return;
 				//非测试使用
 				uni.scanCode({
 					onlyFromCamera: true,
 					success: function(res) {
 						console.log('扫码输出内容：' + JSON.stringify(res));
 						if (res && res.result) {
-							if (_this.$data.currentSteps == 0) {
-								_this.scanMaterial(res.result);
-							} else if (_this.$data.currentSteps == 1) {
+							if (_this.currentSteps == 0) {
+								_this.scanPutIn(res.result);
+							} else if (_this.currentSteps == 1) {
+								_this.scanPutIn(res.result);
+							} else if (_this.currentSteps == 2) {
 								_this.scanWarehouse(res.result);
-							} else if (_this.$data.currentSteps == 2) {
-								_this.scanMaterial(res.result);
 							}
 						} else {}
 					}
 				});
 			},
-			scanWarehouse: function(res) {
-				console.log('开始处理入库码：' + JSON.stringify(res));
-				var _this = this;
-				debugger;
-				var storage = parseWarehouseCode(res);
-				_this.LocalID = res.id;
-				//测试使用
-				console.log('接口：开始检查库位');
-				this.materials.addStorage(data);
-				console.log(data)
-				this.$data.currentSteps = 2;
-				console.log('scanMaterial：打印最后的结果：' + JSON.stringify(this.materials));
-				//非测试
-				// return;
-				checkLocal(this.MNumber, this.LocalID, this.Quan).then(data => {
-
-					console.log('接口：开始检查库位');
-					var [error, res] = data;
-					console.log('res:' + JSON.stringify(res));
-					console.log('error:' + JSON.stringify(error));
-					// var result = parseForRule(res.data);
-					if (data.request) {
-						this.materials.addStorage(storage);
-//判断货架是否已满
-					} else {
-						uni.showToast({
-							icon: 'id',
-							title: "物料收货成功！"
-						});
-					}
-					// this.$data.currentSteps = 2;
-				});
-			},
-			scanMaterial: function(res) {
+			scanPutIn: function(res) {
 				this.$data.currentSteps = 1;
-				// {id:'W',code:'1001030001-B12',codeid:'1',count:12}
 				console.log('开始处理物料码' + JSON.stringify(res));
 				var result = parseForRule(res);
-				console.log('错误1' + JSON.stringify(result));
-				console.log('错误2' + typeof result);
-				console.log('错误22' + JSON.stringify(result.code));
-				if (result.code) {
-					console.log('错误33' + JSON.stringify(result.code));
-					if (this.materials.materialStorages.length <= 0) {
+				console.log('result' + JSON.stringify(result));
+				console.log('result.code' + JSON.stringify(res.BzBarCode));
+				if (res.BzBarCode) {
+					if (this.materials.packingStorages.length <= 0) {
 						console.log('首次新增物料入库模型对象');
 						this.materials.addNew(result);
 					} else {
 						let flag = true;
-						for (var i = 0; i < this.materials.materialStorages.length; i++) {
-							if (this.materials.materialStorages[i].code == result.code) {
+						for (var i = 0; i < this.materials.packingStorages.length; i++) {
+							if (this.materials.packingStorages[i].code == result.code) {
 								this.materials.addMaterial(i, result);
 								console.log('物料相加成功！');
 								flag = true;
@@ -206,18 +179,42 @@
 					console.log('scanMaterial：打印最后的结果：' + JSON.stringify(this.materials));
 				}
 			},
-			//确定入库
-			sureInlibrary: function() {
+			Sweeplocation: function(res) {
+				this.$data.currentSteps = 2;
+			},
+			scanWarehouse: function(res) {
+				debugger;
+				console.log('开始处理入库码：' + JSON.stringify(res));
 				var _this = this;
-				this.$data.currentSteps = 3;
-				uni.showToast({
-					icon: 'id',
-					title: '入库成功'
-				});
+				var storage = parseWarehouseCode(res);
+				this.materials.addStorage(storage);
+				this.currentSteps = 2;
 			},
 
+			//确定入库
+			sureInlibrary: function(res) {
+			console.log("入参："+JSON.stringify(this.materials.generateModel()));
+			saveEmergentInInfo(this.materials.generateModel()).then(data => {
+				var [error, res] = data;
+				console.log("res:"+JSON.stringify(res))
+				var result = parseForRule(res.data);
+				console.log("result:"+JSON.stringify(result))
+				if (result.success) {
+					this.$data.currentSteps = 3;
+					uni.showToast({
+						icon: 'success',
+						title: result.ResponseText,
+					});
+				} else {
+					this.$data.currentSteps = 1;
+					uni.showToast({
+						icon: 'fail',
+						title: result.ResponseText,
+					});
+				}
+			})
+		},
 			logMessage: function() {}
-
 		},
 		onLoad() {
 			console.log('登录状态：' + this.hasLogin);
