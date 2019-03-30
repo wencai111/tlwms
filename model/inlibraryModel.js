@@ -1,121 +1,55 @@
 /**
- *物料模型对象
- *案例：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
- */
-function materialModel() {
-	this.id = "";
-	this.code = "";
-	this.codeid = '';
-	this.count = 0;
-}
-
-/**
  *货架模型对象
- *案例：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
+ *案例：{'K':'A2-6层-06','1934','1'}
  */
 function storageModel() {
 	this.id = "";
 	this.code = "";
 	this.codeid = '';
-	this.amount = 0;
 }
-
 /**
- *物料入库模型对象
- *案例：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
+ *紧急入库模型对象
+ *物料数据：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
+ *库位数据：{id:'K',code:'A2-6层-06',codeid:'1934'}
  */
-function materialStorageModel(option) {
-	this.id = "";
-	this.code = "";
-	this.codeid = "";
-	this.TotalAmount = '';
-	this.storages = []; //入库集合
-	this.finishInlibrary = false; //是否存在物料没有入库
-	this.init = function(option) { //构造一个函数实例
-
-		if (option.code || option.code != "") {
-			this.code = option.code;
-		}
-		if (option.codeid || option.codeid != "") {
-			this.codeid = option.codeid;
-		}
-		if (option.id || option.id != "") {
-			this.id = option.id;
-		}
-		if (option.count || option.count != "") {
-			this.TotalAmount = option.count;
-		}
-		var storage = new materialModel();
-		storage.amount = this.TotalAmount;
-		this.storages.push(storage)
-	}
-	//增加物料
-	this.addMaterial = function(material) { //？？
-		let storage = new storageModel();
-		storage.amount = material.count;
-		this.TotalAmount = this.TotalAmount + material.count; //总数相加
-		this.storages.push(storage)
-		return {
-			"success": true,
-			"message": "新增成功"
-		}
-	}
-	//增加入库操作
-	this.addStorage = function(storage) {
-		this.storages[this.storages.length - 1].id = storage. id;
-		this.storages[this.storages.length - 1].code = storage.code;
-		this.storages[this.storages.length - 1].codeid = storage.codeid;
-	}
-	this.init(option);
-}
-
-
 const inlibraryModel = {
-	material: materialModel,
-	storage: storageModel,
-	materialStorage: materialStorageModel,
-	materialStorages: [],
-	waitInlibrarymaterial: {
-		code: 36,
-		index: 0
-	}, //当前等待入库的物料
-	//新增物料入库模型对象
-	addNew: function(data) {
-		this.materialStorages.push(new this.materialStorage(data));
-		this.waitInlibrarymaterial = {
-			code: data.code,
-			index: this.materialStorages.length - 1
+	id:"",//物料ID
+	code:"",//物料code
+	codeid:"",//物料codeid
+	totalAmount:0,//总货物
+	goods:[],//物料入库货物
+	storage:null,
+	//设置物料信息
+	setMateriaInfo: function(data) {
+		if(!data||!data.id||data.id==""){
+			return false;
 		}
-	},
-	//叠加物料
-	addMaterial: function(index, data) {
-
-		this.materialStorages[index].addMaterial(data)
-		this.waitInlibrarymaterial = {
-			code: data.code,
-			index: index
-		}
+		this.id=data.id;
+		this.code=data.code;
+		this.codeid=data.codeid;
+		this.totalAmount=this.totalAmount+data.count;
+		this.goods.push(data.count);
+		return true;
 	},
 	//物料入库
 	addStorage: function(data) {
-		console.log('123' + this.materialStorages.length);
-		console.log('123' + this.waitInlibrarymaterial.index);
-		this.materialStorages[this.waitInlibrarymaterial.index].addStorage(data); //
-		this.waitInlibrarymaterial = null;
+		if(!data||!data.id||data.id==""){
+			return false;
+		}
+		this.storage=new storageModel();
+		this.storage.id=data.id;
+		this.storage.code=data.code;
+		this.storage.codeid=data.codeid;
+		return true;
 	},
-	generateModel:function(){
-		if(this.materialStorages.length>0){
-			return {
-			"MNumber": this.materialStorages[0].code,
-			"Quan": this.materialStorages[0].TotalAmount,
-			"LocalID": this.materialStorages[0].storages[0].codeid,
-		};
-		}
-		else{
-			return null;
-		}
+	//生成提交入库model
+	generateModel(){
+		var model=new Object();
+		model.MNumber=this.codeid;
+		model.Quan=this.totalAmount;
+		model.LocalID=this.storage.codeid;
+		return model;
 	}
-
 };
-//到处对象
+//导出对象
 export default inlibraryModel;

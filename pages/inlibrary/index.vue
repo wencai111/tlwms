@@ -2,33 +2,35 @@
 	<view class="content">
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
-			<button type="primary" v-bind:disabled="currentSteps > 1" v-on:click="scanCode">
-				<text>{{ btnMessage }}</text>
+			<button type="primary" v-bind:disabled="currentSteps>1" v-on:click="scanMaterial">
+				<text>扫码物料码</text>
 			</button>
-			<view v-if="materials.materialStorages.length > 0">
-				<view class="uni-card" v-for="(parent, index_) in materials.inlibraryModels" v-bind:key="parent.id">
+			<button type="primary" v-bind:disabled="currentSteps != 1" v-on:click="scanWarehouse">
+				<text>扫码库位码</text>
+			</button>
+			<view v-if="material.id.length > 0"> 
+				<view class="uni-card">
 					<view class="uni-card__header">
-						<view class="uni-card__header-title-text">{{parent.code}}</view>
-						<view class="uni-card__header-extra-text">{{parent.TotalAmount}}</view>
+						<view class="uni-card__header-title-text">{{material.code}}</view>
+						<view class="uni-card__header-extra-text">{{material.totalAmount}}</view>
 					</view>
 					<view class="uni-card__content uni-card__content--pd">
-						<view v-for="child in parent.storage" v-bind:key="child.id" class="wxc-list">
-							<view class="wxc-list-title-text">{{child.id==''?'正在等待入库':'已对应货架'}}
-								<text style="color: #0FAEFF;margin-left: 4px;">{{child.code}}</text>
+						<view v-for="item in material.goods" v-bind:key="item" class="wxc-list">
+							<view class="wxc-list-title-text">{{material.storage==null?'正在等待库位码，可继续物料':'已对应货架'}}
+								<text style="color: #0FAEFF;margin-left: 4px;" v-if="material.storage!=null">{{material.storage.code}}</text>
 							</view>
-							<view class="wxc-list-extra-text">{{child.amount}}</view>
+							<view class="wxc-list-extra-text">{{item}}</view>
 						</view>
 					</view>
-					<view class="uni-card__footer">物料入库:{{parent.id}}</view>
+					<view class="uni-card__footer">紧急入库:{{material.code}}<text v-if="material.storage!=null">{{material.storage.code}}</text></view>
 				</view>
 			</view>
-			<button type="primary"  v-bind:disabled="!Sweeplocations" @click="Sweeplocation" v-on:click="scanCode">
-				扫库位码
-			</button>
 			<button type="primary" v-bind:disabled="!sureInlibrarys" @click="sureInlibrary">
 				确认入库
 			</button>
-						<button type="primary" @click="logMessage">浏览器打印值</button>
+			<!-- <button type="primary"  @click="logMessage">
+				浏览器打印
+			</button> -->
 		</view>
 	</view>
 </template>
@@ -62,11 +64,8 @@
 	export default {
 		data() {
 			return {
-				testData:["{id:'1',code:'1001030001-B12A',codeid:'1',count:12}", "{'K','B1','1'}"],
-				testIndex: 0,
-				//非测试数据
-				materials: inlibraryModel,
-				products: [],
+				testIndex:0,//测试使用
+				material: inlibraryModel,
 				currentSteps: 0, //当前执行步骤，
 				steps: [{
 						title: '扫物料码'
@@ -77,9 +76,7 @@
 					{
 						title: '入库完成'
 					}
-				],
-				MNumber: '',
-				LocalID: ''
+				]
 			};
 		},
 		components: {
@@ -91,160 +88,38 @@
 		computed: {
 			...mapState(['forcedLogin', 'hasLogin', 'userName']),
 			sureInlibrarys() {
-				console.log('isCanInlibrary' + this.$data.currentSteps)
-				if (this.$data.currentSteps == 2) {
+				if (this.currentSteps == 2) {
 					return true;
 				} else {
 					return false;
 				}
-			},
-			Sweeplocations() {
-				console.log('isCanInlibrary' + this.$data.currentSteps)
-				if (this.$data.currentSteps == 1) {
-				  return true;
-				}
-			      else {
-					return false;
-				}
-			},
-			btnMessage() {
-				console.log("1232")
-				if (this.$data.currentSteps == 0) {
-					return '扫描物料码';
-				} else if (this.$data.currentSteps == 1) {
-					return '继续扫描物料码';
-				} else if (this.$data.currentSteps == 2) {
-					return '继续扫描物料码';
-					console.log(入库码);
-				} else if (this.$data.currentSteps > 2) {
-					return '已经完成入库操作';
-				}
 			}
-
 		},
 		methods: {
-			scanCode: function() {
-				var _this = this;
-				//测试使用
-				console.log("123314"+this.testIndex);
-				console.log("123314"+this.testData)
-								if (this.testIndex < this.testData.length) {
-									console.log("123314")
-									if (this.testIndex % 2 == 0) {
-										_this.scanMaterial(this.testData[this.testIndex]);
-										this.testIndex++;
-									} else {
-										_this.scanWarehouse(this.testData[this.testIndex]);
-										this.testIndex++;
-									}
-								} else {}
-								return;
-				//非测试使用
-				uni.scanCode({
-					onlyFromCamera: true,
-					success: function(res) {
-						console.log('扫码输出内容：' + JSON.stringify(res));
-						if (res && res.result) {
-							if (_this.$data.currentSteps == 0) {
-								_this.scanMaterial(res.result);
-							} else if (_this.$data.currentSteps == 1) {
-								_this.scanMaterial(res.result);
-							} 
-							else if (_this.$data.currentSteps == 2) {
-								_this.scanWarehouse(res.result);
-							}
-						} else {}
-					}
-				});
-			},
+			//扫描物料码
 			scanMaterial: function(res) {
-				debugger;
-				this.$data.currentSteps = 1;
-				console.log('开始处理物料码' + JSON.stringify(res));
-				var result = parseForRule(res);
-				console.log('result' + JSON.stringify(result));
-				console.log('result.code' + JSON.stringify(result.code));
-				if (result.code) {
-					if (this.materials.materialStorages.length <= 0) {
-						console.log('首次新增物料入库模型对象');
-						 this.materials.addNew(result);
-					} else {
-						let flag = true;
-						for (var i = 0; i < this.materials.materialStorages.length; i++) {
-							if (this.materials.materialStorages[i].code == result.code) {
-								this.materials.addMaterial(i, result);
-								console.log('物料相加成功！');
-								flag = true;
-								return;
-							}
-						}
-						if (flag) {
-							this.materials.addStorage(result);
-						}
-					}
-					this.MNumber = result.code;
-					console.log('scanMaterial：打印最后的结果：' + JSON.stringify(this.materials));
-				}
+					var result={id:'W',code:'1001030001-B12',codeid:'1',count:12+this.testIndex};
+					this.material.setMateriaInfo(result)
+					this.testIndex++;
+					this.currentSteps=1;
 			},
-			
-			Sweeplocation: function(res){
-				this.$data.currentSteps = 2;
-			},
+			//扫描库位码
 			scanWarehouse: function(res) {
-				console.log('开始处理入库码：' + JSON.stringify(res));
-				var _this = this;
-			    var storage = parseWarehouseCode(res);
-				this.LocalID=storage.codeid;
-				console.log("checkLocal入参MNumber："+this.MNumber);
-				console.log("checkLocal入参LocalID："+this.LocalID)
-				checkLocal(this.MNumber, this.LocalID).then(data => {
-					console.log('接口：开始检查库位');
-					var [error, res] = data;
-					console.log('res:' + JSON.stringify(res));
-					console.log('error:' + JSON.stringify(error));
-					var result = parseForRule(res.data);
-					if (result.success) {
-						_this.materials.addStorage(storage);
-						// this.currentSteps = 2;
-						console.log('scanMaterial：打印最后的结果：' + JSON.parse(_this.materials));
-					} else {
-						uni.showToast({
-							icon: 'id',
-							title: result.ResponseText
-						});
-					}
-				});
-				console.log('scanMaterial：打印最后的结果：' + JSON.stringify(this.materials));
+				debugger;
+				var result={id:'K',code:'A2-6层-06',codeid:'1934'};
+				this.material.addStorage(result)
+				this.currentSteps=2;
+				
 			},
 			//确定入库
 			sureInlibrary: function(res) {
-				console.log("入参："+JSON.stringify(this.materials.generateModel()));
-				saveEmergentInInfo(this.materials.generateModel()).then(data => {
-					var [error, res] = data;
-					console.log("res:"+JSON.stringify(res))
-					var result = parseForRule(res.data);
-					console.log("result:"+JSON.stringify(result))
-					if (result.success) {
-						this.$data.currentSteps = 3;
-						uni.showToast({
-							icon: 'success',
-							title: result.ResponseText,
-						});
-					} else {
-						this.$data.currentSteps = 1;
-						uni.showToast({
-							icon: 'fail',
-							title: result.ResponseText,
-						});
-					}
-				})
 			},
-			logMessage: function() {
-				console.log(123);
-			}
+				logMessage:function(){
+				debugger;
+			},
 		},
+	
 		onLoad() {
-			console.log('登录状态：' + this.hasLogin);
 			authAccount(this.hasLogin, this.forcedLogin, this.userName);
 		}
 	};
@@ -256,6 +131,9 @@
 		float: right;
 	}
 
+     button{
+		 margin-top: 10px;
+	 }
 	.bank {
 		width: auto;
 		height: 100%;
