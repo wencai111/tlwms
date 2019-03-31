@@ -20,9 +20,9 @@ export const exchangeStorage = (LocalID,MNumber,Quan) => {
 /**
 用于主机厂不良品到仓储中心调换良品的过程，对良品进行的换货出库的操作
 */
-export const exchangeAppear = (LocalID) => {
+export const exchangeAppear = (LocalID,MNumber,Quan) => {
 	return uni.request({
-		url: domian + 'common/wms_Server_Data.asp?action= SaveExchangeOutInfo',
+		url: domian + 'common/wms_Server_Data.asp?action=SaveExchangeOutInfo',
 		type: "POST",
 		dataType: "JSON",
 		data: {
