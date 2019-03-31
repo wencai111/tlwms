@@ -1,4 +1,4 @@
-function outboundModel() {
+function servaceModel() {
 	this.code = "";//物料名称
 	this.TotalAmount = 0;//物料总数
 	this.goods = [];//物料个数
@@ -12,18 +12,15 @@ function outboundModel() {
 			this.codeid = data.codeid;//物料ID
 	};
 	//物料相加
-	this.addGoods = function(number) {
-		debugger;
-        this.goods.push(number);//物料个数
-		this.TotalAmount = this.TotalAmount + number; //总数相加
+	this.addGoods = function(data) {
+        this.goods.push(data.count);//物料个数
+		this.TotalAmount = this.TotalAmount + data.count; //总数相加
 	}
 	this.setInlibrary=function(name){
 		this.id=name.id;
 	}
-	this.modifierNumber = function(index,number){
-		this.TotalAmount =this.TotalAmount+ (parseInt(number)-this.goods[index]) ;//物料总数
-		this.goods[index]=parseInt(number);
-	}
-}	
-const outboundModels = new outboundModel();
-export default outboundModels;
+}
+
+	
+const servaceModels = new servaceModel();
+export default servaceModels;

@@ -48,7 +48,7 @@
 					{
 						image: '/static/img/transfer.png',
 						text: '维修',
-						url: '../service/index'
+						url: '../service/inway'
 					},
 
 					{
