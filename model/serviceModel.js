@@ -19,6 +19,10 @@ function servaceModel() {
 	this.setInlibrary=function(name){
 		this.id=name.id;
 	}
+	    this.modifierNumber = function(index,number){
+		this.TotalAmount =this.TotalAmount+ (parseInt(number)-this.goods[index]) ;//物料总数
+		this.goods[index]=parseInt(number);
+	}
 }
 
 	

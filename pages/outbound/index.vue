@@ -9,7 +9,7 @@
 			<view class="uni-card__content uni-card__content--pd">
 				<view class="wxc-list" v-for="(item,index) in outbound.goods" v-bind:key="index">
 					<view class="wxc-list-title-text">
-						<!-- <text style="color: #0FAEFF;margin-left: 4px;">{{item.id==''?'请扫库位码':'已对应库位码'}}</text> -->
+						<text style="color: #0FAEFF;margin-left: 4px;">请继续扫码</text>
 					</view>
 					<view class="wxc-list-extra-text">{{item}}</view>
 					<button type="button" @click="modification(index)">修改</button>
@@ -17,18 +17,18 @@
 			</view>
 			<view class="uni-card__footer">物料名字:{{outbound.codeid}}</view>
 			<view class="uni-card__footer">货架名字:{{outbound.id}}</view>
-			<button type="primary" @click="sureInlibrary" v-bind:disabled="!sureInlibrarys">
-				确认出货
-			</button>
 			<button type="primary" @click="scanMaterial" v-bind:disabled="!scanMaterials">
 				扫物料良品
 			</button>
 			<button type="primary" @click="Sweeplocation" v-bind:disabled="!Sweeplocations">
 				扫入库
 			</button>
-			<neil-modal :show="show" title="修改提示" @confirm="modifierNumber('modifierNumber')" >
+			<button type="primary" @click="sureInlibrary" v-bind:disabled="!sureInlibrarys">
+				确认出货
+			</button>
+			<neil-modal :show="show" title="修改提示" @confirm="modifierNumber('modifierNumber')">
 				<view style="min-height: 90upx;padding: 32upx 24upx;">
-					<view style="text-align: center;">请输入个数<input type="number" v-model="currentNumber" placeholder="输入个数...."/></view>
+					<view style="text-align: center;">请输入个数<input type="number" step="0.0000000001" v-enter-number v-model="currentNumber" placeholder="输入个数...." /></view>
 				</view>
 			</neil-modal>
 		</view>
@@ -48,13 +48,15 @@
 	import {
 		parseForRule
 	} from '@/libs/util.js';
+	import {
+		exchangeAppear
+	} from '@/api/exchange.js'
 	import
 	outboundModels
 	from '@/model/outboundModel.js'
 	export default {
 		data() {
 			return {
-				// testData: ["{id:'1',code:'1001030001-B12A',codeid:'1',count:12}", "{'K','B1','1'}"],
 				steps: [{
 						title: '扫良品'
 					},
@@ -69,8 +71,11 @@
 				index: 0,
 				outbound: outboundModels,
 				show: false,
-				currentNumber: 12,//当前需要货物需要修改的数量
-				currentIndex:0//当前需要修改数量的货物索引
+				currentNumber: 12, //当前需要货物需要修改的数量
+				currentIndex: 0, //当前需要修改数量的货物索引
+				LocalID: '',
+				Quan: '',
+				MNumber: ''
 			}
 		},
 		components: {
@@ -109,39 +114,89 @@
 		},
 		methods: {
 			modification(index) {
-				this.currentIndex=index;
+				this.currentIndex = index;
 				this.show = true;
 			},
-			sureInlibrary() {
-				this.$data.currentSteps = 3;
-				console.log("123456");
-			},
-			scanMaterial() {
+			scanMaterial(res) {
 				if (this.index == 0) {
-					this.$data.currentSteps = 1;
-					this.outbound.setMaterial({
-						id: '1',
-						code: '1001030001-B12A',
-						codeid: '1',
-						count: 12
+					var _this = this;
+					console.log('this定义：' + _this);
+					uni.scanCode({
+						onlyFromCamera: true,
+						success: function(res) {
+							var result = parseForRule(res.result);
+							console.log("res.result" + JSON.stringify(res.result))
+							if (result) {
+								_this.outbound.setMaterial(result);
+								_this.index = _this.index + 1;
+								_this.currentSteps = 1;
+							}
+						},
 					});
-					this.index = this.index + 1;
 				} else {
-					this.outbound.addGoods(24);
+					var _this = this;
+					uni.scanCode({
+						onlyFromCamera: true,
+						success: function(res) {
+							console.log('扫码输出内容：' + JSON.stringify(res));
+							var result = parseForRule(res.result);
+							console.log('扫码输出内容：' + JSON.stringify(res.result));
+							if (result) {
+								console.log('输出内容：' + JSON.stringify(result));
+								_this.outbound.addGoods(result);
+								_this.currentSteps = 1;
+							}
+						},
+					})
 				}
 			},
-			Sweeplocation() {
-				this.$data.currentSteps = 2;
-				this.outbound.setInlibrary({
-					id: 'K',
-					code: 'B1',
-					codeid: '1'
+			Sweeplocation(res) {
+				var _this = this;
+				console.log("this" + this);
+				uni.scanCode({
+					onlyFromCamera: true,
+					success: function(res) {
+						console.log('扫码输出内容：' + JSON.stringify(res));
+						var result = parseForRule(res.result);
+						var storage = parseWarehouseCode(res.result);
+						console.log('扫货架名字内容：' + JSON.stringify(res.result));
+						if (result) {
+							_this.outbound.setInlibrary(storage);
+							_this.currentSteps = 2;
+						}
+					},
+				});
+			},
+			//确认入库
+			sureInlibrary: function() {
+				console.log("LocalID:" + this.LocalID)
+				exchangeAppear(this.LocalID, this.MNumber, this.Quan).then(data => {
+					var [error, res] = data;
+					console.log("data:" + JSON.stringify(data));
+					console.log("res:" + JSON.stringify(res));
+					var result = parseForRule(res.data);
+					var _this = this;
+					console.log(result);
+					if (result.success) {
+						console.log(result);
+						_this.currentSteps = 3;
+						uni.showToast({
+							icon: 'success',
+							title: result.ResponseText
+						});
+					} else {
+						_this.currentSteps = 1;
+						uni.showToast({
+							icon: 'fail',
+							title: result.ResponseText
+						});
+					}
 				});
 			},
 			modifierNumber(ref) {
 				debugger;
-				this.outbound.modifierNumber(this.currentIndex,this.currentNumber);
-				this.show=false;
+				this.outbound.modifierNumber(this.currentIndex, this.currentNumber);
+				this.show = false;
 			}
 		},
 	}

@@ -29,7 +29,7 @@
 			</button>
 			<neil-modal :show="show" title="修改提示" @confirm="modifierNumber('modifierNumber')">
 				<view style="min-height: 90upx;padding: 32upx 24upx;">
-					<view style="text-align: center;">请输入个数<input type="number" v-model="inputNumber" placeholder="输入个数...." /></view>
+					<view style="text-align: center;">请输入个数<input type="number" step="0.0000000001" v-enter-number v-model="currentNumber" placeholder="输入个数...." /></view>
 				</view>
 			</neil-modal>
 		</view>
@@ -146,6 +146,7 @@
 							var result = parseForRule(res.result);
 							console.log('扫码输出内容：' + JSON.stringify(res.result));
 							if (result) {
+								console.log('输出内容：' + JSON.stringify(result));
 								_this.exchange.addGoods(result);
 								_this.currentSteps = 1;
 							}
