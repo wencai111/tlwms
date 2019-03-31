@@ -10,14 +10,15 @@
 			<view class="uni-card__content uni-card__content--pd">
 				<view class="wxc-list" v-for="(item,index) in exchange.goods" v-bind:key="index">
 					<view class="wxc-list-title-text">
-						<text style="color: #0FAEFF;margin-left: 4px;">请继续扫码</text>
+						<text style="color: #0FAEFF;margin-left: 4px;">{{exchange.storage==null?'请扫库位码':'已对应库位码'}}</text>
 					</view>
 					<view class="wxc-list-extra-text">{{item}}</view>
-					<button type="button" @click="modification(index)">修改</button>
+				<!-- 	<button type="button" @click="modification(index)">修改</button> -->
+					<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="modification(index)">修改</span>
 				</view>
 			</view>
 			<view class="uni-card__footer">物料名字:{{exchange.code}}</view>
-			<view class="uni-card__footer">货架名字:{{exchange.id}}</view>
+			<view class="uni-card__footer" v-if="exchange.storage!=null">货架名字:{{exchange.storage.code}}</view>
 			<button type="primary" @click="scanMaterial" v-bind:disabled="!scanMaterials">
 				扫物料
 			</button>
@@ -161,10 +162,9 @@
 					onlyFromCamera: true,
 					success: function(res) {
 						console.log('扫码输出内容：' + JSON.stringify(res));
-						var result = parseForRule(res.result);
 						var storage = parseWarehouseCode(res.result);
 						console.log('扫货架名字内容：' + JSON.stringify(res.result));
-						if (result) {
+						if (storage) {
 							_this.exchange.setInlibrary(storage);
 							_this.currentSteps = 2;
 						}
