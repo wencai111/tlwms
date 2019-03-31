@@ -1,114 +1,55 @@
 /**
- *拣货单模型对象
- *案例：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
- */
-// "{TlJpdID:'5',OperBillNum:'MDB2019217-3',BillNum:'PGC2019221-16795',MNumber:'1001040002-B12',MName:'后悬置支架总成',OutPackage:'12',Qty:'24'}",
-function pickModel(option) {
-	debugger;
-	this.TlJpdID = "";
-	this.OperBillNum = "";
-	this.BillNum = "";
-	this.MNumber = "";
-	this.MName = "";
-	this.OutPackage = "";
-	this.Qty = "";
-	this.init = function(option) { //构造一个函数实例
-		debugger;
-		if (option.TlJpdID || option.TlJpdID != "") {
-			this.TlJpdID = option.TlJpdID;
-		}
-		if (option.OperBillNum || option.OperBillNum != "") {
-			this.OperBillNum = option.OperBillNum;
-		}
-		if (option.BillNum || option.BillNum != "") {
-			this.BillNum = option.BillNum;
-		}
-		if (option.MNumber || option.MNumber != "") {
-			this.MNumber = option.MNumber;
-		}
-		if (option.MName || option.MName != "") {
-			this.MName = option.MName;
-		}
-		if (option.OutPackage || option.OutPackage != "") {
-			this.OutPackage = option.OutPackage;
-		}
-		if (option.Qty || option.Qty != "") {
-			this.Qty = option.Qty;
-		}
-		this.amount = 0;
-	}
-    if(option){
-		this.init(option);
-	}
-}
-/**
  *货架模型对象
- *案例：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
+ *案例：{'K':'A2-6层-06','1934','1'}
  */
-function storageModel(option) {
+function storageModel() {
 	this.id = "";
 	this.code = "";
 	this.codeid = '';
-	this.amount = 0;
-	this.init = function(option) { //构造一个函数实例
-		if (option.id || option.id != "") {
-			this.id = option.id;
-		}
-		if (option.code || option.code != "") {
-			this.code = option.code;
-		}
-		if (option.codeid || option.codeid != "") {
-			this.codeid = option.codeid;
-		}
-		this.amount = 0;
-	}
-	if(option){
-		this.init(option);
-	}
 }
-
 /**
- *拣货入库模型对象
- *案例：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
+ *紧急出库模型对象
+ *物料数据：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
+ *库位数据：{id:'K',code:'A2-6层-06',codeid:'1934'}
  */
-function pickStorageModel(option) {
-	this.pick = new pickModel(option);
-	this.storage = new storageModel();
-	this.finishPick = false; //是否拣货完成
-	//增加拣货
-	this.addStorage = function(storage) {
-		this.storage.id = storage.id;
-		this.storage.code = storage.code;
-		this.storage.codeid = storage.codeid;
-	}
-}
-
 const outlibraryModel = {
-	pick: pickModel,
-	storage: storageModel,
-	pickStorage: pickStorageModel,
-	pickStorages: [],
-	waitOutlibraryPick: {
-		code: 36,
-		index: 0
-	}, //当前等待入库的物料
-	//新增物料入库模型对象
-	addNew: function(data) {
-		debugger;
-		this.pickStorages.push(new this.pickStorage(data));
-		this.waitOutlibraryPick = {
-			code: data.code,
-			index: this.pickStorages.length - 1
+	id:"",//物料ID
+	code:"",//物料code
+	codeid:"",//物料codeid
+	totalAmount:0,//总货物
+	goods:[],//物料入库货物
+	storage:null,
+	//设置物料信息
+	setMateriaInfo: function(data) {
+		if(!data||!data.id||data.id==""){
+			return false;
 		}
+		this.id=data.id;
+		this.code=data.code;
+		this.codeid=data.codeid;
+		this.totalAmount=this.totalAmount+data.count;
+		this.goods.push(data.count);
+		return true;
 	},
-    // 入库
+	//物料入库
 	addStorage: function(data) {
-		debugger
-		console.log('123' + this.pickStorages.length);
-		console.log('123' + this.waitOutlibraryPick.index);
-		this.pickStorages[this.waitOutlibraryPick.index].addStorage(data); //
-		this.waitOutlibraryPick = null;
+		if(!data||!data.id||data.id==""){
+			return false;
+		}
+		this.storage=new storageModel();
+		this.storage.id=data.id;
+		this.storage.code=data.code;
+		this.storage.codeid=data.codeid;
+		return true;
+	},
+	//生成提交入库model
+	generateModel(){
+		var model=new Object();
+		model.MNumber=this.codeid;
+		model.Quan=this.totalAmount;
+		model.LocalID=this.storage.codeid;
+		return model;
 	}
 };
-//到处对象
+//导出对象
 export default outlibraryModel;

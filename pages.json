@@ -59,6 +59,18 @@
 		{
 			"path": "pages/outlibrary/index",
 			"style": {
+				"navigationBarTitleText": "紧急出库"
+			}
+		},
+		{
+			"path": "pages/outlibrary/index1",
+			"style": {
+				"navigationBarTitleText": "拣货码出库"
+			}
+		},
+		{
+			"path": "pages/outlibrary/index",
+			"style": {
 				"navigationBarTitleText": "拣货单"
 			}
 		},
