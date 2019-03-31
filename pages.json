@@ -20,6 +20,19 @@
 			}
 		},
 		{
+			"path": "pages/query/way",
+			"style": {
+				"navigationBarTitleText": "查询方式"
+			}
+		},
+		{
+			"path": "pages/query/index",
+			"style": {
+				"navigationBarTitleText": "查询"
+			}
+		},
+		
+		{
 			"path": "pages/inlibrary/inway",
 			"style": {
 				"navigationBarTitleText": "入库方式"
