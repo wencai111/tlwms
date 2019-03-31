@@ -35,23 +35,23 @@
 					<button type="default" @click="cancle">取消</button>
 				</view>
 			</view>
-            <view v-show="isShowData">
-				<view v-for="item in data" v-bind:key="item.NowQuanId">
-					<view>
-						<view>{{item.LocalName}}</view>
-						<view>{{item.RegionName}}</view>
+			<view v-show="isShowData" class="wxc-card">
+				<view class="wxc-card_list" v-for="item in data" v-bind:key="item.NowQuanId">
+					<view class="wxc-card_list_header">
+						<view class="wxc-card_list_header_title">{{ item.LocalName }}</view>
+						<view class="wxc-card_list_header_extra">{{ item.RegionName }}</view>
 					</view>
-					<view>
-						<view>{{item.InPackage}}</view>
-						<view>{{item.OutPackage}}</view>
-						<view>{{item.EndQuan }}</view>
+					<view class="wxc-card_list_content">
+						<view class="wxc-card_list_content_text">入:{{ item.InPackage }}</view>
+						<view class="wxc-card_list_content_text">出:{{ item.OutPackage }}</view>
+						<view class="wxc-card_list_content_text">库存:{{ item.EndQuan }}</view>
 					</view>
 				</view>
 				<view>
-					<view v-show="!isNext" style="text-align: center;" >没有更多数据</view>
-					<button type="primary" v-show="isNext" @click="goMore" >加载更多</button>
+					<view v-show="!isNext" style="text-align: center;">没有更多数据</view>
+					<button type="primary" v-show="isNext" @click="goMore">加载更多</button>
 				</view>
-			</view>		
+			</view>
 		</view>
 	</view>
 </template>
@@ -65,34 +65,32 @@ export default {
 			MNumber: '',
 			pageIndex: 0,
 			pageSize: 20,
-			sortField: "InDate",
-			sortOrder: "asc",
+			sortField: 'InDate',
+			sortOrder: 'asc',
 			total: 11,
-			totalPages:0,
-			isShowData:false,
-			data:[]
+			totalPages: 0,
+			isShowData: false,
+			data: []
 		};
 	},
 	computed: {
 		...mapState(['forcedLogin', 'hasLogin', 'userName']),
-		isNext(){
-			if(this.total>this.data.length){
+		isNext() {
+			if (this.total > this.data.length) {
 				return true;
-			}
-			else{
+			} else {
 				return false;
 			}
 		}
 	},
 	created: function() {
 		if (this.$route.query && this.$route.query.code) {
-			debugger;
 			this.MNumber = this.$route.query.code;
 		}
 	},
 	methods: {
 		sureQuery: function() {
-			var result= [
+			var result = [
 				{
 					NowQuanId: '17',
 					RegionID: '1',
@@ -172,16 +170,16 @@ export default {
 					PalletFlag: ''
 				}
 			];
-			for(let item of result){
+			for (let item of result) {
 				this.data.push(item);
 			}
-			this.isShowData=true;
+			this.isShowData = true;
 		},
-		cancle:function(){
+		cancle: function() {
 			uni.navigateBack();
 		},
-		goMore:function(){
-			var result= [
+		goMore: function() {
+			var result = [
 				{
 					NowQuanId: '17',
 					RegionID: '1',
@@ -261,10 +259,10 @@ export default {
 					PalletFlag: ''
 				}
 			];
-			for(let item of result){
+			for (let item of result) {
 				this.data.push(item);
 			}
-			this.isShowData=true;
+			this.isShowData = true;
 		}
 	},
 	onLoad() {
@@ -273,8 +271,50 @@ export default {
 };
 </script>
 
-<style>
-.uni-btn > button {
-	margin-top: 12px;
+<style lang="scss">
+.wxc-card {
+	margin: $uni-spacing-col-base;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+
+	&_list {
+		background: $uni-bg-color;
+		margin-bottom: $uni-spacing-col-base;
+		
+		
+		&_header {
+			position: relative;
+			display: flex;
+			flex-direction: row;
+			padding: $uni-spacing-col-base;
+			align-items: left;
+		}
+
+		&_header {
+			&_title {
+				margin-right: $uni-spacing-col-base;
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				align-items: center;
+				font-size: $uni-font-size-lg;
+			}
+			&_extra {
+			}
+		}
+
+		&_content {
+			position: relative;
+			display: flex;
+			flex-direction: row;
+			padding: 0 $uni-spacing-col-base;
+			align-items: left;
+			&_text {
+				font-weight: 100;
+				padding: $uni-spacing-col-base;
+			}
+		}
+	}
 }
 </style>

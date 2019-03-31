@@ -243,7 +243,6 @@
 			padding-top: 0;
 		}
 	}
-
 	.wxc-list {
 		position: relative;
 		display: flex;
