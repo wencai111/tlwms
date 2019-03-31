@@ -13,10 +13,13 @@
 </script>
 
 <style>
+	@import './uni.css';
     /*每个页面公共css */
     /* uni-app默认全局使用flex布局。因为flex布局有利于跨更多平台，尤其是采用原生渲染的平台。如不了解flex布局，请参考http://www.w3.org/TR/css3-flexbox/。如不使用flex布局，请删除或注释掉本行。*/
     body,
     page {
+		background-color: #F4F5F6;
+		font-size: 28upx;
         min-height: 100%;
         display: flex;
     }
@@ -29,86 +32,10 @@
         padding: 20upx;
     }
 
-    .input-group {
-        background-color: #ffffff;
-        margin-top: 40upx;
-        position: relative;
-    }
-
-    .input-group::before {
-        position: absolute;
-        right: 0;
-        top: 0;
-        left: 0;
-        height: 1upx;
-        content: '';
-        -webkit-transform: scaleY(.5);
-        transform: scaleY(.5);
-        background-color: #c8c7cc;
-    }
-
-    .input-group::after {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        height: 1upx;
-        content: '';
-        -webkit-transform: scaleY(.5);
-        transform: scaleY(.5);
-        background-color: #c8c7cc;
-    }
-
-    .input-row {
-        display: flex;
-        flex-direction: row;
-        position: relative;
-    }
-
-    .input-row .title {
-        width: 20%;
-        height: 50upx;
-        min-height: 50upx;
-        padding: 15upx 0;
-        padding-left: 30upx;
-        line-height: 50upx;
-    }
-
-    .input-row.border::after {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        left: 15upx;
-        height: 1upx;
-        content: '';
-        -webkit-transform: scaleY(.5);
-        transform: scaleY(.5);
-        background-color: #c8c7cc;
-    }
-
     .btn-row {
         margin-top: 50upx;
         padding: 20upx;
     }
 
-    button.primary {
-        background-color: #0faeff;
-    }
-	
-	.example{
-        padding: 0 30upx 30upx;
-    }
-	.example-title {
-		font-size: 32upx;
-        line-height: 32upx;
-		color: #777;
-		margin: 40upx 25upx;
-        position: relative;
-	}
-    .example .example-title{
-        margin: 40upx 0;
-    }
-    .example-body{
-        padding: 0 40upx;
-    }
+   
 </style>
