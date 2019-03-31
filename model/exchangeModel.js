@@ -12,9 +12,9 @@ function exchangeModel() {
 			this.codeid = data.codeid;//物料ID
 	};
 	//物料相加
-	this.addGoods = function(data) {
-        this.goods.push(data.count);//物料个数
-		this.TotalAmount = this.TotalAmount + data.count; //总数相加
+	this.addGoods = function(number) {
+        this.goods.push(number);//物料个数
+		this.TotalAmount = this.TotalAmount + number; //总数相加
 	}
 	this.setInlibrary=function(name){
 		this.id=name.id;

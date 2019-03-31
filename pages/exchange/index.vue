@@ -10,30 +10,29 @@
 			<view class="uni-card__content uni-card__content--pd">
 				<view class="wxc-list" v-for="(item,index) in exchange.goods" v-bind:key="index">
 					<view class="wxc-list-title-text">
-						<text style="color: #0FAEFF;margin-left: 4px;">等待入库</text>
+						<text style="color: #0FAEFF;margin-left: 4px;">请继续扫码</text>
 					</view>
 					<view class="wxc-list-extra-text">{{item}}</view>
 					<button type="button" @click="modification(index)">修改</button>
 				</view>
 			</view>
-			<view class="uni-card__footer">物料名字:{{exchange.codeid}}</view>
+			<view class="uni-card__footer">物料名字:{{exchange.code}}</view>
 			<view class="uni-card__footer">货架名字:{{exchange.id}}</view>
-			<button type="primary" @click="sureInlibrary" v-bind:disabled="!sureInlibrarys">
-				确认退换
-			</button>
 			<button type="primary" @click="scanMaterial" v-bind:disabled="!scanMaterials">
 				扫物料
 			</button>
 			<button type="primary" @click="Sweeplocation" v-bind:disabled="!Sweeplocations">
 				扫入库
 			</button>
+			<button type="primary" @click="sureInlibrary" v-bind:disabled="!sureInlibrarys">
+				确认退换
+			</button>
+			<neil-modal :show="show" title="修改提示" @confirm="modifierNumber('modifierNumber')">
+				<view style="min-height: 90upx;padding: 32upx 24upx;">
+					<view style="text-align: center;">请输入个数<input type="number" v-model="inputNumber" placeholder="输入个数...." /></view>
+				</view>
+			</neil-modal>
 		</view>
-		</view>
-		<neil-modal :show="show"  title="修改提示" confirm-text="确定" cancel-text="取消"  @confirm="changeCount('1233')">
-			<view style="min-height: 90upx;padding: 32upx 24upx;">
-		        <view style="text-align: center;">请输入个数<input type="text" v-model="changeNumber" placeholder="输入个数...."/></view>
-			</view>
-		</neil-modal>
 	</view>
 </template>
 <script>
@@ -71,11 +70,15 @@
 					}
 				],
 				currentSteps: 0, //当前执行步骤，
+				currentIndex: 0, //当前需要修改数量的货物索引
 				index: 0,
-				changeNumber:12,
 				exchange: exchangeModels,
 				show: false,
-				inputNumber: 12
+				inputNumber: 12,
+				LocalID: '',
+				Quan: '',
+				MNumber: ''
+
 			}
 		},
 		components: {
@@ -87,24 +90,24 @@
 		},
 		computed: {
 			scanMaterials() {
-				console.log('isCanInlibrary' + this.$data.currentSteps)
-				if (this.$data.currentSteps == 2 || this.$data.currentSteps == 3) {
+				console.log('isCanInlibrary' + this.currentSteps)
+				if (this.currentSteps == 2 || this.currentSteps == 3) {
 					return false;
 				} else {
 					return true;
 				}
 			},
 			Sweeplocations() {
-				console.log('isCanInlibrary' + this.$data.currentSteps)
-				if (this.$data.currentSteps == 1) {
+				console.log('isCanInlibrary' + this.currentSteps)
+				if (this.currentSteps == 1) {
 					return true;
 				} else {
 					return false;
 				}
 			},
 			sureInlibrarys() {
-				console.log('isCanInlibrary' + this.$data.currentSteps)
-				if (this.$data.currentSteps == 2) {
+				console.log('isCanInlibrary' + this.currentSteps)
+				if (this.currentSteps == 2) {
 					return true;
 				} else {
 					return false;
@@ -112,7 +115,8 @@
 			},
 		},
 		methods: {
-			modification() {
+			modification(index) {
+				this.currentIndex = index;
 				console.log("2313246")
 				this.show = true;
 			},
@@ -124,13 +128,14 @@
 					uni.scanCode({
 						onlyFromCamera: true,
 						success: function(res) {
-							this.$data.currentSteps = 1;
 							var result = parseForRule(res.result);
+							console.log("res.result" + JSON.stringify(res.result))
 							if (result) {
 								_this.exchange.setMaterial(result);
 								_this.index = _this.index + 1;
+								_this.currentSteps = 1;
 							}
-						}
+						},
 					});
 				} else {
 					var _this = this;
@@ -141,30 +146,34 @@
 							var result = parseForRule(res.result);
 							console.log('扫码输出内容：' + JSON.stringify(res.result));
 							if (result) {
-								this.exchange.addGoods(result);
+								_this.exchange.addGoods(result);
+								_this.currentSteps = 1;
 							}
 						},
 					})
 				}
 			},
 			Sweeplocation: function(res) {
-				this.$data.currentSteps = 2;
 				var _this = this;
+				console.log("this" + this);
 				uni.scanCode({
 					onlyFromCamera: true,
 					success: function(res) {
 						console.log('扫码输出内容：' + JSON.stringify(res));
 						var result = parseForRule(res.result);
 						var storage = parseWarehouseCode(res.result);
+						console.log('扫货架名字内容：' + JSON.stringify(res.result));
 						if (result) {
-							this.exchange.setInlibrary(storage);
+							_this.exchange.setInlibrary(storage);
+							_this.currentSteps = 2;
 						}
-					}
+					},
 				});
 			},
+			//确认入库
 			sureInlibrary: function() {
 				console.log("LocalID:" + this.LocalID)
-				exchangeStorage(this.LocalID).then(data => {
+				exchangeStorage(this.LocalID, this.MNumber, this.Quan).then(data => {
 					var [error, res] = data;
 					console.log("data:" + JSON.stringify(data));
 					console.log("res:" + JSON.stringify(res));
@@ -173,12 +182,13 @@
 					console.log(result);
 					if (result.success) {
 						console.log(result);
-						this.$data.currentSteps = 3;
+						_this.currentSteps = 3;
 						uni.showToast({
 							icon: 'success',
 							title: result.ResponseText
 						});
 					} else {
+						_this.currentSteps = 1;
 						uni.showToast({
 							icon: 'fail',
 							title: result.ResponseText
@@ -189,8 +199,8 @@
 			modifierNumber(ref) {
 				debugger;
 				console.log(this.inputNumber)
-				this.outbound.modifierNumber(this.currentIndex,this.currentNumber);
-				this.show=false;
+				this.exchange.modifierNumber(this.currentIndex, this.inputNumber);
+				this.show = false;
 			}
 		},
 	}
@@ -297,9 +307,12 @@
 					@include text-omit;
 				}
 			}
+			&__content {
+			&--pd {
+				padding: $uni-spacing-col-base;
+			}
 		}
 
-		&__content {
 			&--pd {
 				padding: $uni-spacing-col-base;
 			}

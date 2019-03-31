@@ -26,13 +26,11 @@
 			<button type="primary" @click="Sweeplocation" v-bind:disabled="!Sweeplocations">
 				扫入库
 			</button>
-			<slot>
 			<neil-modal :show="show" title="修改提示" @confirm="modifierNumber('modifierNumber')" >
 				<view style="min-height: 90upx;padding: 32upx 24upx;">
 					<view style="text-align: center;">请输入个数<input type="number" v-model="currentNumber" placeholder="输入个数...."/></view>
 				</view>
 			</neil-modal>
-			</slot>
 		</view>
 	</view>
 </template>
