@@ -2,22 +2,30 @@
 	<view class="content">
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
+			<!-- <view class="uni-card"> -->
 			<view class="uni-card__header">
-				<view class="uni-card__header-title-text">{{maintain.code}}</view>
-				<view class="uni-card__header-extra-text">{{maintain.TotalAmount}}</view>
+				<view class="uni-card__header-title-text">{{returnwarehouse.code}}</view>
+				<view class="uni-card__header-extra-text">{{returnwarehouse.TotalAmount}}</view>
 			</view>
 			<view class="uni-card__content uni-card__content--pd">
-				<view class="wxc-list" v-for="(item,index) in maintain.goods" v-bind:key="index">
+				<view class="wxc-list" v-for="(item,index) in returnwarehouse.goods" v-bind:key="index">
 					<view class="wxc-list-title-text">
-						<text style="color: #0FAEFF;margin-left: 4px;" >{{maintain.storage==null?'请扫库位码':'已对应库位码'}}</text>
+						<text style="color: #0FAEFF;margin-left: 4px;">{{returnwarehouse.storage==null?'请扫库位码':'已对应库位码'}}</text>
 					</view>
 					<view class="wxc-list-extra-text">{{item}}</view>
-			<!-- 		<button type="button" style="font-size: 25upx;" @click="modification(index)">修改</button> -->
-			<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="modification(index)">修改</span>
+					<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="modification(index)">修改</span>
 				</view>
 			</view>
-			<view class="uni-card__footer">物料名字:{{maintain.codeid}}</view>
-			<view class="uni-card__footer" v-if="maintain.storage!=null">货架名字:{{maintain.storage.code}}</view>
+			<view class="uni-card__footer">物料名字:{{returnwarehouse.codeid}}</view>
+			<view class="uni-card__footer" v-if="returnwarehouse.storage!=null">货架名字:{{returnwarehouse.storage.code}}</view>
+			<view class="uni-form-item uni-column">
+				<radio-group name="radio"  @change="Reasons" v-model="Reason">
+					<label>
+						<radio value="线退"/>线退</label>
+					<label>
+						<radio value="检退" />检退</label>
+				</radio-group>
+			</view>
 			<button type="primary" @click="scanMaterial" v-bind:disabled="!scanMaterials">
 				扫良品
 			</button>
@@ -29,7 +37,7 @@
 			</button>
 			<neil-modal :show="show" title="修改提示" @confirm="modifierNumber('modifierNumber')">
 				<view style="min-height: 90upx;padding: 32upx 24upx;">
-					<view style="text-align: center;">请输入个数<input type="number" step="0.0000000001" v-enter-number v-model="inputNumber" placeholder="输入个数...." /></view>
+					<view style="text-align: center;">请输入个数<input type="number" step="0.0000000001" v-enter-number v-model="currentNumber" placeholder="输入个数...." /></view>
 				</view>
 			</neil-modal>
 		</view>
@@ -50,33 +58,35 @@
 		parseForRule
 	} from '@/libs/util.js';
 	import {
-		SaveStockOutByBadMate
-	} from '@/api/service.js';
+		SaveStockInForBad
+	} from '@/api/returnwarehouse.js';
 	import
-	maintainModels
-	from '@/model/maintainModel.js'
+	returnwarehouseModels
+	from '@/model/returnwarehouseModel.js'
 	export default {
 		data() {
 			return {
 				steps: [{
-						title: '扫不良品'
+						title: '扫物料'
 					},
 					{
 						title: '扫库位码'
 					},
 					{
-						title: '出库完成'
+						title: '退仓完成'
 					}
 				],
 				currentSteps: 0, //当前执行步骤，
 				currentIndex: 0, //当前需要修改数量的货物索引
 				index: 0,
-				maintain: maintainModels,
+				returnwarehouse: returnwarehouseModels,
 				show: false,
-				inputNumber: 0,
+				currentNumber: 12,
 				LocalID: '',
 				Quan: '',
-				MNumber: ''
+				MNumber: '',
+				current: 0,
+				Reason: '线退'
 			}
 		},
 		components: {
@@ -113,9 +123,12 @@
 			},
 		},
 		methods: {
+			Reasons() {
+		    debugger;
+			console.log("被选中的值为"+this.Reason);
+			},
 			modification(index) {
 				this.currentIndex = index;
-				console.log("2313246")
 				this.show = true;
 			},
 			scanMaterial() {
@@ -129,7 +142,7 @@
 							var result = parseForRule(res.result);
 							console.log("res.result" + JSON.stringify(res.result))
 							if (result) {
-								_this.maintain.setMaterial(result);
+								_this.returnwarehouse.setMaterial(result);
 								_this.index = _this.index + 1;
 								_this.currentSteps = 1;
 							}
@@ -145,7 +158,7 @@
 							console.log('扫码输出内容：' + JSON.stringify(res.result));
 							if (result) {
 								console.log('输出内容：' + JSON.stringify(result));
-								_this.maintain.addGoods(result);
+								_this.returnwarehouse.addGoods(result);
 								_this.currentSteps = 1;
 							}
 						},
@@ -160,18 +173,18 @@
 					success: function(res) {
 						console.log('扫码输出内容：' + JSON.stringify(res));
 						var storage = parseWarehouseCode(res.result);
-						console.log("storage:"+JSON.stringify(storage))
+						console.log('扫货架名字内容：' + JSON.stringify(res.result));
 						if (storage) {
-							console.log("_this.maintain.setInlibrary:"+_this.maintain.setInlibrary)
-							_this.maintain.setInlibrary(storage);
+							_this.returnwarehouse.setInlibrary(storage);
 							_this.currentSteps = 2;
 						}
 					},
 				});
 			},
 			sureInlibrary() {
-				console.log("LocalID:" + this.LocalID)
-				SaveStockOutByBadMate(this.LocalID, this.MNumber, this.Quan).then(data => {
+				debugger;
+				console.log( "this.Reason"+ this.Reason);
+				SaveStockInForBad(this.LocalID, this.MNumber, this.Quan, this.Reason).then(data => {
 					var [error, res] = data;
 					console.log("data:" + JSON.stringify(data));
 					console.log("res:" + JSON.stringify(res));
@@ -182,13 +195,13 @@
 						console.log(result);
 						_this.currentSteps = 3;
 						uni.showToast({
-							icon: 'success',
+							icon: 'none',
 							title: result.ResponseText
 						});
 					} else {
 						_this.currentSteps = 1;
 						uni.showToast({
-							icon: 'fail',
+							icon: 'none',
 							title: result.ResponseText
 						});
 					}
@@ -196,10 +209,9 @@
 			},
 			modifierNumber(ref) {
 				debugger;
-				console.log(this.inputNumber);
-				this.maintain.modifierNumber(this.currentIndex, this.inputNumber);
+				this.returnwarehouse.modifierNumber(this.currentIndex, this.currentNumber);
 				this.show = false;
-			}
+			},
 		},
 	}
 </script>
