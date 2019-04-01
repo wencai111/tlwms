@@ -21,10 +21,10 @@ export default {
 	components: { uniList, uniListItem },
 	computed: mapState(['forcedLogin', 'hasLogin', 'userName','code']),
 	methods: {
-		startMaterialsExchange: function() {
-			uni.navigateTo({url:'/pages/exchange/index'});
+		startMaterialsReturn: function() {
+			uni.navigateTo({url:'/pages/dismounting/index'});
 		},
-		startPackageExchange: function() {
+		startPackageReturn: function() {
 			uni.redirectTo({ url: '/pages/exchange/index' });
 		//	uni.navigateTo({ url: '/pages/inlibrary/index' });
 		}

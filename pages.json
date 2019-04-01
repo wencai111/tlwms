@@ -31,7 +31,6 @@
 				"navigationBarTitleText": "查询"
 			}
 		},
-		
 		{
 			"path": "pages/inlibrary/inway",
 			"style": {

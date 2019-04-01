@@ -2,7 +2,6 @@
 	<view class="content">
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
-			<!-- <view class="uni-card"> -->
 			<view class="uni-card__header">
 				<view class="uni-card__header-title-text">{{maintain.code}}</view>
 				<view class="uni-card__header-extra-text">{{maintain.TotalAmount}}</view>
@@ -89,24 +88,24 @@
 		},
 		computed: {
 			scanMaterials() {
-				console.log('isCanInlibrary' + this.$data.currentSteps)
-				if (this.$data.currentSteps == 2 || this.$data.currentSteps == 3) {
+				console.log('isCanInlibrary' + this.currentSteps)
+				if (this.currentSteps == 2 || this.currentSteps == 3) {
 					return false;
 				} else {
 					return true;
 				}
 			},
 			Sweeplocations() {
-				console.log('isCanInlibrary' + this.$data.currentSteps)
-				if (this.$data.currentSteps == 1) {
+				console.log('isCanInlibrary' + this.currentSteps)
+				if (this.currentSteps == 1) {
 					return true;
 				} else {
 					return false;
 				}
 			},
 			sureInlibrarys() {
-				console.log('isCanInlibrary' + this.$data.currentSteps)
-				if (this.$data.currentSteps == 2) {
+				console.log('isCanInlibrary' + this.currentSteps)
+				if (this.currentSteps == 2) {
 					return true;
 				} else {
 					return false;

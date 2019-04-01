@@ -19,11 +19,11 @@ export default {
 	components: { uniList, uniListItem },
 	computed: mapState(['forcedLogin', 'hasLogin', 'userName','code']),
 	methods: {
-		startMaterialsExchange: function() {
-			// uni.navigateTo({url:'/pages/exchange/index'});
+		startMaterialsReturn: function() {
+			uni.navigateTo({url:'/pages/return/index'});
 		},
-		startPackageExchange: function() {
-			// uni.redirectTo({ url: '/pages/exchange/index' });
+		startPackageReturn: function() {
+			uni.redirectTo({ url: '/pages/returnfactory/index' });
 		//	uni.navigateTo({ url: '/pages/inlibrary/index' });
 		}
 	},

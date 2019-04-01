@@ -8,7 +8,7 @@ function storageModel() {
 	this.codeid = '';
 }
 
-function maintainModel() {
+function disassemblingoutModel() {
 	this.code = "";//物料名称
 	this.TotalAmount = 0;//物料总数
 	this.goods = [];//物料个数
@@ -40,5 +40,5 @@ function maintainModel() {
 }
 
 	
-const maintainModels = new maintainModel();
-export default maintainModels;
+const disassemblingoutModels = new disassemblingoutModel();
+export default disassemblingoutModels;

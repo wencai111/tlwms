@@ -3,21 +3,21 @@
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
 			<view class="uni-card__header">
-				<view class="uni-card__header-title-text">{{dismounting.code}}</view>
-				<view class="uni-card__header-extra-text">{{dismounting.TotalAmount}}</view>
+				<view class="uni-card__header-title-text">{{disassemblingout.code}}</view>
+				<view class="uni-card__header-extra-text">{{disassemblingout.TotalAmount}}</view>
 			</view>
 			<view class="uni-card__content uni-card__content--pd">
-				<view class="wxc-list" v-for="(item,index) in dismounting.goods" v-bind:key="index">
+				<view class="wxc-list" v-for="(item,index) in disassemblingout.goods" v-bind:key="index">
 					<view class="wxc-list-title-text">
-						<text style="color: #0FAEFF;margin-left: 4px;">{{dismounting.storage==null?'请扫库位码':'已对应库位码'}}</text>
+						<text style="color: #0FAEFF;margin-left: 4px;">{{disassemblingout.storage==null?'请扫库位码':'已对应库位码'}}</text>
 					</view>
 					<view class="wxc-list-extra-text">{{item}}</view>
 					<!-- <button type="button" style="font-size: 25upx;" @click="modification(index)">修改</button> -->
 					<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="modification(index)">修改</span>
 				</view>
 			</view>
-			<view class="uni-card__footer">物料名字:{{dismounting.codeid}}</view>
-			<view class="uni-card__footer" v-if="dismounting.storage!=null">货架名字:{{dismounting.storage.code}}</view>
+			<view class="uni-card__footer">物料名字:{{disassemblingout.codeid}}</view>
+			<view class="uni-card__footer" v-if="disassemblingout.storage!=null">货架名字:{{disassemblingout.storage.code}}</view>
 			<button type="primary" @click="scanMaterial" v-bind:disabled="!scanMaterials">
 				扫物料良品
 			</button>
@@ -50,11 +50,11 @@
 		parseForRule
 	} from '@/libs/util.js';
 	import {
-		SaveAssemOutInfo
+		SaveAssemInInfo
 	} from '@/api/dismounting.js'
 	import
-	dismountingModels
-	from '@/model/dismountingModel.js'
+	disassemblingoutModels
+	from '@/model/disassemblingoutModel.js'
 	export default {
 		data() {
 			return {
@@ -70,7 +70,7 @@
 				],
 				currentSteps: 0, //当前执行步骤，
 				index: 0,
-				dismounting: dismountingModels,
+				disassemblingout: disassemblingoutModels,
 				show: false,
 				currentNumber: 12, //当前需要货物需要修改的数量
 				currentIndex: 0, //当前需要修改数量的货物索引
@@ -128,7 +128,7 @@
 							var result = parseForRule(res.result);
 							console.log("res.result" + JSON.stringify(res.result))
 							if (result) {
-								_this.dismounting.setMaterial(result);
+								_this.disassemblingout.setMaterial(result);
 								_this.index = _this.index + 1;
 								_this.currentSteps = 1;
 							}
@@ -144,7 +144,7 @@
 							console.log('扫码输出内容：' + JSON.stringify(res.result));
 							if (result) {
 								console.log('输出内容：' + JSON.stringify(result));
-								_this.dismounting.addGoods(result);
+								_this.disassemblingout.addGoods(result);
 								_this.currentSteps = 1;
 							}
 						},
@@ -160,7 +160,7 @@
 						var storage = parseWarehouseCode(res.result);
 						console.log('扫货架名字内容：' + JSON.stringify(res.result));
 						if (storage) {
-							_this.dismounting.setInlibrary(storage);
+							_this.disassemblingout.setInlibrary(storage);
 							_this.currentSteps = 2;
 						}
 					},
@@ -169,7 +169,7 @@
 			//确认入库
 			sureInlibrary: function() {
 				console.log("LocalID:" + this.LocalID)
-				SaveAssemOutInfo(this.LocalID, this.MNumber, this.Quan).then(data => {
+				SaveAssemInInfo(this.LocalID, this.MNumber, this.Quan).then(data => {
 					var [error, res] = data;
 					console.log("data:" + JSON.stringify(data));
 					console.log("res:" + JSON.stringify(res));
@@ -194,7 +194,7 @@
 			},
 			modifierNumber(ref) {
 				debugger;
-				this.dismounting.modifierNumber(this.currentIndex, this.currentNumber);
+				this.disassemblingout.modifierNumber(this.currentIndex, this.currentNumber);
 				this.show = false;
 			}
 		},

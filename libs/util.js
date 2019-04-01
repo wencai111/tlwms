@@ -3,6 +3,7 @@
    */
   export const parseForRule = (data) => {
 	  debugger;
+	  console.log("入参："+data)
   	try {
   		return eval('(' + data + ')')
   	} catch (e) {
