@@ -3,7 +3,7 @@
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
 			<button type="primary" v-bind:disabled="currentSteps>1" v-on:click="scanMaterial">
-				<text>扫码物料码</text>
+				<text>扫码入库码</text>
 			</button>
 			<button type="primary" v-bind:disabled="currentSteps != 1" v-on:click="scanWarehouse">
 				<text>扫码库位码</text>
@@ -16,7 +16,7 @@
 					</view>
 					<view class="uni-card__content uni-card__content--pd">
 						<view v-for="item in material.goods" v-bind:key="item" class="wxc-list">
-							<view class="wxc-list-title-text">{{material.storage==null?'正在等待库位码，可继续物料':'已对应货架'}}
+							<view class="wxc-list-title-text">{{material.storage==null?'正在等待库位码，可继续物料':'入库货架'}}
 								<text style="color: #0FAEFF;margin-left: 4px;" v-if="material.storage!=null">{{material.storage.code}}</text>
 							</view>
 							<view class="wxc-list-extra-text">{{item}}</view>
