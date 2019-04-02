@@ -19,13 +19,13 @@ import { authAccount } from '@/libs/util.js';
 export default {
 	data() {
 		return {
-			TlJpdID: '',//拣货码ID号
-			OperBillNum: '',//需求单号
-			BillNum: '',//拣货码条码内容
-			MNumber: '',//当前拣货码物料编码
-			MName: '',//当前拣货码物料名称
-			OutPackage: '',//出库单包装数量
-			Qty: ''//当前拣货码对应数量
+			TlJpdID: '', //拣货码ID号
+			OperBillNum: '', //需求单号
+			BillNum: '', //拣货码条码内容
+			MNumber: '', //当前拣货码物料编码
+			MName: '', //当前拣货码物料名称
+			OutPackage: '', //出库单包装数量
+			Qty: '' //当前拣货码对应数量
 		};
 	},
 	components: {
@@ -44,19 +44,7 @@ export default {
 	methods: {
 		//扫描包装码
 		scanPackegel: function(res) {
-			var result = {
-				BarCID: '484' + this.testIndex.toString(),
-				BillNum: 'ASN2019320-1',
-				BzBarCode: 'TMLSHZL2019320-484' + this.testIndex.toString(),
-				MNumber: '1001030001-B12',
-				MName: '后悬置总成',
-				InPackage: '1' + this.testIndex.toString(),
-				BzQty: '1' + this.testIndex.toString(),
-				IsScan: '1'
-			};
-			this.material.addPackege(result);
-			this.testIndex++;
-			this.currentSteps = 1;
+			var result = { TlJpdID: '1', OperBillNum: 'MDB2019217-3', BillNum: 'PGC2019221-16791', MNumber: '1001030001-B12', MName: '后悬置总成', OutPackage: '12', Qty: '24' };
 		},
 		//扫描库位码
 		scanWarehouse: function(res) {
