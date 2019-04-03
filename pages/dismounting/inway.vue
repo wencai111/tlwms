@@ -2,10 +2,10 @@
 	<view class="content">
 		<view class="example-title">选择拆装方式</view>
 		<uni-list>
-			<uni-list-item title="组装入库" note="组装入库" v-on:click="startMaterialsReturn"></uni-list-item>
-			<uni-list-item title="组装出库" note="组装出库" v-on:click="startPackageReturn"></uni-list-item>
-			<uni-list-item title="分拆入库" note="分拆入库" v-on:click="startMaterialsReturn"></uni-list-item>
-			<uni-list-item title="分拆出库" note="分拆出库" v-on:click="startPackageReturn"></uni-list-item>
+			<uni-list-item title="组装入库" note="组装入库"></uni-list-item>
+			<uni-list-item title="组装出库" note="组装出库"></uni-list-item>
+			<uni-list-item title="分拆入库" note="分拆入库" v-on:click="goSpinoffIn"></uni-list-item>
+			<uni-list-item title="分拆出库" note="分拆出库" v-on:click="goSpinoffOut"></uni-list-item>
 		</uni-list>
 	</view>
 </template>
@@ -21,12 +21,13 @@ export default {
 	components: { uniList, uniListItem },
 	computed: mapState(['forcedLogin', 'hasLogin', 'userName','code']),
 	methods: {
-		startMaterialsReturn: function() {
+		//分拆入库
+		goSpinoffIn: function() {
 			uni.navigateTo({url:'/pages/dismounting/index'});
 		},
-		startPackageReturn: function() {
-			uni.redirectTo({ url: '/pages/exchange/index' });
-		//	uni.navigateTo({ url: '/pages/inlibrary/index' });
+		//分拆出库
+		goSpinoffOut: function() {
+			uni.redirectTo({ url: '/pages/dismounting/index1' });
 		}
 	},
 	onLoad() {

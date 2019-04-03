@@ -19,7 +19,6 @@
 				"navigationBarTitleText": "首页"
 			}
 		},
-		
 		{
 			"path": "pages/inlibrary/inway",
 			"style": {
@@ -65,7 +64,7 @@
 		{
 			"path": "pages/exchange/inway",
 			"style": {
-				"navigationBarTitleText": "换货"
+				"navigationBarTitleText": "换货方式"
 			}
 		},
 		{
@@ -75,15 +74,9 @@
 			}
 		},
 		{
-			"path": "pages/outbound/index",
+			"path": "pages/exchange/index1",
 			"style": {
 				"navigationBarTitleText": "换货出库"
-			}
-		},
-		{
-			"path": "pages/deliveryNote/index",
-			"style": {
-				"navigationBarTitleText": "盘点"
 			}
 		},
 		{
@@ -99,21 +92,33 @@
 			}
 		},
 		{
-			"path": "pages/maintain/index",
+			"path": "pages/service/index1",
 			"style": {
 				"navigationBarTitleText": "维修出库"
 			}
 		},
 		{
-			"path": "pages/dismounting/index",
+			"path": "pages/dismounting/inway",
 			"style": {
-				"navigationBarTitleText": "拆装"
+				"navigationBarTitleText": "拆装菜单"
 			}
 		},
 		{
-			"path": "pages/returnwarehouse/index",
+			"path": "pages/dismounting/index",
 			"style": {
-				"navigationBarTitleText": "不良品"
+				"navigationBarTitleText": "分拆入库"
+			}
+		},
+		{
+			"path": "pages/dismounting/index1",
+			"style": {
+				"navigationBarTitleText": "分拆出库"
+			}
+		},
+		{
+			"path": "pages/deliveryNote/inway",
+			"style": {
+				"navigationBarTitleText": "盘点菜单"
 			}
 		},
 		{
@@ -123,39 +128,10 @@
 			}
 		},
 		{
-			"path": "pages/query/index",
+			"path": "pages/deliveryNote/index1",
 			"style": {
-				"navigationBarTitleText": "查询"
+				"navigationBarTitleText": "盘点任务清单"
 			}
-		},
-
-		{
-			"path": "pages/CheckInventory/inway",
-			"style": {
-				"navigationBarTitleText": "备件"
-			}
-		},
-		{
-			"path": "pages/returnwarehouse/inway",
-			"style": {
-				"navigationBarTitleText": "不良品"
-			}
-		},
-		
-		{
-			"path": "pages/test/index",
-			"style": {
-				"navigationBarTitleText": "测试"
-			}
-		}, {
-			"path": "pages/test/index1",
-			"style": {}
-		}, {
-			"path": "pages/test/index2",
-			"style": {}
-		}, {
-			"path": "pages/test/index3",
-			"style": {}
 		},
 		{
 			"path": "pages/query/way",
@@ -167,6 +143,60 @@
 			"path": "pages/query/index",
 			"style": {
 				"navigationBarTitleText": "查询"
+			}
+		},
+		{
+			"path": "pages/return/inway",
+			"style": {
+				"navigationBarTitleText": "不良品"
+			}
+		},
+		{
+			"path": "pages/return/index1",
+			"style": {
+				"navigationBarTitleText": "不良品退仓"
+			}
+		},
+		{
+			"path": "pages/return/index",
+			"style": {
+				"navigationBarTitleText": "不良品返厂"
+			}
+		},
+		{
+			"path": "pages/checkInventory/inway",
+			"style": {
+				"navigationBarTitleText": "备件菜单"
+			}
+		},
+		{
+			"path": "pages/checkInventory/outlibrary",
+			"style": {
+				"navigationBarTitleText": "备件下架"
+			}
+		},
+		{
+			"path": "pages/checkInventory/packeged",
+			"style": {
+				"navigationBarTitleText": "备件打包"
+			}
+		},
+		{
+			"path": "pages/checkInventory/logisticsScan",
+			"style": {
+				"navigationBarTitleText": "备件物流扫码"
+			}
+		},
+		{
+			"path": "pages/checkInventory/ship",
+			"style": {
+				"navigationBarTitleText": "备件发货"
+			}
+		},
+		{
+			"path": "pages/checkInventory/logisticsQuery",
+			"style": {
+				"navigationBarTitleText": "备件物流查询"
 			}
 		}
 	],
@@ -190,6 +220,5 @@
 		"navigationBarTextStyle": "white",
 		"navigationBarBackgroundColor": "#0faeff",
 		"backgroundColor": "#fbf9fe"
-	}
 	}
 }

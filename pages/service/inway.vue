@@ -2,8 +2,8 @@
 	<view class="content">
 		<view class="example-title">选择维修方式</view>
 		<uni-list>
-			<uni-list-item title="维修入库" note="维修入库" v-on:click="startMaterialsService"></uni-list-item>
-			<uni-list-item title="维修出库" note="维修出库" v-on:click="startPackageService"></uni-list-item>
+			<uni-list-item title="维修入库" note="维修入库" v-on:click="goServiceIn"></uni-list-item>
+			<uni-list-item title="维修出库" note="维修出库" v-on:click="goServiceOut"></uni-list-item>
 		</uni-list>
 	</view>
 </template>
@@ -19,15 +19,16 @@ export default {
 	components: { uniList, uniListItem },
 	computed: mapState(['forcedLogin', 'hasLogin', 'userName','code']),
 	methods: {
-		startMaterialsService: function() {
-			uni.navigateTo({url:'/pages/ervice/index'});
+		//维修入库
+		goServiceIn: function() {
+			uni.navigateTo({url:'/pages/service/index'});
 		},
-		startPackageService: function() {
-			uni.redirectTo({ url: '/pages/maintain/index' });
+		//维修出库
+		goServiceOut: function() {
+			uni.redirectTo({ url: '/pages/service/index1' });
 		}
 	},
 	onLoad() {
-		debugger;
 		console.log('登录状态：' + this.hasLogin);
 		console.log(this.code); 
 		authAccount(this.hasLogin, this.forcedLogin, this.userName);

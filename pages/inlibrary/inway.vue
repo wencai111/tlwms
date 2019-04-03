@@ -24,7 +24,6 @@ export default {
 		},
 		startPackageInlibrary: function() {
 			uni.redirectTo({ url: '/pages/inlibrary/index' });
-		//	uni.navigateTo({ url: '/pages/inlibrary/index' });
 		}
 	},
 	onLoad() {
