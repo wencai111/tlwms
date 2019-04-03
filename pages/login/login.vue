@@ -118,6 +118,10 @@ export default {
 </script>
 
 <style>
+view{
+	font-size:34upx;
+}	
+	
 .logo-row {
 	margin: 0 auto;
 }
