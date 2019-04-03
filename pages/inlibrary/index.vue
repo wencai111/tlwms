@@ -130,13 +130,10 @@ export default {
 					}
 				}
 			});
-			// 			var result = { id: 'K', code: 'A2-6层-06', codeid: '1934' };
-			// 			this.material.addStorage(result);
-			// 			this.currentSteps = 2;
 		},
 		//确定入库
 		sureInlibrary: function() {
-			saveEmergentInInfo.then(data => {
+			saveEmergentInInfo(this.material.generateModel()).then(data => {
 				var [error, res] = data;
 				console.log('data:' + JSON.stringify(data));
 				console.log('res:' + JSON.stringify(res));

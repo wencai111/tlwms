@@ -49,7 +49,9 @@ export const authAccount = (hasLogin, forcedLogin, userName) => {
 export const parseWarehouseCode = (code) => {
 	console.log(code);
 	var result = null;
-
+	if(code&&code.indexOf(":")!=-1){
+		return result;
+	}
 	try {
 		var arr = code.replace("{", "").replace("}", "").split(",");
 		if (arr.length <= 4) {
