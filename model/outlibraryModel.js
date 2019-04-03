@@ -37,6 +37,7 @@ const outlibraryModel = {
 			return false;
 		}
 		this.storage=new storageModel();
+		this.storage=new storageModel();
 		this.storage.id=data.id;
 		this.storage.code=data.code;
 		this.storage.codeid=data.codeid;

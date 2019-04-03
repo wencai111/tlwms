@@ -68,9 +68,9 @@
 			}
 		},
 		{
-			"path": "pages/outlibrary/index",
+			"path": "pages/outlibrary/index2",
 			"style": {
-				"navigationBarTitleText": "拣货单"
+				"navigationBarTitleText": "生成装车单"
 			}
 		},
 		{
@@ -111,7 +111,7 @@
 			}
 		},
 		{
-			"path": "pages/Return/index",
+			"path": "pages/returnwarehouse/index",
 			"style": {
 				"navigationBarTitleText": "不良品"
 			}
@@ -142,7 +142,7 @@
 			}
 		},
 		{
-			"path": "pages/Return/inway",
+			"path": "pages/returnwarehouse/inway",
 			"style": {
 				"navigationBarTitleText": "不良品"
 			}
