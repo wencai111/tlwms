@@ -44,31 +44,23 @@
 						fdf: 'fdf',
 						url: '../outlibrary/inway'
 					},
-
 					{
-						image: '/static/img/transfer.png',
-						text: '维修',
-						url: '../service/inway'
-					},
-
-					{
-						image: '/static/img/Return.png',
+						image: '/static/img/exchange.png',
 						text: '换货',
 						url: '../exchange/inway'
 					},
-
 					{
-						image: '/static/img/checkQuality.png',
-						text: '质检',
-						url: '../checkQuality/index'
+						image: '/static/img/service.png',
+						text: '维修',
+						url: '../service/inway'
 					},
 					{
-						image: '/static/img/transfer.png',
+						image: '/static/img/dismounting.png',
 						text: '拆装',
 						url: '../dismounting/inway'
 					},
 					{
-						image: '/static/img/checkInventory.png',
+						image: '/static/img/deliveryNote.png',
 						text: '盘点',
 						url: '../deliveryNote/index'
 					},
@@ -83,7 +75,7 @@
 						url: '../Return/inway'
 					},
 					{
-						image: '/static/img/deliveryNote.png',
+						image: '/static/img/CheckInventory.png',
 						text: '备件',
 						url: '../CheckInventory/inway'
 					}

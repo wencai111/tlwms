@@ -112,18 +112,6 @@
 			}
 		},
 		{
-			"path": "pages/checkQuality/index",
-			"style": {
-				"navigationBarTitleText": "质检"
-			}
-		},
-		{
-			"path": "pages/deliveryNote/index",
-			"style": {
-				"navigationBarTitleText": "送货单"
-			}
-		},
-		{
 			"path": "pages/query/index",
 			"style": {
 				"navigationBarTitleText": "查询"

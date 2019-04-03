@@ -11,7 +11,7 @@
 						<view class="uni-card__header-extra-text">{{ material.totalAmount }}</view>
 					</view>
 					<view class="uni-card__content uni-card__content--pd">
-						<view v-for="item in material.goods" v-bind:key="item" class="wxc-list">
+						<view v-for="(item,_index) in material.goods" v-bind:key="_index" class="wxc-list">
 							<view class="wxc-list-title-text">
 								{{ materials.vehicleCode == '' ? '正在等待扫码车辆码，可继续扫描物料' : '物料已经对应车辆码' }}
 								<text style="color: #0FAEFF;margin-left: 4px;" >{{materials.vehicleCode}}</text>
