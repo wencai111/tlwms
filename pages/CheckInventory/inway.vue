@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<view class="example-title">选择备件方式</view>
+		<view class="example-title">选择备件菜单</view>
 		<uni-list>
 			<uni-list-item title="备件下架" note="" v-on:click="goOutlibrary"></uni-list-item>
 			<uni-list-item title="备件打包" note="" v-on:click="goPackeged"></uni-list-item>
