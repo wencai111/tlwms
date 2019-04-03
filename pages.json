@@ -117,6 +117,12 @@
 			}
 		},
 		{
+			"path": "pages/deliveryNote/index",
+			"style": {
+				"navigationBarTitleText": "盘点"
+			}
+		},
+		{
 			"path": "pages/query/index",
 			"style": {
 				"navigationBarTitleText": "查询"
@@ -184,5 +190,6 @@
 		"navigationBarTextStyle": "white",
 		"navigationBarBackgroundColor": "#0faeff",
 		"backgroundColor": "#fbf9fe"
+	}
 	}
 }

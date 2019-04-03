@@ -57,7 +57,6 @@
 			scanMaterial(){
 				debugger;
 				if(this.index==0){
-					
 					this.inlibrary.setMaterial({"code":"1001030001-B12A","acount":12,"codeid":"后置总重"});
 					this.index=this.index+1;
 				}
