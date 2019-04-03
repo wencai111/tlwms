@@ -4,7 +4,7 @@
 		<uni-list>
 			<uni-list-item title="包装码出库" note="扫描包装码出库"></uni-list-item>
 			<uni-list-item title="拣货码出库" note="扫拣货码出库库" v-on:click="startPackageInlibrary"></uni-list-item>
-			<uni-list-item title="生成发车单" note="生成发车单发车" v-on:click="SstartPackageInlibrary"></uni-list-item>
+			<uni-list-item title="生成装车单" note="生成装车单发车" v-on:click="SstartPackageInlibrary"></uni-list-item>
 		</uni-list>
 	</view>
 </template>
