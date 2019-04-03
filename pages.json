@@ -92,7 +92,7 @@
 			}
 		},
 		{
-			"path": "pages/maintain/index",
+			"path": "pages/service/index1",
 			"style": {
 				"navigationBarTitleText": "维修出库"
 			}
@@ -100,7 +100,7 @@
 		{
 			"path": "pages/dismounting/inway",
 			"style": {
-				"navigationBarTitleText": "拆装方式"
+				"navigationBarTitleText": "拆装菜单"
 			}
 		},
 		{
@@ -163,61 +163,42 @@
 				"navigationBarTitleText": "不良品返厂"
 			}
 		},
-		
-		
-		
-		
-		
-		
 		{
-			"path": "pages/dismounting/index",
+			"path": "pages/checkInventory/inway",
 			"style": {
-				"navigationBarTitleText": "拆装"
-			}
-		},
-		
-		{
-			"path": "pages/deliveryNote/index",
-			"style": {
-				"navigationBarTitleText": "盘点"
+				"navigationBarTitleText": "备件菜单"
 			}
 		},
 		{
-			"path": "pages/query/index",
+			"path": "pages/checkInventory/outlibrary",
 			"style": {
-				"navigationBarTitleText": "查询"
-			}
-		},
-
-		{
-			"path": "pages/CheckInventory/inway",
-			"style": {
-				"navigationBarTitleText": "备件"
+				"navigationBarTitleText": "备件下架"
 			}
 		},
 		{
-			"path": "pages/returnwarehouse/inway",
+			"path": "pages/checkInventory/packeged",
 			"style": {
-				"navigationBarTitleText": "不良品"
+				"navigationBarTitleText": "备件打包"
 			}
 		},
-		
 		{
-			"path": "pages/test/index",
+			"path": "pages/checkInventory/logisticsScan",
 			"style": {
-				"navigationBarTitleText": "测试"
+				"navigationBarTitleText": "备件物流扫码"
 			}
-		}, {
-			"path": "pages/test/index1",
-			"style": {}
-		}, {
-			"path": "pages/test/index2",
-			"style": {}
-		}, {
-			"path": "pages/test/index3",
-			"style": {}
 		},
-		
+		{
+			"path": "pages/checkInventory/ship",
+			"style": {
+				"navigationBarTitleText": "备件发货"
+			}
+		},
+		{
+			"path": "pages/checkInventory/logisticsQuery",
+			"style": {
+				"navigationBarTitleText": "备件物流查询"
+			}
+		}
 	],
 	"tabBar": {
 		"color": "#7a7e83",
@@ -239,6 +220,5 @@
 		"navigationBarTextStyle": "white",
 		"navigationBarBackgroundColor": "#0faeff",
 		"backgroundColor": "#fbf9fe"
-	}
 	}
 }
