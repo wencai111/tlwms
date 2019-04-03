@@ -62,7 +62,7 @@
 					{
 						image: '/static/img/deliveryNote.png',
 						text: '盘点',
-						url: '../deliveryNote/index'
+						url: '../deliveryNote/inway'
 					},
 					{
 						image: '/static/img/query.png',
