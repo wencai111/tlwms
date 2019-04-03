@@ -92,12 +92,14 @@ export default {
 						} else {
 							uni.showToast({
 								icon: 'none',
+								duration: 2000,
 								title: '物料信息错误:' + JSON.stringify(result)
 							});
 						}
 					} else {
 						uni.showToast({
 							icon: 'none',
+							duration: 2000,
 							title: '物料信息错误:' + res.result
 						});
 					}
@@ -119,12 +121,14 @@ export default {
 						} else {
 							uni.showToast({
 								icon: 'none',
+								duration: 2000,
 								title: '库位信息错误：' + JSON.stringify(result)
 							});
 						}
 					} else {
 						uni.showToast({
 							icon: 'none',
+							duration: 2000,
 							title: '库位信息错误:' + res.result
 						});
 					}
