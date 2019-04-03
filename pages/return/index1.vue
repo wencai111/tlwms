@@ -61,8 +61,8 @@
 		SaveStockInForBad
 	} from '@/api/returnwarehouse.js';
 	import
-	returnwarehouseModels
-	from '@/model/returnwarehouseModel.js'
+	reutrnModels
+	from '@/model/reutrnModel.js'
 	export default {
 		data() {
 			return {
@@ -79,7 +79,7 @@
 				currentSteps: 0, //当前执行步骤，
 				currentIndex: 0, //当前需要修改数量的货物索引
 				index: 0,
-				returnwarehouse: returnwarehouseModels,
+				returnwarehouse: reutrnModels,
 				show: false,
 				currentNumber: 12,
 				LocalID: '',

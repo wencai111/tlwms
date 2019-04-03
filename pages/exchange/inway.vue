@@ -2,8 +2,8 @@
 	<view class="content">
 		<view class="example-title">选择换货方式</view>
 		<uni-list>
-			<uni-list-item title="换货入库" note="换货入库" v-on:click="startMaterialsDismounting"></uni-list-item>
-			<uni-list-item title="换货出库" note="换货出库" v-on:click="startPackageDismounting"></uni-list-item>
+			<uni-list-item title="换货入库" note="扫物料换货入库" v-on:click="startMaterialsDismounting"></uni-list-item>
+			<uni-list-item title="换货出库" note="扫物料换货出库" v-on:click="startPackageDismounting"></uni-list-item>
 		</uni-list>
 	</view>
 </template>

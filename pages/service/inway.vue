@@ -2,8 +2,8 @@
 	<view class="content">
 		<view class="example-title">选择维修方式</view>
 		<uni-list>
-			<uni-list-item title="维修入库" note="维修入库" v-on:click="goServiceIn"></uni-list-item>
-			<uni-list-item title="维修出库" note="维修出库" v-on:click="goServiceOut"></uni-list-item>
+			<uni-list-item title="维修入库" note="扫物料维修入库" v-on:click="goServiceIn"></uni-list-item>
+			<uni-list-item title="维修出库" note="扫物料维修出库" v-on:click="goServiceOut"></uni-list-item>
 		</uni-list>
 	</view>
 </template>

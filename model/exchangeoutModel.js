@@ -1,19 +1,14 @@
-/**
- *货架模型对象
- *案例：{'K':'A2-6层-06','1934','1'}
- */
 function storageModel() {
 	this.id = "";
 	this.code = "";
 	this.codeid = '';
 }
-
-function disassemblingoutModel() {
+function outboundModel() {
 	this.code = "";//物料名称
 	this.TotalAmount = 0;//物料总数
 	this.goods = [];//物料个数
 	this.codeid = "";//物料ID
-    this.storage=null;//库位信息
+	this.storage=null;//库位信息
 	this.id = "";//物料货架
 	//首次新增物料
 	this.setMaterial = function(data) {
@@ -24,21 +19,21 @@ function disassemblingoutModel() {
 	};
 	//物料相加
 	this.addGoods = function(data) {
+		console.log("number："+this.data)
+		debugger;
         this.goods.push(data.count);//物料个数
 		this.TotalAmount = this.TotalAmount + data.count; //总数相加
 	}
 	this.setInlibrary=function(storage){
-		this.storage=new storageModel();
+			this.storage=new storageModel();
 		this.storage.id=storage.id;
 		this.storage.code=storage.code;
 		this.storage.codeid=storage.codeid;
-	},
-		this.modifierNumber = function(index,number){
+	}
+	this.modifierNumber = function(index,number){
 		this.TotalAmount =this.TotalAmount+ (parseInt(number)-this.goods[index]) ;//物料总数
 		this.goods[index]=parseInt(number);
 	}
-}
-
-	
-const disassemblingoutModels = new disassemblingoutModel();
-export default disassemblingoutModels;
+}	
+const exchangeoutModels = new outboundModel();
+export default exchangeoutModels;

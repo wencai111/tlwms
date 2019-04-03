@@ -53,8 +53,8 @@
 		exchangeAppear
 	} from '@/api/exchange.js'
 	import
-	outboundModels
-	from '@/model/outboundModel.js'
+	exchangeoutModels
+	from '@/model/exchangeoutModel.js'
 	export default {
 		data() {
 			return {
@@ -70,7 +70,7 @@
 				],
 				currentSteps: 0, //当前执行步骤，
 				index: 0,
-				outbound: outboundModels,
+				outbound: exchangeoutModels,
 				show: false,
 				currentNumber: 12, //当前需要货物需要修改的数量
 				currentIndex: 0, //当前需要修改数量的货物索引

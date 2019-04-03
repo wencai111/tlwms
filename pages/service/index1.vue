@@ -53,8 +53,8 @@
 		SaveStockOutByBadMate
 	} from '@/api/service.js';
 	import
-	maintainModels
-	from '@/model/maintainModel.js'
+	servicemainModels
+	from '@/model/servicemainModel.js'
 	export default {
 		data() {
 			return {
@@ -71,7 +71,7 @@
 				currentSteps: 0, //当前执行步骤，
 				currentIndex: 0, //当前需要修改数量的货物索引
 				index: 0,
-				maintain: maintainModels,
+				maintain: servicemainModels,
 				show: false,
 				inputNumber: 0,
 				LocalID: '',
