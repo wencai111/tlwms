@@ -8,7 +8,7 @@ function storageModel() {
 	this.codeid = '';
 }
 
-function returnfactoryModel() {
+function maintainModel() {
 	this.code = "";//物料名称
 	this.TotalAmount = 0;//物料总数
 	this.goods = [];//物料个数
@@ -40,5 +40,5 @@ function returnfactoryModel() {
 }
 
 	
-const returnfactoryModels = new returnfactoryModel();
-export default returnfactoryModels;
+const servicemainModels = new maintainModel();
+export default servicemainModels;

@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<view class="example">
-			<view v-show="isShowData" class="wxc-card">
+			<view v-if="isShowData" class="wxc-card">
 				<!-- 	<view class="wxc-card_list" v-for="item in data" v-bind:key="item.LocalID"> -->
 				<view class="wxc-card_list_header">
 					<view class="wxc-card_list_header_title">库位ID号:{{ deliveryNote.LocalID }}</view>

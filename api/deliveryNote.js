@@ -39,3 +39,22 @@ export const SaveInventoryInfo = (MNumber,PdQuan,LocalID) => {
 		},
 	});
 }
+
+/**
+获取待盘点库位信息
+作用： 获取待盘点库位信息
+ */
+export const GetLocationList = (PdFlag,pageIndex,pageSize,sortField,sortOrder) => {
+	return uni.request({
+		url: domian + 'common/wms_Server_Data.asp?action=GetLocationList',
+			type: "POST",
+		dataType: "JSON",
+		data: {
+			"PdFlag": 1,
+			"pageIndex": 0,
+			"pageSize":5,
+			"sortField": LocalName,
+			"sortOrder": asc,
+		},
+	});
+}

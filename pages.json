@@ -44,7 +44,7 @@
 			}
 		},
 		{
-			"path": "pages/inlibrary/index",
+			"path": "pages/outlibrary/index",
 			"style": {
 				"navigationBarTitleText": "紧急入库"
 			}
