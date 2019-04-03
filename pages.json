@@ -19,7 +19,6 @@
 				"navigationBarTitleText": "首页"
 			}
 		},
-		
 		{
 			"path": "pages/inlibrary/inway",
 			"style": {
@@ -65,7 +64,7 @@
 		{
 			"path": "pages/exchange/inway",
 			"style": {
-				"navigationBarTitleText": "换货"
+				"navigationBarTitleText": "换货方式"
 			}
 		},
 		{
@@ -75,15 +74,9 @@
 			}
 		},
 		{
-			"path": "pages/outbound/index",
+			"path": "pages/exchange/index1",
 			"style": {
 				"navigationBarTitleText": "换货出库"
-			}
-		},
-		{
-			"path": "pages/deliveryNote/index",
-			"style": {
-				"navigationBarTitleText": "盘点"
 			}
 		},
 		{
@@ -105,17 +98,84 @@
 			}
 		},
 		{
+			"path": "pages/dismounting/inway",
+			"style": {
+				"navigationBarTitleText": "拆装方式"
+			}
+		},
+		{
+			"path": "pages/dismounting/index",
+			"style": {
+				"navigationBarTitleText": "分拆入库"
+			}
+		},
+		{
+			"path": "pages/dismounting/index1",
+			"style": {
+				"navigationBarTitleText": "分拆出库"
+			}
+		},
+		{
+			"path": "pages/deliveryNote/inway",
+			"style": {
+				"navigationBarTitleText": "盘点菜单"
+			}
+		},
+		{
+			"path": "pages/deliveryNote/index",
+			"style": {
+				"navigationBarTitleText": "盘点"
+			}
+		},
+		{
+			"path": "pages/deliveryNote/index1",
+			"style": {
+				"navigationBarTitleText": "盘点任务清单"
+			}
+		},
+		{
+			"path": "pages/query/way",
+			"style": {
+				"navigationBarTitleText": "查询方式"
+			}
+		},
+		{
+			"path": "pages/query/index",
+			"style": {
+				"navigationBarTitleText": "查询"
+			}
+		},
+		{
+			"path": "pages/return/inway",
+			"style": {
+				"navigationBarTitleText": "不良品"
+			}
+		},
+		{
+			"path": "pages/return/index1",
+			"style": {
+				"navigationBarTitleText": "不良品退仓"
+			}
+		},
+		{
+			"path": "pages/return/index",
+			"style": {
+				"navigationBarTitleText": "不良品返厂"
+			}
+		},
+		
+		
+		
+		
+		
+		
+		{
 			"path": "pages/dismounting/index",
 			"style": {
 				"navigationBarTitleText": "拆装"
 			}
 		},
-		{
-			"path": "pages/returnwarehouse/index",
-			"style": {
-				"navigationBarTitleText": "不良品"
-			}
-		},
+		
 		{
 			"path": "pages/deliveryNote/index",
 			"style": {
@@ -157,18 +217,7 @@
 			"path": "pages/test/index3",
 			"style": {}
 		},
-		{
-			"path": "pages/query/way",
-			"style": {
-				"navigationBarTitleText": "查询方式"
-			}
-		},
-		{
-			"path": "pages/query/index",
-			"style": {
-				"navigationBarTitleText": "查询"
-			}
-		}
+		
 	],
 	"tabBar": {
 		"color": "#7a7e83",

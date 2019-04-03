@@ -23,7 +23,7 @@ export default {
 			uni.navigateTo({url:'/pages/exchange/index'});
 		},
 		startPackageDismounting: function() {
-			uni.redirectTo({ url: '/pages/outbound/index' });
+			uni.redirectTo({ url: '/pages/exchange/index1' });
 		}
 	},
 	onLoad() {
