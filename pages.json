@@ -19,18 +19,7 @@
 				"navigationBarTitleText": "首页"
 			}
 		},
-		{
-			"path": "pages/query/way",
-			"style": {
-				"navigationBarTitleText": "查询方式"
-			}
-		},
-		{
-			"path": "pages/query/index",
-			"style": {
-				"navigationBarTitleText": "查询"
-			}
-		},
+		
 		{
 			"path": "pages/inlibrary/inway",
 			"style": {
@@ -73,8 +62,24 @@
 				"navigationBarTitleText": "生成装车单"
 			}
 		},
-		
-		//新增
+		{
+			"path": "pages/exchange/inway",
+			"style": {
+				"navigationBarTitleText": "换货"
+			}
+		},
+		{
+			"path": "pages/exchange/index",
+			"style": {
+				"navigationBarTitleText": "换货入库"
+			}
+		},
+		{
+			"path": "pages/outbound/index",
+			"style": {
+				"navigationBarTitleText": "换货出库"
+			}
+		},
 		{
 			"path": "pages/deliveryNote/index",
 			"style": {
@@ -130,24 +135,7 @@
 				"navigationBarTitleText": "不良品"
 			}
 		},
-		{
-			"path": "pages/exchange/inway",
-			"style": {
-				"navigationBarTitleText": "换货"
-			}
-		},
-		{
-			"path": "pages/exchange/index",
-			"style": {
-				"navigationBarTitleText": "换货入库"
-			}
-		},
-		{
-			"path": "pages/outbound/index",
-			"style": {
-				"navigationBarTitleText": "换货出库"
-			}
-		},
+		
 		{
 			"path": "pages/test/index",
 			"style": {
@@ -162,6 +150,18 @@
 		}, {
 			"path": "pages/test/index3",
 			"style": {}
+		},
+		{
+			"path": "pages/query/way",
+			"style": {
+				"navigationBarTitleText": "查询方式"
+			}
+		},
+		{
+			"path": "pages/query/index",
+			"style": {
+				"navigationBarTitleText": "查询"
+			}
 		}
 	],
 	"tabBar": {

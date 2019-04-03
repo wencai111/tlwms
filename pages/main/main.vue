@@ -67,7 +67,7 @@
 					{
 						image: '/static/img/query.png',
 						text: '查询',
-						url: '../query/index'
+						url: '../query/way'
 					},
 					{
 						image: '/static/img/Return.png',
