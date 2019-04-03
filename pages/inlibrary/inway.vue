@@ -25,7 +25,7 @@ export default {
 		},
 		//包装码入库
 		goInlibraryByPackege: function() {
-			uni.redirectTo({ url: '/pages/inlibrary/index1' });
+			uni.navigateTo({ url: '/pages/inlibrary/index1' });
 		}
 	},
 	onLoad() {
