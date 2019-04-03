@@ -62,7 +62,7 @@
 					{
 						image: '/static/img/deliveryNote.png',
 						text: '盘点',
-						url: '../deliveryNote/index'
+						url: '../deliveryNote/inway'
 					},
 					{
 						image: '/static/img/query.png',
@@ -70,14 +70,14 @@
 						url: '../query/way'
 					},
 					{
-						image: '/static/img/Return.png',
+						image: '/static/img/return.png',
 						text: '不良品',
-						url: '../Return/inway'
+						url: '../return/inway'
 					},
 					{
-						image: '/static/img/CheckInventory.png',
+						image: '/static/img/checkInventory.png',
 						text: '备件',
-						url: '../CheckInventory/inway'
+						url: '../checkInventory/inway'
 					}
 				]
 			};
