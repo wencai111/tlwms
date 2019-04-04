@@ -11,21 +11,22 @@
 						<view class="uni-card__header-extra-text">{{ material.totalAmount }}</view>
 					</view>
 					<view class="uni-card__content uni-card__content--pd">
-						<view v-for="(item,_index) in material.goods" v-bind:key="_index" class="wxc-list">
+						<view v-for="(item, _index) in material.goods" v-bind:key="_index" class="wxc-list">
 							<view class="wxc-list-title-text">
 								{{ materials.vehicleCode == '' ? '正在等待扫码车辆码，可继续扫描物料' : '物料已经对应车辆码' }}
-								<text style="color: #0FAEFF;margin-left: 4px;" >{{materials.vehicleCode}}</text>
+								<text style="color: #0FAEFF;margin-left: 4px;">{{ materials.vehicleCode }}</text>
 							</view>
 							<view class="wxc-list-extra-text">{{ item }}</view>
 						</view>
 					</view>
 					<view class="uni-card__footer">
 						生成装车单:
-						<text >{{materials.vehicleCode}}</text>
+						<text>{{ materials.vehicleCode }}</text>
 					</view>
 				</view>
 			</view>
 			<button type="primary" v-bind:disabled="!isCanGenerateFcd" @click="sureGenerateFcd">确认生成装车单</button>
+			<button type="primary" v-show="currentSteps == 3" @click="goBack">返回</button>
 			<!-- <button type="primary"  @click="logMessage">
 				浏览器打印
 			</button> -->
@@ -35,13 +36,13 @@
 
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
+import { bulidFcd } from '@/api/outlibrary.js';
 import outlibraryModel from '@/model/outlibraryFcdModel.js';
 import { mapState } from 'vuex';
-import { authAccount } from '@/libs/util.js';
+import { authAccount, parseForRule } from '@/libs/util.js';
 export default {
 	data() {
 		return {
-			testIndex: 0, //测试使用
 			materials: outlibraryModel,
 			currentSteps: 0, //当前执行步骤，
 			steps: [
@@ -56,6 +57,10 @@ export default {
 				}
 			]
 		};
+	},
+	created() {
+		this.currentSteps = 0;
+		this.materials.reset();
 	},
 	components: {
 		uniSteps,
@@ -76,25 +81,88 @@ export default {
 	methods: {
 		//扫描物料码
 		scanMaterial: function(res) {
-			var result = { id: 'W', code: '1001030001-B12', codeid: '1', count: 12 + this.testIndex };
-			this.materials.setMaterial(result);
-			this.testIndex++;
-			this.currentSteps = 1;
+			var _this = this;
+			uni.scanCode({
+				onlyFromCamera: true,
+				success: function(res) {
+					console.log('res' + JSON.stringify(res));
+					var result = parseForRule(res.result);
+					console.log('result' + JSON.stringify(result));
+					if (result && result.code && result.code != '' && result.count) {
+						_this.materials.setMaterial(result);
+						_this.currentSteps = 1;
+					} else {
+						uni.showToast({
+							icon: 'none',
+							duration: 2500,
+							title: '物料信息错误:' + res.result
+						});
+					}
+				}
+			});
 		},
 		//扫描库位码
 		scanVehicle: function(res) {
-			debugger;
-			var result = {id:'C',code:'浙G23408',codeid:'1',count:1};
-			this.materials.setVehicleCode(result.code);
-			this.currentSteps = 2;
+			var _this = this;
+			uni.scanCode({
+				onlyFromCamera: true,
+				success: function(res) {
+					console.log('res' + JSON.stringify(res));
+					var result = parseForRule(res.result);
+					console.log('result' + JSON.stringify(result));
+					if (result && result.code && result.code != '') {
+						_this.materials.setVehicleCode(result.code);
+						_this.currentSteps = 2;
+					} else {
+						uni.showToast({
+							icon: 'none',
+							duration: 2500,
+							title: '物料信息错误:' + res.result
+						});
+					}
+				}
+			});
 		},
 		//确定生成发车单
-		sureGenerateFcd: function(res) {},
+		sureGenerateFcd: function(res) {
+			var _this = this;
+			bulidFcd(this.materials.generateModel()).then(data => {
+				var [error, res] = data;
+				console.log('data:' + JSON.stringify(data));
+				console.log('res:' + JSON.stringify(res));
+				var result = parseForRule(res.data);
+				console.log('result:' + JSON.stringify(result));
+				if (result.success) {
+					console.log(result);
+					_this.currentSteps = 3;
+					console.log('正确');
+					uni.showToast({
+						icon: 'success',
+						title: '生成装车单！'
+					});
+				} else {
+					console.log('错误');
+					uni.showModal({
+						title: '提示',
+						showCancel: false,
+						content: result.ResponseText,
+						success: function(res) {
+							if (res.confirm) {
+								console.log('用户点击确定');
+							}
+						}
+					});
+				}
+			});
+		},
+		//返回
+		goBack: function() {
+			uni.navigateBack();
+		},
 		logMessage: function() {
 			debugger;
 		}
 	},
-
 	onLoad() {
 		authAccount(this.hasLogin, this.forcedLogin, this.userName);
 	}

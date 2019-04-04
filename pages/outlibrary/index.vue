@@ -139,13 +139,13 @@ export default {
 		},
 		//确定出库
 		sureOutlibrary: function(res) {
+			var _this = this;
 			saveEmergentOutInfo(this.material.generateModel()).then(data => {
 				var [error, res] = data;
 				console.log('data:' + JSON.stringify(data));
 				console.log('res:' + JSON.stringify(res));
 				var result = parseForRule(res.data);
 				console.log('result:' + JSON.stringify(result));
-				var _this = this;
 				if (result.success) {
 					console.log(result);
 					_this.currentSteps = 3;

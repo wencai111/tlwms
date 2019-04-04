@@ -53,3 +53,19 @@ export const sureStockOut = (BillNum) => {
 		},
 	});
 }
+
+/**
+ * @description 根据拣货码扫描出库
+ * 客户没有给出相关完整的出库计划或拣货时，
+ * 用于的出库。用户可先通过手机端查看所需要
+ * 出库的物料所在的库位分布信息，然后进行的出库操作。
+ */
+export const bulidFcd = (data) => {
+	console.log("bulidFcd入参：" + JSON.stringify(data))
+	return uni.request({
+		url: domian + 'common/wms_Server_Data.asp?action=BulidFcd',
+		type: "GET",
+		dataType: "JSON",
+		data:data
+	});
+}
