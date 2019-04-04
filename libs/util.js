@@ -18,6 +18,31 @@ export const parseForRule = (data) => {
 }
 
 /**
+ * @description 库位码转换函数
+ */
+export const parseWarehouseCode = (code) => {
+	console.log(code);
+	var result = null;
+	if(code&&code.indexOf(":")!=-1){
+		return result;
+	}
+	try {
+		var arr = code.replace("{", "").replace("}", "").split(",");
+		if (arr.length <= 4) {
+			result = {};
+			result["id"] = arr[0].replace("'", "").replace("'", "");
+			result["code"] = arr[1].replace("'", "").replace("'", "");
+			result["codeid"] = arr[2].replace("'", "").replace("'", "");
+		} else {}
+	} catch (e) {
+		result = null;
+	}
+	return result;
+}
+
+
+
+/**
  * @description 检测是否授权，如果没有授权，跳转到登录界面
  */
 export const authAccount = (hasLogin, forcedLogin, userName) => {
@@ -42,26 +67,4 @@ export const authAccount = (hasLogin, forcedLogin, userName) => {
 			}
 		});
 	}
-}
-/**
- * @description 库位码转换函数
- */
-export const parseWarehouseCode = (code) => {
-	console.log(code);
-	var result = null;
-	if(code&&code.indexOf(":")!=-1){
-		return result;
-	}
-	try {
-		var arr = code.replace("{", "").replace("}", "").split(",");
-		if (arr.length <= 4) {
-			result = {};
-			result["id"] = arr[0].replace("'", "").replace("'", "");
-			result["code"] = arr[1].replace("'", "").replace("'", "");
-			result["codeid"] = arr[2].replace("'", "").replace("'", "");
-		} else {}
-	} catch (e) {
-		result = null;
-	}
-	return result;
 }

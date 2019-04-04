@@ -1,3 +1,7 @@
+<template>
+	<view></view>
+</template>
+
 <!-- <template>
 	<view>
 		<view v-show="" class="wxc-card">
