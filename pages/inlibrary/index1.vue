@@ -64,6 +64,10 @@ export default {
 			]
 		};
 	},
+	created() {
+		this.currentSteps=0;
+		this.material.reset();
+	},
 	components: {
 		uniSteps,
 		uniCard,
