@@ -37,14 +37,12 @@
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import inlibraryModel from '@/model/inlibraryModel.js';
-import { parseForRule, parseWarehouseCode } from '@/libs/util.js';
+import { authAccount,parseForRule, parseWarehouseCode } from '@/libs/util.js';
 import { checkLocal, saveEmergentInInfo } from '@/api/inlibrary.js';
 import { mapState } from 'vuex';
-import { authAccount } from '@/libs/util.js';
 export default {
 	data() {
 		return {
-			testIndex: 0, //测试使用
 			material: inlibraryModel,
 			currentSteps: 0, //当前执行步骤，
 			steps: [
