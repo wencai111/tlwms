@@ -19,6 +19,15 @@ const inlibraryModel = {
 	totalAmount: 0, //总货物
 	goods: [], //物料入库货物
 	storage: null,
+	//重置函数
+	reset:function(){
+		this.id="";
+		this.code="";
+		this.codeid="";
+		this.totalAmount=0;
+		this.goods=[];
+		this.storage=null;
+	},
 	//设置物料信息
 	setMateriaInfo: function(data) {
 		if (!data || !data.id || data.id == "") {
@@ -56,7 +65,7 @@ const inlibraryModel = {
 	//生成提交入库model
 	generateModel() {
 		var model = new Object();
-		model.MNumber = this.codeid;
+		model.MNumber = this.code;
 		model.Quan = this.totalAmount;
 		model.LocalID = this.storage.codeid;
 		return model;

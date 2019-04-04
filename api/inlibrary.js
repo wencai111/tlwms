@@ -10,6 +10,7 @@ const {
  * 冻结库位不能存放物料，不同批次的物料不能存放在同一库位。
  */
 export const checkLocal = (number, localID) => {
+	console.log("checkLocal:入参 number:"+number+"  localID:"+localID);
 	return uni.request({
 		url: domian + 'common/wms_Server_Data.asp?action=CheckLocal',
 		type: "POST",
@@ -27,8 +28,9 @@ export const checkLocal = (number, localID) => {
  * 在货物上架之前扫描入库码，提取入库码对应信息并提交
  */
 export const  saveEmergentInInfo = (data) => {
+	console.log("saveEmergentInInfo入参："+JSON.stringify(data))
 	return uni.request({
-		url: domian + 'common/wms_Server_Data.asp?action= SaveEmergentInInfo',
+		url: domian + 'common/wms_Server_Data.asp?action=SaveEmergentInInfo',
 		type: "POST",
 		dataType: "JSON",
 		data:data ,

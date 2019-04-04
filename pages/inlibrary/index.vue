@@ -26,6 +26,7 @@
 				</view>
 			</view>
 			<button type="primary" v-bind:disabled="!sureInlibrarys" @click="sureInlibrary">确认入库</button>
+			<button type="primary" v-show="currentSteps==3" @click="goBack">返回</button>
 			<!-- <button type="primary"  @click="logMessage">
 				浏览器打印
 			</button> -->
@@ -36,7 +37,7 @@
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import inlibraryModel from '@/model/inlibraryModel.js';
-import { parseForRule,parseWarehouseCode } from '@/libs/util.js';
+import { parseForRule, parseWarehouseCode } from '@/libs/util.js';
 import { checkLocal, saveEmergentInInfo } from '@/api/inlibrary.js';
 import { mapState } from 'vuex';
 import { authAccount } from '@/libs/util.js';
@@ -58,6 +59,11 @@ export default {
 				}
 			]
 		};
+	},
+	created() {
+		this.testIndex=0;
+		this.currentSteps=0;
+		this.material.reset();
 	},
 	components: {
 		uniSteps,
@@ -116,19 +122,39 @@ export default {
 					var result = parseWarehouseCode(res.result);
 					console.log('result' + JSON.stringify(result));
 					if (result) {
-						if (_this.material.addStorage(result)) {
-							_this.currentSteps = 2;
-						} else {
-							uni.showToast({
-								icon: 'none',
-								duration: 2000,
-								title: '库位信息错误：' + JSON.stringify(result)
-							});
-						}
+						checkLocal(_this.material.code, result.code).then(data => {
+							var [error, res] = data;
+							console.log('checkLocal.data:' + JSON.stringify(data));
+							console.log('checkLocal.res:' + JSON.stringify(res));
+							var checkResult = parseForRule(res.data);
+							console.log('checkResult:' + JSON.stringify(checkResult));
+							if (checkResult.success) {
+								if (_this.material.addStorage(result)) {
+									_this.currentSteps = 2;
+								} else {
+									uni.showToast({
+										icon: 'none',
+										duration: 2500,
+										title: '库位信息错误：' + JSON.stringify(result)
+									});
+								}
+							} else {
+								uni.showModal({
+									title: '提示',
+									content: checkResult.ResponseText,
+									showCancel:false,
+									success: function(res) {
+										if (res.confirm) {
+											console.log('用户点击确定');
+										} 
+									}
+								});
+							}
+						});
 					} else {
 						uni.showToast({
 							icon: 'none',
-							duration: 2000,
+							duration: 2500,
 							title: '库位信息错误:' + res.result
 						});
 					}
@@ -158,6 +184,10 @@ export default {
 					});
 				}
 			});
+		},
+		//返回
+		goBack:function(){
+			uni.navigateBack();
 		},
 		logMessage: function() {
 			debugger;
