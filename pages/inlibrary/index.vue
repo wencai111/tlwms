@@ -11,7 +11,7 @@
 						<view class="uni-card__header-extra-text">{{ material.totalAmount }}</view>
 					</view>
 					<view class="uni-card__content uni-card__content--pd">
-						<view v-for="(item,index) in material.goods" v-bind:key="index" class="wxc-list">
+						<view v-for="(item, index) in material.goods" v-bind:key="index" class="wxc-list">
 							<view class="wxc-list-title-text">
 								{{ material.storage == null ? '正在等待库位码，可继续物料' : '入库货架' }}
 								<text style="color: #0FAEFF;margin-left: 4px;" v-if="material.storage != null">{{ material.storage.code }}</text>
@@ -26,7 +26,7 @@
 				</view>
 			</view>
 			<button type="primary" v-bind:disabled="!sureInlibrarys" @click="sureInlibrary">确认入库</button>
-			<button type="primary" v-show="currentSteps==3" @click="goBack">返回</button>
+			<button type="primary" v-show="currentSteps == 3" @click="goBack">返回</button>
 			<!-- <button type="primary"  @click="logMessage">
 				浏览器打印
 			</button> -->
@@ -37,7 +37,7 @@
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import inlibraryModel from '@/model/inlibraryModel.js';
-import { authAccount,parseForRule, parseWarehouseCode } from '@/libs/util.js';
+import { authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
 import { checkLocal, saveEmergentInInfo } from '@/api/inlibrary.js';
 import { mapState } from 'vuex';
 export default {
@@ -59,7 +59,7 @@ export default {
 		};
 	},
 	created() {
-		this.currentSteps=0;
+		this.currentSteps = 0;
 		this.material.reset();
 	},
 	components: {
@@ -89,31 +89,29 @@ export default {
 					console.log('res' + JSON.stringify(res));
 					var result = parseForRule(res.result);
 					console.log('result' + JSON.stringify(result));
-					if (result&&result.code&&result.code!="") {
-						if(_this.material.code!=""&&result.code!=_this.material.code){
+					if (result && result.code && result.code != '') {
+						if (_this.material.code != '' && result.code != _this.material.code) {
 							uni.showModal({
 								title: '提示',
-								showCancel:false,
-								content: "跟前一次物料不一致",
+								showCancel: false,
+								content: '跟前一次物料不一致',
 								success: function(res) {
 									if (res.confirm) {
 										console.log('用户点击确定');
-									} 
+									}
 								}
 							});
-						}
-						else{
-						if (_this.material.setMateriaInfo(result)) {
-							_this.currentSteps = 1;
 						} else {
-							uni.showToast({
-								icon: 'none',
-								duration: 2500,
-								title: '物料信息错误:' + JSON.stringify(result)
-							});
+							if (_this.material.setMateriaInfo(result)) {
+								_this.currentSteps = 1;
+							} else {
+								uni.showToast({
+									icon: 'none',
+									duration: 2500,
+									title: '物料信息错误:' + JSON.stringify(result)
+								});
+							}
 						}
-					}
-
 					} else {
 						uni.showToast({
 							icon: 'none',
@@ -154,11 +152,11 @@ export default {
 								uni.showModal({
 									title: '提示',
 									content: checkResult.ResponseText,
-									showCancel:false,
+									showCancel: false,
 									success: function(res) {
 										if (res.confirm) {
 											console.log('用户点击确定');
-										} 
+										}
 									}
 								});
 							}
@@ -187,24 +185,24 @@ export default {
 					_this.currentSteps = 3;
 					uni.showToast({
 						icon: 'success',
-						title: "入库成功！"
+						title: '入库成功！'
 					});
 				} else {
 					uni.showModal({
 						title: '提示',
-						showCancel:false,
+						showCancel: false,
 						content: result.ResponseText,
 						success: function(res) {
 							if (res.confirm) {
 								console.log('用户点击确定');
-							} 
+							}
 						}
 					});
 				}
 			});
 		},
 		//返回
-		goBack:function(){
+		goBack: function() {
 			uni.navigateBack();
 		},
 		logMessage: function() {

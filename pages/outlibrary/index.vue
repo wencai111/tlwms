@@ -88,20 +88,33 @@ export default {
 					console.log('res' + JSON.stringify(res));
 					var result = parseForRule(res.result);
 					console.log('result' + JSON.stringify(result));
-					if (result) {
-						if (_this.material.setMateriaInfo(result)) {
-							_this.currentSteps = 1;
-						} else {
-							uni.showToast({
-								icon: 'none',
-								duration: 2000,
-								title: '物料信息错误:' + JSON.stringify(result)
+					if (result && result.code && result.code != '') {
+						if (_this.material.code != '' && result.code != _this.material.code) {
+							uni.showModal({
+								title: '提示',
+								showCancel: false,
+								content: '跟前一次物料不一致',
+								success: function(res) {
+									if (res.confirm) {
+										console.log('用户点击确定');
+									}
+								}
 							});
+						} else {
+							if (_this.material.setMateriaInfo(result)) {
+								_this.currentSteps = 1;
+							} else {
+								uni.showToast({
+									icon: 'none',
+									duration: 2500,
+									title: '物料信息错误:' + JSON.stringify(result)
+								});
+							}
 						}
 					} else {
 						uni.showToast({
 							icon: 'none',
-							duration: 2000,
+							duration: 2500,
 							title: '物料信息错误:' + res.result
 						});
 					}
@@ -158,12 +171,12 @@ export default {
 					console.log('错误');
 					uni.showModal({
 						title: '提示',
-						showCancel:false,
+						showCancel: false,
 						content: result.ResponseText,
 						success: function(res) {
 							if (res.confirm) {
 								console.log('用户点击确定');
-							} 
+							}
 						}
 					});
 				}

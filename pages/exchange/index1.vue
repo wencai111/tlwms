@@ -2,329 +2,288 @@
 	<view class="content">
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
-			<view class="uni-card__header">
-				<view class="uni-card__header-title-text">{{outbound.code}}</view>
-				<view class="uni-card__header-extra-text">{{outbound.TotalAmount}}</view>
-			</view>
-			<view class="uni-card__content uni-card__content--pd">
-				<view class="wxc-list" v-for="(item,index) in outbound.goods" v-bind:key="index">
-					<view class="wxc-list-title-text">
-						<text style="color: #0FAEFF;margin-left: 4px;">{{outbound.storage==null?'请扫库位码':'已对应库位码'}}</text>
+			<button type="primary" v-bind:disabled="currentSteps > 1" v-on:click="scanMaterial"><text>扫良品</text></button>
+			<button type="primary" v-bind:disabled="currentSteps != 1" v-on:click="scanWarehouse"><text>扫码库位码</text></button>
+			<view v-if="material.id.length > 0">
+				<view class="uni-card">
+					<view class="uni-card__header">
+						<view class="uni-card__header-title-text">{{ material.code }}</view>
+						<view class="uni-card__header-extra-text">{{ material.totalAmount }}</view>
 					</view>
-					<view class="wxc-list-extra-text">{{item}}</view>
-					<!-- <button type="button" style="font-size: 25upx;" @click="modification(index)">修改</button> -->
-					<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="modification(index)">修改</span>
+					<view class="uni-card__content uni-card__content--pd">
+						<view v-for="(item, index) in material.goods" v-bind:key="index" class="wxc-list">
+							<view class="wxc-list-title-text">
+								{{ material.storage == null ? '正在等待库位码，可继续物料' : '入库货架' }}
+								<text style="color: #0FAEFF;margin-left: 4px;" v-if="material.storage != null">{{ material.storage.code }}</text>
+							</view>
+							<view class="wxc-list-extra-text">{{ item }}</view>
+							<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="modification(index)">修改</span>
+						</view>
+					</view>
+					<view class="uni-card__footer">
+						换货入库:{{ material.code }}
+						<text v-if="material.storage != null">{{ material.storage.code }}</text>
+					</view>
 				</view>
 			</view>
-			<view class="uni-card__footer">物料名字:{{outbound.codeid}}</view>
-			<view class="uni-card__footer" v-if="outbound.storage!=null">货架名字:{{outbound.storage.code}}</view>
-			<button type="primary" @click="scanMaterial" v-bind:disabled="!scanMaterials">
-				扫物料良品
-			</button>
-			<button type="primary" @click="Sweeplocation" v-bind:disabled="!Sweeplocations">
-				扫入库
-			</button>
-			<button type="primary" @click="sureInlibrary" v-bind:disabled="!sureInlibrarys">
-				确认出货
-			</button>
-			<neil-modal :show="show" title="修改提示" @confirm="modifierNumber('modifierNumber')">
-				<view style="min-height: 90upx;padding: 32upx 24upx;">
-					<view style="text-align: center;">请输入个数<input type="number" step="0.0000000001" v-enter-number v-model="currentNumber" placeholder="输入个数...." /></view>
-				</view>
-			</neil-modal>
+			<button type="primary" v-bind:disabled="!sureInlibrarys" @click="sureInlibrary">确认退换</button>
+			<button type="primary" v-show="currentSteps == 3" @click="goBack">返回</button>
+			<!-- <button type="primary"  @click="logMessage">
+					浏览器打印
+				</button> -->
 		</view>
+		<neil-modal :show="show" title="修改提示" @confirm="modifierNumber('modifierNumber')">
+			<view style="min-height: 90upx;padding: 32upx 24upx;">
+				<view style="text-align: center;">
+					请输入个数
+					<input type="number" step="0.0000000001" v-enter-number v-model="inputNumber" placeholder="输入个数...." />
+				</view>
+			</view>
+		</neil-modal>
 	</view>
 </template>
 <script>
-	import {
+import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
+import { authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
+import neilModal from '@/components/neil-modal/neil-modal.vue';
+import {saveExchangeOutInfo } from '@/api/exchange.js';
+import exchangeOutlibraryModel from '@/model/exchangeOutlibraryModel.js';
+import { mapState } from 'vuex';
+export default {
+	data() {
+		return {
+			material: exchangeOutlibraryModel,
+			currentSteps: 0, //当前执行步骤，
+			steps: [
+				{
+					title: '扫良品'
+				},
+				{
+					title: '扫库位码'
+				},
+				{
+					title: '入库完成'
+				}
+			],
+			currentIndex: 0, //当前需要修改数量的货物索引
+			show: false,
+			inputNumber: 12
+		};
+	},
+	created() {
+		this.currentSteps = 0;
+		this.material.reset();
+	},
+	components: {
+		neilModal,
 		uniSteps,
 		uniCard,
 		uniList,
 		uniListItem
-	} from '@dcloudio/uni-ui';
-	import {
-		parseWarehouseCode
-	} from '@/libs/util.js';
-	import neilModal from '@/components/neil-modal/neil-modal.vue';
-	import {
-		parseForRule
-	} from '@/libs/util.js';
-	import {
-		exchangeAppear
-	} from '@/api/exchange.js'
-	import
-	exchangeoutModels
-	from '@/model/exchangeoutModel.js'
-	export default {
-		data() {
-			return {
-				steps: [{
-						title: '扫良品'
-					},
-					{
-						title: '扫库位码'
-					},
-					{
-						title: '换货完成'
-					}
-				],
-				currentSteps: 0, //当前执行步骤，
-				index: 0,
-				outbound: exchangeoutModels,
-				show: false,
-				currentNumber: 12, //当前需要货物需要修改的数量
-				currentIndex: 0, //当前需要修改数量的货物索引
-				LocalID: '',
-				Quan: '',
-				MNumber: ''
+	},
+	computed: {
+		...mapState(['forcedLogin', 'hasLogin', 'userName']),
+		sureInlibrarys() {
+			if (this.currentSteps == 2) {
+				return true;
+			} else {
+				return false;
 			}
-		},
-		components: {
-			neilModal,
-			uniSteps,
-			uniCard,
-			uniList,
-			uniListItem
-		},
-		computed: {
-			scanMaterials() {
-				console.log('isCanInlibrary' + this.$data.currentSteps)
-				if (this.$data.currentSteps == 2 || this.$data.currentSteps == 3) {
-					return false;
-				} else {
-					return true;
+		}
+	},
+	methods: {
+		//扫描物料码
+		// { id: 'W', code: '1001030001-B12', codeid: '1', count: 12 }
+		scanMaterial: function(res) {
+			var _this = this;
+			uni.scanCode({
+				onlyFromCamera: true,
+				success: function(res) {
+					console.log('res' + JSON.stringify(res));
+					var result = parseForRule(res.result);
+					console.log('result' + JSON.stringify(result));
+					if (result&&result.code&&result.code!="") {
+						if(_this.material.code!=""&&result.code!=_this.material.code){
+							uni.showModal({
+								title: '提示',
+								showCancel:false,
+								content: "跟前一次物料不一致",
+								success: function(res) {
+									if (res.confirm) {
+										console.log('用户点击确定');
+									} 
+								}
+							});
+						}
+						else{
+						if (_this.material.setMateriaInfo(result)) {
+							_this.currentSteps = 1;
+						} else {
+							uni.showToast({
+								icon: 'none',
+								duration: 2500,
+								title: '物料信息错误:' + JSON.stringify(result)
+							});
+						}
+					}
+		
+					} else {
+						uni.showToast({
+							icon: 'none',
+							duration: 2500,
+							title: '物料信息错误:' + res.result
+						});
+					}
 				}
-			},
-			Sweeplocations() {
-				console.log('isCanInlibrary' + this.$data.currentSteps)
-				if (this.$data.currentSteps == 1) {
-					return true;
-
-				} else {
-					return false;
-				}
-			},
-			sureInlibrarys() {
-				console.log('isCanInlibrary' + this.$data.currentSteps)
-				if (this.$data.currentSteps == 2) {
-					return true;
-				} else {
-					return false;
-				}
-			},
+			});
 		},
-		methods: {
-			modification(index) {
-				this.currentIndex = index;
-				this.show = true;
-			},
-			scanMaterial(res) {
-				if (this.index == 0) {
-					var _this = this;
-					console.log('this定义：' + _this);
-					uni.scanCode({
-						onlyFromCamera: true,
-						success: function(res) {
-							var result = parseForRule(res.result);
-							console.log("res.result" + JSON.stringify(res.result))
-							if (result) {
-								_this.outbound.setMaterial(result);
-								_this.index = _this.index + 1;
-								_this.currentSteps = 1;
-							}
-						},
+		//扫描库位码
+		scanWarehouse: function(res) {
+			var _this = this;
+			uni.scanCode({
+				onlyFromCamera: true,
+				success: function(res) {
+					console.log('res' + JSON.stringify(res));
+					var result = parseWarehouseCode(res.result);
+					console.log('result' + JSON.stringify(result));
+					if (result) {
+						if (_this.material.addStorage(result)) {
+							_this.currentSteps = 2;
+						} else {
+							uni.showToast({
+								icon: 'none',
+								duration: 2500,
+								title: '库位信息错误：' + JSON.stringify(result)
+							});
+						}
+					} else {
+						uni.showToast({
+							icon: 'none',
+							duration: 2500,
+							title: '库位信息错误:' + res.result
+						});
+					}
+				}
+			});
+		},
+		//确定入库
+		sureInlibrary: function() {
+			var _this = this;
+			saveExchangeOutInfo(this.material.generateModel()).then(data => {
+				var [error, res] = data;
+				console.log('data:' + JSON.stringify(data));
+				console.log('res:' + JSON.stringify(res));
+				var result = parseForRule(res.data);
+				console.log('result:' + JSON.stringify(result));
+				if (result.success) {
+					console.log(result);
+					_this.currentSteps = 3;
+					uni.showToast({
+						icon: 'success',
+						title: '入库成功！'
 					});
 				} else {
-					var _this = this;
-					uni.scanCode({
-						onlyFromCamera: true,
+					uni.showModal({
+						title: '提示',
+						showCancel: false,
+						content: result.ResponseText,
 						success: function(res) {
-							console.log('扫码输出内容：' + JSON.stringify(res));
-							var result = parseForRule(res.result);
-							console.log('扫码输出内容：' + JSON.stringify(res.result));
-							if (result) {
-								console.log('输出内容：' + JSON.stringify(result));
-								_this.outbound.addGoods(result);
-								_this.currentSteps = 1;
+							if (res.confirm) {
+								console.log('用户点击确定');
 							}
-						},
-					})
-				}
-			},
-			Sweeplocation(res) {
-				var _this = this;
-				console.log("this" + this);
-				uni.scanCode({
-					onlyFromCamera: true,
-					success: function(res) {
-						var storage = parseWarehouseCode(res.result);
-						console.log('扫货架名字内容：' + JSON.stringify(res.result));
-						if (storage) {
-							_this.outbound.setInlibrary(storage);
-							_this.currentSteps = 2;
 						}
-					},
-				});
-			},
-			//确认入库
-			sureInlibrary: function() {
-				console.log("LocalID:" + this.LocalID)
-				exchangeAppear(this.LocalID, this.MNumber, this.Quan).then(data => {
-					var [error, res] = data;
-					console.log("data:" + JSON.stringify(data));
-					console.log("res:" + JSON.stringify(res));
-					var result = parseForRule(res.data);
-					var _this = this;
-					console.log(result);
-					if (result.success) {
-						console.log(result);
-						_this.currentSteps = 3;
-						uni.showToast({
-							icon: 'success',
-							title: result.ResponseText
-						});
-					} else {
-						_this.currentSteps = 1;
-						uni.showToast({
-							icon: 'fail',
-							title: result.ResponseText
-						});
-					}
-				});
-			},
-			modifierNumber(ref) {
-				debugger;
-				this.outbound.modifierNumber(this.currentIndex, this.currentNumber);
-				this.show = false;
-			}
+					});
+				}
+			});
 		},
+		//返回
+		goBack: function() {
+			uni.navigateBack();
+		},
+		modification: function(index) {
+			console.log('modification:' + index);
+			try{
+				this.inputNumber = this.material.goods[index];
+				this.currentIndex = index;
+				this.show = true;
+			}catch(e){
+				console.log("异常："+JSON.stringify(e))
+			}
+			
+			console.log('modification:end');
+		},
+		modifierNumber: function(ref) {
+			console.log('修改后的值：' + this.inputNumber);
+			try {
+				this.material.modifierNumber(this.currentIndex, this.inputNumber);
+			} catch (e) {
+				console.log("异常："+JSON.stringify(e))
+			}
+			this.show = false;
+		}
+	},
+	onLoad() {
+		authAccount(this.hasLogin, this.forcedLogin, this.userName);
 	}
+};
 </script>
+
 <style lang="scss">
-	.materialnumber {
-		width: auto;
-		height: 100%;
-		float: right;
-	}
+.materialnumber {
+	width: auto;
+	height: 100%;
+	float: right;
+}
+button {
+	margin-top: 10px;
+}
+.bank {
+	width: auto;
+	height: 100%;
+	margin: 0 60%;
+	position: absolute;
+}
 
-	.bank {
-		width: auto;
-		height: 100%;
-		margin: 0 60%;
+$card-extra-width: 30%;
+
+@mixin text-omit {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.uni-card {
+	margin: $uni-spacing-col-base;
+	background: $uni-bg-color;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+
+	&:after {
+		content: '';
 		position: absolute;
+		transform-origin: center;
+		box-sizing: border-box;
+		pointer-events: none;
+		top: -50%;
+		left: -50%;
+		right: -50%;
+		bottom: -50%;
+		border: 1px solid $uni-border-color;
+		border-radius: $uni-border-radius-lg;
+		transform: scale(0.5);
 	}
 
-	$card-extra-width: 30%;
-
-	@mixin text-omit {
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		overflow: hidden;
-	}
-
-	.uni-card {
-		margin: $uni-spacing-col-base;
-		background: $uni-bg-color;
-		position: relative;
-		display: flex;
-		flex-direction: column;
-
-		&:after {
-			content: '';
-			position: absolute;
-			transform-origin: center;
-			box-sizing: border-box;
-			pointer-events: none;
-			top: -50%;
-			left: -50%;
-			right: -50%;
-			bottom: -50%;
-			border: 1px solid $uni-border-color;
-			border-radius: $uni-border-radius-lg;
-			transform: scale(0.5);
-		}
-
-		&__footer,
-		&__header {
-			position: relative;
-			display: flex;
-			flex-direction: row;
-			padding: $uni-spacing-col-base;
-			align-items: center;
-		}
-
-		&__header {
-			&:after {
-				position: absolute;
-				bottom: 0;
-				right: 0;
-				left: 0;
-				height: 1px;
-				content: '';
-				-webkit-transform: scaleY(0.5);
-				transform: scaleY(0.5);
-				background-color: $uni-border-color;
-			}
-
-			&-title {
-				flex: 1;
-				margin-right: $uni-spacing-col-base;
-				display: flex;
-				flex-direction: row;
-				justify-content: flex-start;
-				align-items: center;
-
-				&-text {
-					font-size: $uni-font-size-lg;
-					flex: 1;
-					@include text-omit;
-				}
-			}
-
-			&-extra {
-				&-img-view {
-					display: flex;
-				}
-
-				&-img {
-					height: $uni-img-size-sm;
-					width: $uni-img-size-sm;
-					margin-right: $uni-spacing-col-base;
-				}
-
-				&-text {
-					flex: 0 0 auto;
-					width: $card-extra-width;
-					margin-left: $uni-spacing-col-base;
-					font-size: $uni-font-size-base;
-					text-align: right;
-					@include text-omit;
-				}
-			}
-		}
-
-		&__content {
-			&--pd {
-				padding: $uni-spacing-col-base;
-			}
-		}
-
-		&__footer {
-			justify-content: space-between;
-			color: $uni-text-color-grey;
-			font-size: $uni-font-size-sm;
-			padding-top: 0;
-		}
-	}
-
-	.wxc-list {
+	&__footer,
+	&__header {
 		position: relative;
 		display: flex;
 		flex-direction: row;
 		padding: $uni-spacing-col-base;
-		padding-right: 0px;
 		align-items: center;
+	}
 
+	&__header {
 		&:after {
 			position: absolute;
 			bottom: 0;
@@ -346,7 +305,7 @@
 			align-items: center;
 
 			&-text {
-				font-size: $uni-font-size-base;
+				font-size: $uni-font-size-lg;
 				flex: 1;
 				@include text-omit;
 			}
@@ -372,5 +331,79 @@
 				@include text-omit;
 			}
 		}
+		&__content {
+			&--pd {
+				padding: $uni-spacing-col-base;
+			}
+		}
+
+		&--pd {
+			padding: $uni-spacing-col-base;
+		}
 	}
+
+	&__footer {
+		justify-content: space-between;
+		color: $uni-text-color-grey;
+		font-size: $uni-font-size-sm;
+		padding-top: 0;
+	}
+}
+
+.wxc-list {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	padding: $uni-spacing-col-base;
+	padding-right: 0px;
+	align-items: center;
+
+	&:after {
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		left: 0;
+		height: 1px;
+		content: '';
+		-webkit-transform: scaleY(0.5);
+		transform: scaleY(0.5);
+		background-color: $uni-border-color;
+	}
+
+	&-title {
+		flex: 1;
+		margin-right: $uni-spacing-col-base;
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: center;
+
+		&-text {
+			font-size: $uni-font-size-base;
+			flex: 1;
+			@include text-omit;
+		}
+	}
+
+	&-extra {
+		&-img-view {
+			display: flex;
+		}
+
+		&-img {
+			height: $uni-img-size-sm;
+			width: $uni-img-size-sm;
+			margin-right: $uni-spacing-col-base;
+		}
+
+		&-text {
+			flex: 0 0 auto;
+			width: $card-extra-width;
+			margin-left: $uni-spacing-col-base;
+			font-size: $uni-font-size-base;
+			text-align: right;
+			@include text-omit;
+		}
+	}
+}
 </style>
