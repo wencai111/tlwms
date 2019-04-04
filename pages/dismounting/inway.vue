@@ -27,15 +27,15 @@ export default {
 		},
 		//分拆出库
 		goSpinoffOut: function() {
-			uni.redirectTo({ url: '/pages/dismounting/index1' });
+			uni.navigateTo({ url: '/pages/dismounting/index1' });
 		},
 		//组装入库
 				AssembleffIn: function() {
-			uni.redirectTo({ url: '/pages/dismounting/index2' });
+			uni.navigateTo({ url: '/pages/dismounting/index2' });
 		},
 		//组装出库
 				AssembleffOut: function() {
-			uni.redirectTo({ url: '/pages/dismounting/index3' });
+			uni.navigateTo({ url: '/pages/dismounting/index3' });
 		}
 	},
 	onLoad() {

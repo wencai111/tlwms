@@ -92,16 +92,8 @@
 			goMainPage: function(e) {
 				console.log(JSON.stringify(e));
 				uni.navigateTo({
-					url: this.$data.menu[e.index].url,
-					// url:'../main/main',
-					success: (e) => {
-						console.log("fdfd:" + JSON.stringify(e))
-					},
-					fail: (e) => {
-						console.log("fd2fd:" + JSON.stringify(e))
-					}
+					url: this.$data.menu[e.index].url
 				});
-				console.log("end")
 			}
 		},
 		onLoad() {

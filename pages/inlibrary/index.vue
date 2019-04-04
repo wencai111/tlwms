@@ -11,7 +11,7 @@
 						<view class="uni-card__header-extra-text">{{ material.totalAmount }}</view>
 					</view>
 					<view class="uni-card__content uni-card__content--pd">
-						<view v-for="item in material.goods" v-bind:key="item" class="wxc-list">
+						<view v-for="(item,index) in material.goods" v-bind:key="index" class="wxc-list">
 							<view class="wxc-list-title-text">
 								{{ material.storage == null ? '正在等待库位码，可继续物料' : '入库货架' }}
 								<text style="color: #0FAEFF;margin-left: 4px;" v-if="material.storage != null">{{ material.storage.code }}</text>
@@ -89,20 +89,35 @@ export default {
 					console.log('res' + JSON.stringify(res));
 					var result = parseForRule(res.result);
 					console.log('result' + JSON.stringify(result));
-					if (result) {
+					if (result&&result.code&&result.code!="") {
+						if(_this.material.code!=""&&result.code!=_this.material.code){
+							uni.showModal({
+								title: '提示',
+								showCancel:false,
+								content: "跟前一次物料不一致",
+								success: function(res) {
+									if (res.confirm) {
+										console.log('用户点击确定');
+									} 
+								}
+							});
+						}
+						else{
 						if (_this.material.setMateriaInfo(result)) {
 							_this.currentSteps = 1;
 						} else {
 							uni.showToast({
 								icon: 'none',
-								duration: 2000,
+								duration: 2500,
 								title: '物料信息错误:' + JSON.stringify(result)
 							});
 						}
+					}
+
 					} else {
 						uni.showToast({
 							icon: 'none',
-							duration: 2000,
+							duration: 2500,
 							title: '物料信息错误:' + res.result
 						});
 					}

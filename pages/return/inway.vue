@@ -25,7 +25,7 @@ export default {
 		},
 		//不良品返厂
 		goReturnFactory: function() {
-			uni.redirectTo({ url: '/pages/return/index' });
+			uni.navigateTo({ url: '/pages/return/index' });
 		}
 	},
 	onLoad() {

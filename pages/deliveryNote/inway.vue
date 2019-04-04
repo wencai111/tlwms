@@ -25,8 +25,7 @@ export default {
 		},
 		//查看盘点任务清单
 		lookDeliveryNote: function() {
-			uni.redirectTo({ url: '/pages/deliveryNote/index1' });
-		//	uni.navigateTo({ url: '/pages/inlibrary/index' });
+			uni.navigateTo({ url: '/pages/deliveryNote/index1' });
 		}
 	},
 	onLoad() {

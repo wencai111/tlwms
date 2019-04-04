@@ -25,7 +25,7 @@ export default {
 		},
 		//维修出库
 		goServiceOut: function() {
-			uni.redirectTo({ url: '/pages/service/index1' });
+			uni.navigateTo({ url: '/pages/service/index1' });
 		}
 	},
 	onLoad() {
