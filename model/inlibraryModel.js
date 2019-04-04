@@ -13,41 +13,52 @@ function storageModel() {
  *库位数据：{id:'K',code:'A2-6层-06',codeid:'1934'}
  */
 const inlibraryModel = {
-	id:"",//物料ID
-	code:"",//物料code
-	codeid:"",//物料codeid
-	totalAmount:0,//总货物
-	goods:[],//物料入库货物
-	storage:null,
+	id: "", //物料ID
+	code: "", //物料code
+	codeid: "", //物料codeid
+	totalAmount: 0, //总货物
+	goods: [], //物料入库货物
+	storage: null,
 	//设置物料信息
 	setMateriaInfo: function(data) {
-		if(!data||!data.id||data.id==""){
+		if (!data || !data.id || data.id == "") {
 			return false;
 		}
-		this.id=data.id;
-		this.code=data.code;
-		this.codeid=data.codeid;
-		this.totalAmount=this.totalAmount+data.count;
-		this.goods.push(data.count);
-		return true;
+		try {
+			this.id = data.id;
+			this.code = data.code;
+			this.codeid = data.codeid;
+			this.totalAmount = this.totalAmount + data.count;
+			this.goods.push(data.count);
+			return true;
+
+		} catch (e) {
+			return false;
+		}
+
 	},
 	//物料入库
 	addStorage: function(data) {
-		if(!data||!data.id||data.id==""){
+		if (!data || !data.id || data.id == "") {
 			return false;
 		}
-		this.storage=new storageModel();
-		this.storage.id=data.id;
-		this.storage.code=data.code;
-		this.storage.codeid=data.codeid;
-		return true;
+		try {
+			this.storage = new storageModel();
+			this.storage.id = data.id;
+			this.storage.code = data.code;
+			this.storage.codeid = data.codeid;
+			return true;
+		} catch (e) {
+			return false;
+		}
+
 	},
 	//生成提交入库model
-	generateModel(){
-		var model=new Object();
-		model.MNumber=this.codeid;
-		model.Quan=this.totalAmount;
-		model.LocalID=this.storage.codeid;
+	generateModel() {
+		var model = new Object();
+		model.MNumber = this.codeid;
+		model.Quan = this.totalAmount;
+		model.LocalID = this.storage.codeid;
 		return model;
 	}
 };

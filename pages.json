@@ -199,7 +199,7 @@
 				"navigationBarTitleText": "备件物流查询"
 			}
 		}
-	],
+],
 	"tabBar": {
 		"color": "#7a7e83",
 		"selectedColor": "#0faeff",
@@ -214,7 +214,8 @@
 			"text": "任务",
 			"iconPath": "static/img/user.png",
 			"selectedIconPath": "static/img/userHL.png"
-		}]
+		}
+]
 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

@@ -36,9 +36,7 @@
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import inlibraryModel from '@/model/inlibraryModel.js';
-import { parseForRule } from '@/libs/util.js';
-import { inlibrarys } from '@/libs/util.js';
-import { parseWarehouseCode } from '@/libs/util.js';
+import { parseForRule,parseWarehouseCode } from '@/libs/util.js';
 import { checkLocal, saveEmergentInInfo } from '@/api/inlibrary.js';
 import { mapState } from 'vuex';
 import { authAccount } from '@/libs/util.js';
@@ -50,7 +48,7 @@ export default {
 			currentSteps: 0, //当前执行步骤，
 			steps: [
 				{
-					title: '扫物料码'
+					title: '扫入库码'
 				},
 				{
 					title: '扫库位码'
@@ -79,20 +77,88 @@ export default {
 	},
 	methods: {
 		//扫描物料码
+		// { id: 'W', code: '1001030001-B12', codeid: '1', count: 12 }
 		scanMaterial: function(res) {
-			var result = { id: 'W', code: '1001030001-B12', codeid: '1', count: 12 + this.testIndex };
-			this.material.setMateriaInfo(result);
-			this.testIndex++;
-			this.currentSteps = 1;
+			var _this = this;
+			uni.scanCode({
+				onlyFromCamera: true,
+				success: function(res) {
+					console.log('res' + JSON.stringify(res));
+					var result = parseForRule(res.result);
+					console.log('result' + JSON.stringify(result));
+					if (result) {
+						if (_this.material.setMateriaInfo(result)) {
+							_this.currentSteps = 1;
+						} else {
+							uni.showToast({
+								icon: 'none',
+								duration: 2000,
+								title: '物料信息错误:' + JSON.stringify(result)
+							});
+						}
+					} else {
+						uni.showToast({
+							icon: 'none',
+							duration: 2000,
+							title: '物料信息错误:' + res.result
+						});
+					}
+				}
+			});
 		},
 		//扫描库位码
 		scanWarehouse: function(res) {
-			var result = { id: 'K', code: 'A2-6层-06', codeid: '1934' };
-			this.material.addStorage(result);
-			this.currentSteps = 2;
+			var _this = this;
+			uni.scanCode({
+				onlyFromCamera: true,
+				success: function(res) {
+					console.log('res' + JSON.stringify(res));
+					var result = parseWarehouseCode(res.result);
+					console.log('result' + JSON.stringify(result));
+					if (result) {
+						if (_this.material.addStorage(result)) {
+							_this.currentSteps = 2;
+						} else {
+							uni.showToast({
+								icon: 'none',
+								duration: 2000,
+								title: '库位信息错误：' + JSON.stringify(result)
+							});
+						}
+					} else {
+						uni.showToast({
+							icon: 'none',
+							duration: 2000,
+							title: '库位信息错误:' + res.result
+						});
+					}
+				}
+			});
 		},
 		//确定入库
-		sureInlibrary: function(res) {},
+		sureInlibrary: function() {
+			saveEmergentInInfo(this.material.generateModel()).then(data => {
+				var [error, res] = data;
+				console.log('data:' + JSON.stringify(data));
+				console.log('res:' + JSON.stringify(res));
+				var result = parseForRule(res.data);
+				console.log('result:' + JSON.stringify(result));
+				var _this = this;
+				if (result.success) {
+					console.log(result);
+					_this.currentSteps = 3;
+					uni.showToast({
+						icon: 'success',
+						title: result.ResponseText
+					});
+				} else {
+					uni.showToast({
+						icon: 'fail',
+						title: result.ResponseText
+					});
+				}
+			});
+		},
 		logMessage: function() {
 			debugger;
 		}
