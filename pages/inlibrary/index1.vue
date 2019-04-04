@@ -187,12 +187,18 @@ export default {
 					_this.currentSteps = 3;
 					uni.showToast({
 						icon: 'success',
-						title: result.ResponseText
+						title: "入库成功"
 					});
 				} else {
-					uni.showToast({
-						icon: 'fail',
-						title: result.ResponseText
+					uni.showModal({
+						title: '提示',
+						showCancel:false,
+						content: result.ResponseText,
+						success: function(res) {
+							if (res.confirm) {
+								console.log('用户点击确定');
+							} 
+						}
 					});
 				}
 			});

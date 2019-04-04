@@ -3,6 +3,23 @@ const {
 	domian
 } = config
 
+/**
+ * @description 紧急入库（没有送货单和包装码，系统打印入库码入库）
+ * 用于提交和保存数据，并更新库存。应用场景是：
+ * 在货物上架之前扫描入库码，提取入库码对应信息并提交
+ */
+             
+export const saveEmergentOutInfo = (data) => {
+	console.log("saveEmergentOutInfo入参：" + JSON.stringify(data))
+	return uni.request({
+		url: domian + 'common/wms_Server_Data.asp?action=SaveEmergentOutInfo',
+		type: "GET",
+		dataType: "JSON",
+		data: data,
+	});
+}
+
+
 
 /**
  * @description 获取拣货码信息

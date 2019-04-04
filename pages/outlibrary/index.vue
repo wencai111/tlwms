@@ -26,6 +26,7 @@
 				</view>
 			</view>
 			<button type="primary" v-bind:disabled="!sureOutlibrarys" @click="sureOutlibrary">确认出库</button>
+			<button type="primary" v-show="currentSteps == 3" @click="goBack">返回</button>
 			<!-- <button type="primary"  @click="logMessage">
 				浏览器打印
 			</button> -->
@@ -36,16 +37,12 @@
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import outlibraryModel from '@/model/outlibraryModel.js';
-import { parseForRule } from '@/libs/util.js';
-import { inlibrarys } from '@/libs/util.js';
-import { parseWarehouseCode } from '@/libs/util.js';
-import { checkLocal, saveEmergentInInfo } from '@/api/outlibrary.js';
+import { authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
+import { saveEmergentOutInfo } from '@/api/outlibrary.js';
 import { mapState } from 'vuex';
-import { authAccount } from '@/libs/util.js';
 export default {
 	data() {
 		return {
-			testIndex: 0, //测试使用
 			material: outlibraryModel,
 			currentSteps: 0, //当前执行步骤，
 			steps: [
@@ -60,6 +57,10 @@ export default {
 				}
 			]
 		};
+	},
+	created() {
+		this.currentSteps = 0;
+		this.material.reset();
 	},
 	components: {
 		uniSteps,
@@ -80,19 +81,98 @@ export default {
 	methods: {
 		//扫描物料码
 		scanMaterial: function(res) {
-			var result = { id: 'W', code: '1001030001-B12', codeid: '1', count: 12 + this.testIndex };
-			this.material.setMateriaInfo(result);
-			this.testIndex++;
-			this.currentSteps = 1;
+			var _this = this;
+			uni.scanCode({
+				onlyFromCamera: true,
+				success: function(res) {
+					console.log('res' + JSON.stringify(res));
+					var result = parseForRule(res.result);
+					console.log('result' + JSON.stringify(result));
+					if (result) {
+						if (_this.material.setMateriaInfo(result)) {
+							_this.currentSteps = 1;
+						} else {
+							uni.showToast({
+								icon: 'none',
+								duration: 2000,
+								title: '物料信息错误:' + JSON.stringify(result)
+							});
+						}
+					} else {
+						uni.showToast({
+							icon: 'none',
+							duration: 2000,
+							title: '物料信息错误:' + res.result
+						});
+					}
+				}
+			});
 		},
 		//扫描库位码
 		scanWarehouse: function(res) {
-			var result = { id: 'K', code: 'A2-6层-06', codeid: '1934' };
-			this.material.addStorage(result);
-			this.currentSteps = 2;
+			var _this = this;
+			uni.scanCode({
+				onlyFromCamera: true,
+				success: function(res) {
+					console.log('res' + JSON.stringify(res));
+					var result = parseWarehouseCode(res.result);
+					console.log('result' + JSON.stringify(result));
+					if (result) {
+						if (_this.material.addStorage(result)) {
+							_this.currentSteps = 2;
+						} else {
+							uni.showToast({
+								icon: 'none',
+								duration: 2500,
+								title: '库位信息错误：' + JSON.stringify(result)
+							});
+						}
+					} else {
+						uni.showToast({
+							icon: 'none',
+							duration: 2500,
+							title: '库位信息错误:' + res.result
+						});
+					}
+				}
+			});
 		},
 		//确定出库
-		sureOutlibrary: function(res) {},
+		sureOutlibrary: function(res) {
+			saveEmergentOutInfo(this.material.generateModel()).then(data => {
+				var [error, res] = data;
+				console.log('data:' + JSON.stringify(data));
+				console.log('res:' + JSON.stringify(res));
+				var result = parseForRule(res.data);
+				console.log('result:' + JSON.stringify(result));
+				var _this = this;
+				if (result.success) {
+					console.log(result);
+					_this.currentSteps = 3;
+					console.log('正确');
+					uni.showToast({
+						icon: 'success',
+						title: '出库成功！'
+					});
+				} else {
+					console.log('错误');
+					uni.showModal({
+						title: '提示',
+						showCancel:false,
+						content: result.ResponseText,
+						success: function(res) {
+							if (res.confirm) {
+								console.log('用户点击确定');
+							} 
+						}
+					});
+				}
+			});
+		},
+		//返回
+		goBack: function() {
+			uni.navigateBack();
+		},
 		logMessage: function() {
 			debugger;
 		}
