@@ -13,7 +13,7 @@
 					<view class="uni-card__content uni-card__content--pd">
 						<view v-for="(item, index) in material.goods" v-bind:key="index" class="wxc-list">
 							<view class="wxc-list-title-text">
-								{{ material.storage == null ? '正在等待库位码，可继续物料' : '入库货架' }}
+								{{ material.storage == null ? '正在等待库位码，可继续物料' : '出库货架' }}
 								<text style="color: #0FAEFF;margin-left: 4px;" v-if="material.storage != null">{{ material.storage.code }}</text>
 							</view>
 							<view class="wxc-list-extra-text">{{ item }}</view>
@@ -21,7 +21,7 @@
 						</view>
 					</view>
 					<view class="uni-card__footer">
-						换货入库:{{ material.code }}
+						换货出库:{{ material.code }}
 						<text v-if="material.storage != null">{{ material.storage.code }}</text>
 					</view>
 				</view>
@@ -62,7 +62,7 @@ export default {
 					title: '扫库位码'
 				},
 				{
-					title: '入库完成'
+					title: '出库完成'
 				}
 			],
 			currentIndex: 0, //当前需要修改数量的货物索引
@@ -166,7 +166,7 @@ export default {
 				}
 			});
 		},
-		//确定入库
+		//确定出库
 		sureInlibrary: function() {
 			var _this = this;
 			saveExchangeOutInfo(this.material.generateModel()).then(data => {
@@ -180,7 +180,7 @@ export default {
 					_this.currentSteps = 3;
 					uni.showToast({
 						icon: 'success',
-						title: '入库成功！'
+						title: '换货出库成功！'
 					});
 				} else {
 					uni.showModal({
