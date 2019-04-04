@@ -115,6 +115,18 @@
 				"navigationBarTitleText": "分拆出库"
 			}
 		},
+			{
+			"path": "pages/dismounting/index2",
+			"style": {
+				"navigationBarTitleText": "组装入库"
+			}
+		},
+			{
+			"path": "pages/dismounting/index3",
+			"style": {
+				"navigationBarTitleText": "组装出库"
+			}
+		},
 		{
 			"path": "pages/deliveryNote/inway",
 			"style": {

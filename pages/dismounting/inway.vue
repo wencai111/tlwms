@@ -2,8 +2,8 @@
 	<view class="content">
 		<view class="example-title">选择拆装方式</view>
 		<uni-list>
-			<uni-list-item title="组装入库" note="组装入库"></uni-list-item>
-			<uni-list-item title="组装出库" note="组装出库"></uni-list-item>
+			<uni-list-item title="组装入库" note="组装入库" v-on:click="AssembleffIn" ></uni-list-item>
+			<uni-list-item title="组装出库" note="组装出库" v-on:click="AssembleffOut"></uni-list-item>
 			<uni-list-item title="分拆入库" note="扫良品分拆入库" v-on:click="goSpinoffIn"></uni-list-item>
 			<uni-list-item title="分拆出库" note="扫良品分拆出库" v-on:click="goSpinoffOut"></uni-list-item>
 		</uni-list>
@@ -28,6 +28,14 @@ export default {
 		//分拆出库
 		goSpinoffOut: function() {
 			uni.redirectTo({ url: '/pages/dismounting/index1' });
+		},
+		//组装入库
+				AssembleffIn: function() {
+			uni.redirectTo({ url: '/pages/dismounting/index2' });
+		},
+		//组装出库
+				AssembleffOut: function() {
+			uni.redirectTo({ url: '/pages/dismounting/index3' });
 		}
 	},
 	onLoad() {

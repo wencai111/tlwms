@@ -36,7 +36,7 @@
 				</view>
 			</view>
 			<view v-show="isShowData" class="wxc-card">
-				<view class="wxc-card_list" v-for="item in queryModels" v-bind:key="item.NowQuanId">
+				<view class="wxc-card_list" v-for="item in query" v-bind:key="item.NowQuanId">
 					<view class="wxc-card_list_header">
 						<view class="wxc-card_list_header_title">{{ item.LocalName }}</view>
 						<view class="wxc-card_list_header_extra">{{ item.RegionName }}</view>
@@ -60,6 +60,9 @@
 	import {
 		authAccount
 	} from '@/libs/util.js';
+		import {
+		parseForRule
+	} from '@/libs/util.js';
 	import {
 		mapState
 	} from 'vuex';
@@ -72,16 +75,11 @@
 	export default {
 		data() {
 			return {
-				BillCode: '',
-				GridCode: '',
-				sortOrder: '',
-				sortField: '',
-				pageIndex: '',
 				MNumber: '',
-				pageSize: '',
 				total: 11,
 				totalPages: 0,
 				isShowData: false,
+				query:queryModels,
 				data: []
 			};
 		},
@@ -109,12 +107,16 @@
 					onlyFromCamera: true,
 					success: function(res) {
 						console.log("res.result" + JSON.stringify(res))
-						console.log("res.result" + JSON.stringify(res.result))
-						GetStockList(this.BillCode,this.GridCode,this.sortOrder,this.sortField,this.pageIndex,this.MNumber,this.pageSize).then(data => {
+						GetStockList(this.MNumber).then(data => {
+							console.log("123")
 							var [error, res] = data;
 							var result = parseForRule(res.data);
+							console.log("res.result" + JSON.stringify(res.data))
 							if (result) {
-								_this.queryModels.inventory(result);
+								console.log("我的测试" + JSON.stringify(result))
+								console.log("query"+this.query)
+								console.log("query.inventory"+this.query.inventory)
+								_this.query.inventory(result);
 							}
 				for (let item of result) {
 					this.data.push(item);
@@ -128,85 +130,8 @@
 				uni.navigateBack();
 			},
 			goMore: function() {
-				var result = [{
-						NowQuanId: '17',
-						RegionID: '1',
-						LocalID: '24',
-						MNumber: '1025011001-B11C',
-						MName: '皮带',
-						SupplyName: '盖茨优霓塔',
-						MSortName: '',
-						InPackage: '50',
-						OutPackage: '50',
-						UnitName: '',
-						CarName: 'B11B',
-						RegionName: '高架良品区',
-						LocalName: 'B1-A1-3层-04',
-						EndQuan: '10',
-						InDate: '2019-2-23 11:42:02',
-						BatchNum: '',
-						ProdSpot: 'FB-04',
-						LineName: '底盘线',
-						TpBarcode: '',
-						Cubage: '',
-						UnitPrice: '0',
-						WarningVal: '',
-						MSortCode: '',
-						PalletFlag: ''
-					},
-					{
-						NowQuanId: '16',
-						RegionID: '1',
-						LocalID: '23',
-						MNumber: '1025012001-B01',
-						MName: '平惰轮总成',
-						SupplyName: '暂无',
-						MSortName: '',
-						InPackage: '1',
-						OutPackage: '1',
-						UnitName: '件',
-						CarName: 'B11',
-						RegionName: '高架良品区',
-						LocalName: 'B1-A1-3层-03',
-						EndQuan: '10',
-						InDate: '2019-2-23 11:42:02',
-						BatchNum: '',
-						ProdSpot: '暂无',
-						LineName: '底盘线',
-						TpBarcode: '',
-						Cubage: '',
-						UnitPrice: '0',
-						WarningVal: '',
-						MSortCode: '',
-						PalletFlag: ''
-					},
-					{
-						NowQuanId: '13',
-						RegionID: '1',
-						LocalID: '11',
-						MNumber: '1001050001-B11C',
-						MName: '左悬置总成',
-						SupplyName: '上海众力汽车零部件有限公司',
-						MSortName: '',
-						InPackage: '4',
-						OutPackage: '72',
-						UnitName: '',
-						CarName: 'B11B',
-						RegionName: '高架良品区',
-						LocalName: 'B1-A1-2层-01',
-						EndQuan: '30',
-						InDate: '2019-2-18 10:27:41',
-						BatchNum: '',
-						ProdSpot: 'NS-29',
-						LineName: '内饰一',
-						TpBarcode: '',
-						Cubage: '',
-						UnitPrice: '0',
-						WarningVal: '',
-						MSortCode: '',
-						PalletFlag: ''
-					}
-				];
+				var result = [];
+				
 				for (let item of result) {
 					this.data.push(item);
 				}
