@@ -9,7 +9,7 @@ function storageModel() {
 }
 
 /**
- *紧急入库模型对象
+ *换货入库模型对象
  *物料数据：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
  *库位数据：{id:'K',code:'A2-6层-06',codeid:'1934'}
  */
