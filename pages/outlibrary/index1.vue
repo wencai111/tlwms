@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<view class="">
-			<button :type="btnType"  v-on:click="scanPackegel">
+			<button :type="btnType" v-on:click="scanPackege">
 				<text>{{ btnText }}</text>
 			</button>
 			<view v-show="TlJpdID != ''">
@@ -33,7 +33,7 @@
 				</view>
 			</view>
 			<button type="primary" v-show="isCanOutlibrary" v-on:click="sureOutlibrary"><text>确定出库</text></button>
-			<button type="default"><text>返回</text></button>
+			<button type="default" v-show="isCanOutlibrary" @click="resetPage">重置页面</button>
 			<!-- 	<button type="primary"  @click="logMessage">
 				浏览器打印
 			</button> -->
@@ -42,9 +42,9 @@
 </template>
 
 <script>
-import { parseForRule } from '@/libs/util.js';
+import { authAccount, parseForRule } from '@/libs/util.js';
+import { getPickGoodsCodeInfo, sureStockOut } from '@/api/outlibrary.js';
 import { mapState } from 'vuex';
-import { authAccount } from '@/libs/util.js';
 export default {
 	data() {
 		return {
@@ -56,6 +56,15 @@ export default {
 			OutPackage: '', //出库单包装数量
 			Qty: '' //当前拣货码对应数量
 		};
+	},
+	created() {
+		this.TlJpdID = '';
+		this.OperBillNum = '';
+		this.BillNum = '';
+		this.MNumber = '';
+		this.MName = '';
+		this.OutPackage = '';
+		this.Qty = '';
 	},
 	computed: {
 		...mapState(['forcedLogin', 'hasLogin', 'userName']),
@@ -83,31 +92,98 @@ export default {
 	},
 	methods: {
 		//扫描拣货码
-		scanPackegel: function(res) {
-			if(this.isCanOutlibrary){
-				this.resetScanPackegel();
-			}
-			else{
-				var result = { TlJpdID: '1', OperBillNum: 'MDB2019217-3', BillNum: 'PGC2019221-16791', MNumber: '1001030001-B12', MName: '后悬置总成', OutPackage: '12', Qty: '24' };
-				this.setPackegel(result);
+		scanPackege: function(res) {
+			if (this.isCanOutlibrary) {
+				this.resetScanPackege();
+			} else {
+				var _this = this;
+				uni.scanCode({
+					onlyFromCamera: true,
+					success: function(res) {
+						console.log('res' + JSON.stringify(res));
+						if (res && res.result && res.result != '' && res.result.indexOf('PGC') != '-1') {
+							getPickGoodsCodeInfo(res.result).then(data => {
+								var [error, res] = data;
+								console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
+								console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
+								var result = parseForRule(res.data);
+								console.log('result:' + JSON.stringify(result));
+								if (result && result != {}) {
+									_this.setPackege(result);
+								} else {
+									uni.showModal({
+										title: '提示',
+										content: '没有获取到拣货码信息，请检查拣货码',
+										showCancel: false,
+										success: function(res) {
+											if (res.confirm) {
+												console.log('用户点击确定');
+											}
+										}
+									});
+								}
+							});
+						} else {
+							uni.showToast({
+								icon: 'none',
+								duration: 2500,
+								title: '拣货码错误,请重新扫描；'
+							});
+						}
+					}
+				});
 			}
 		},
-		resetScanPackegel: function(res) {
+		resetScanPackege: function(res) {
+			var _this = this;
 			uni.showModal({
 				title: '提示',
 				content: '是否放弃当前拣货码，重新扫描拣货码',
 				success: function(res) {
 					if (res.confirm) {
-						this.initPackegel();
-						var result = { TlJpdID: '1', OperBillNum: 'MDB2019217-3', BillNum: 'PGC2019221-16791', MNumber: '1001030001-B12', MName: '后悬置总成', OutPackage: '12', Qty: '24' };
-						this.setPackegel(result);
+						_this.initPackege();
+						uni.scanCode({
+							onlyFromCamera: true,
+							success: function(res) {
+								console.log('res' + JSON.stringify(res));
+								if (res && res.result && res.result != '' && res.result.indexOf('PGC') != '-1') {
+									getPickGoodsCodeInfo(res.result).then(data => {
+										var [error, res] = data;
+										console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
+										console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
+										var result = parseForRule(res.data);
+										console.log('result:' + JSON.stringify(result));
+										if (result && result != {}) {
+											_this.setPackege(result);
+										} else {
+											uni.showModal({
+												title: '提示',
+												content: '没有获取到拣货码信息，请检查拣货码',
+												showCancel: false,
+												success: function(res) {
+													if (res.confirm) {
+														console.log('用户点击确定');
+													}
+												}
+											});
+										}
+									});
+								} else {
+									uni.showToast({
+										icon: 'none',
+										duration: 2500,
+										title: '拣货码错误,请重新扫描；'
+									});
+								}
+							}
+						});
 					} else if (res.cancel) {
 					}
 				}
 			});
 		},
 		//初始化拣货码信息
-		initPackegel:function(){
+		initPackege: function() {
 			this.TlJpdID = '';
 			this.OperBillNum = '';
 			this.BillNum = '';
@@ -117,7 +193,7 @@ export default {
 			this.Qty = '';
 		},
 		//设置拣货码信息
-		setPackegel:function(result){
+		setPackege: function(result) {
 			this.TlJpdID = result.TlJpdID;
 			this.OperBillNum = result.OperBillNum;
 			this.BillNum = result.BillNum;
@@ -127,12 +203,54 @@ export default {
 			this.Qty = result.Qty;
 		},
 		//确定出库
-		sureOutlibrary: function(res) {},
-		logMessage: function() {
-			debugger;
-		}
+		sureOutlibrary: function(res) {
+			var _this = this;
+			sureStockOut(this.BillNum).then(data => {
+				var [error, res] = data;
+				console.log('data:' + JSON.stringify(data));
+				console.log('res:' + JSON.stringify(res));
+				var result = parseForRule(res.data);
+				console.log('result:' + JSON.stringify(result));
+				if (result.success) {
+					console.log(result);
+					console.log('正确');
+					uni.showToast({
+						icon: 'success',
+						title: '出库成功！'
+					});
+				} else {
+					console.log('错误');
+					uni.showModal({
+						title: '提示',
+						showCancel: false,
+						content: result.ResponseText,
+						success: function(res) {
+							if (res.confirm) {
+								console.log('用户点击确定');
+							}
+						}
+					});
+				}
+			});
+		},
+		//重置页面
+		resetPage: function() {
+			if (this.isCanOutlibrary) {
+				var _this = this;
+				uni.showModal({
+					title: '提示',
+					content: '是否放弃当前拣货码，重新扫描拣货码',
+					success: function(res) {
+						if (res.confirm) {
+							_this.initPackege();
+						} else if (res.cancel) {
+						}
+					}
+				});
+			}
+		},
+		logMessage: function() {}
 	},
-
 	onLoad() {
 		authAccount(this.hasLogin, this.forcedLogin, this.userName);
 	}

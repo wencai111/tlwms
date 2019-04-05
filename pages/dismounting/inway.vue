@@ -2,10 +2,10 @@
 	<view class="content">
 		<view class="example-title">选择拆装方式</view>
 		<uni-list>
-			<uni-list-item title="组装入库" note="组装入库" v-on:click="AssembleffIn" ></uni-list-item>
-			<uni-list-item title="组装出库" note="组装出库" v-on:click="AssembleffOut"></uni-list-item>
 			<uni-list-item title="分拆入库" note="扫良品分拆入库" v-on:click="goSpinoffIn"></uni-list-item>
 			<uni-list-item title="分拆出库" note="扫良品分拆出库" v-on:click="goSpinoffOut"></uni-list-item>
+			<uni-list-item title="组装入库" note="组装入库" v-on:click="goAssembleffIn"></uni-list-item>
+			<uni-list-item title="组装出库" note="组装出库" v-on:click="goAssembleffOut"></uni-list-item>
 		</uni-list>
 	</view>
 </template>
@@ -19,29 +19,26 @@ export default {
 		return {};
 	},
 	components: { uniList, uniListItem },
-	computed: mapState(['forcedLogin', 'hasLogin', 'userName','code']),
+	computed: mapState(['forcedLogin', 'hasLogin', 'userName', 'code']),
 	methods: {
 		//分拆入库
 		goSpinoffIn: function() {
-			uni.navigateTo({url:'/pages/dismounting/index'});
+			uni.navigateTo({ url: '/pages/dismounting/index' });
 		},
 		//分拆出库
 		goSpinoffOut: function() {
-			uni.redirectTo({ url: '/pages/dismounting/index1' });
+			uni.navigateTo({ url: '/pages/dismounting/index1' });
 		},
 		//组装入库
-				AssembleffIn: function() {
-			uni.redirectTo({ url: '/pages/dismounting/index2' });
+		goAssembleffIn: function() {
+			uni.navigateTo({ url: '/pages/dismounting/index2' });
 		},
 		//组装出库
-				AssembleffOut: function() {
-			uni.redirectTo({ url: '/pages/dismounting/index3' });
+		goAssembleffOut: function() {
+			uni.navigateTo({ url: '/pages/dismounting/index3' });
 		}
 	},
 	onLoad() {
-		debugger;
-		console.log('登录状态：' + this.hasLogin);
-		console.log(this.code); 
 		authAccount(this.hasLogin, this.forcedLogin, this.userName);
 	}
 };

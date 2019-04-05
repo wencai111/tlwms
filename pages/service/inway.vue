@@ -25,12 +25,10 @@ export default {
 		},
 		//维修出库
 		goServiceOut: function() {
-			uni.redirectTo({ url: '/pages/service/index1' });
+			uni.navigateTo({ url: '/pages/service/index1' });
 		}
 	},
 	onLoad() {
-		console.log('登录状态：' + this.hasLogin);
-		console.log(this.code); 
 		authAccount(this.hasLogin, this.forcedLogin, this.userName);
 	}
 };

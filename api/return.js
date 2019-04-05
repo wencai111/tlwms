@@ -3,6 +3,7 @@ const {
 	domian
 } = config
 
+
 /**
  * @description 扫描入库前，检查库位是否满足入库要求
  * 用于物料在移入良品区之前检查库位是否可用，一般在提交数据到数据库保存前检查，
@@ -23,27 +24,26 @@ export const checkLocal = (number, localID) => {
 }
 
 /**
- * @description、拆装件入库 组装入库
- *  用于主机厂不良品到仓储中心调换良品的过程，对不良品进行的换货入库的操作 
+ * @description 不良品入库（从主机厂退库）
+ * 主机厂发现不良品，不良品退回至仓库的操作（入库至仓库）
  */
-export const saveAssemInInfo = (data) => {
-	console.log("saveAssemInInfo:入参 :"+ JSON.stringify(data));
+export const saveStockInForBad = (data) => {
+    console.log("saveStockInForBad 入参："+JSON.stringify(data));
 	return uni.request({
-		url: domian + 'common/wms_Server_Data.asp?action=SaveAssemInInfo',
+		url: domian + 'common/wms_Server_Data.asp?action=SaveStockInForBad',
 		type: "GET",
 		dataType: "JSON",
 		data: data
 	});
 }
-
 /**
- * @description拆装件出库 组装出库
- * 用于主机厂不良品到仓储中心调换良品的过程，对良品进行的换货出库的操作
+ * @description 不良品返厂出库（从仓库出库退回给供应商）
+ * 仓库中的不良品退回给供应商（从仓库中出库）
  */
-export const saveAssemOutInfo = (data) => {
-	console.log("saveAssemOutInfo:入参 :"+ JSON.stringify(data));
+export const saveStockOutByBadMate = (data) => {
+    console.log("SaveStockOutByBadMate 入参："+JSON.stringify(data));
 	return uni.request({
-		url: domian + 'common/wms_Server_Data.asp?action=SaveAssemOutInfo',
+		url: domian + 'common/wms_Server_Data.asp?action=SaveStockOutByBadMate',
 		type: "GET",
 		dataType: "JSON",
 		data: data

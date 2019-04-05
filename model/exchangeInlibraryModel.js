@@ -9,18 +9,17 @@ function storageModel() {
 }
 
 /**
- *不良品退货模型对象
+ *换货入库模型对象
  *物料数据：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
  *库位数据：{id:'K',code:'A2-6层-06',codeid:'1934'}
  */
-const returnModel = {
+const exchangeInlibraryModel = {
 	id: "", //物料ID
 	code: "", //物料code
 	codeid: "", //物料codeid
 	totalAmount: 0, //总货物
 	goods: [], //物料入库货物
 	storage: null,
-	reason:"线退",
 	//重置函数
 	reset: function() {
 		this.id = "";
@@ -29,7 +28,6 @@ const returnModel = {
 		this.totalAmount = 0;
 		this.goods = [];
 		this.storage = null;
-		this.reason="线退";
 	},
 	//设置物料信息
 	setMateriaInfo: function(data) {
@@ -81,16 +79,13 @@ const returnModel = {
 		console.log("新的值："+this.goods[index] );
 	},
 	//生成提交入库model
-	generateModel(flag) {
+	generateModel() {
 		var model = new Object();
 		model.MNumber = this.code;
 		model.Quan = this.totalAmount;
 		model.LocalID = this.storage.codeid;
-		if(flag&&flag==1){
-			model.Reason=this.reason;
-		}
 		return model;
 	}
 }
 //导出对象
-export default returnModel;
+export default exchangeInlibraryModel;

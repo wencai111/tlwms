@@ -25,13 +25,10 @@ export default {
 		},
 		//查看盘点任务清单
 		lookDeliveryNote: function() {
-			uni.redirectTo({ url: '/pages/deliveryNote/index1' });
-		//	uni.navigateTo({ url: '/pages/inlibrary/index' });
+			uni.navigateTo({ url: '/pages/deliveryNote/index1' });
 		}
 	},
 	onLoad() {
-		console.log('登录状态：' + this.hasLogin);
-		console.log(this.code); 
 		authAccount(this.hasLogin, this.forcedLogin, this.userName);
 	}
 };

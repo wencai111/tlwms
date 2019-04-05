@@ -34,6 +34,12 @@ const outlibraryModel = {
 	materials: [], //所有的物料
 	materialKey: "", //物料keys,通过物料key 的索引，给materials叠加物料
 	vehicleCode: '', //车辆码
+	//重置函数
+	reset:function(){
+		this.materials=[];
+		this.materialKey="";
+		this.vehicleCode="";
+	},
 	//添加新物料
 	addNewMaterials: function(data) {
 		this.materials.push(new materialModel(data));
@@ -45,7 +51,7 @@ const outlibraryModel = {
 	//设置物料信息
 	setMaterial: function(data) {
 		if (this.materialKey.indexOf(data.code) != -1) {
-			let index = parseInt(this.materialKey.substr(this.materialKey.indexOf(data.code)+data.code.length+1,1))-1;
+			let index = parseInt(this.materialKey.substr(this.materialKey.indexOf(data.code) + data.code.length + 1, 1)) - 1;
 			this.updateMaterial(data, index);
 		} else {
 			this.addNewMaterials(data);
@@ -72,7 +78,7 @@ const outlibraryModel = {
 		}
 		model.MNumbers = model.MNumbers.trim("").substr(0, model.MNumbers.length - 1)
 		model.Qtys = model.Qtys.trim("").substr(0, model.Qtys.length - 1)
-		model.VehiCode = this.VehiCode;
+		model.VehiCode = this.vehicleCode;
 		return model;
 	}
 }

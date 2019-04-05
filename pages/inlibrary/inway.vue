@@ -29,8 +29,6 @@ export default {
 		}
 	},
 	onLoad() {
-		console.log('登录状态：' + this.hasLogin);
-		console.log(this.code); 
 		authAccount(this.hasLogin, this.forcedLogin, this.userName);
 	}
 };

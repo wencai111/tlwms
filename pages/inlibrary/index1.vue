@@ -20,7 +20,7 @@
 						</view>
 						<view class="wxc-list" style="color: #0FAEFF;">
 							<view class="wxc-list-title-text">
-								{{ material.storage == null ? '正在等待库位码，可扫描装码' : '已对应货架' }}
+								{{ material.storage == null ? '正在等待库位码，可继续扫描包装码' : '已对应货架' }}
 								<text style="color: #0FAEFF;margin-left: 4px;" v-if="material.storage != null">{{ material.storage.code }}</text>
 							</view>
 							<!-- <view class="wxc-list-extra-text">{{item}}</view> -->
@@ -43,16 +43,12 @@
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import inlibraryModel from '@/model/inlibraryByBillModel.js';
-import { parseForRule } from '@/libs/util.js';
-import { inlibrarys } from '@/libs/util.js';
-import { parseWarehouseCode } from '@/libs/util.js';
-import { checkLocal, saveEmergentInInfo } from '@/api/inlibrary.js';
+import { authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
+import { checkLocal, getDeliBillBarcodeInfo, savePutInByDeliBill } from '@/api/inlibrary.js';
 import { mapState } from 'vuex';
-import { authAccount } from '@/libs/util.js';
 export default {
 	data() {
 		return {
-			testIndex: 0, //测试使用
 			material: inlibraryModel,
 			currentSteps: 0, //当前执行步骤，
 			steps: [
@@ -67,6 +63,10 @@ export default {
 				}
 			]
 		};
+	},
+	created() {
+		this.currentSteps=0;
+		this.material.reset();
 	},
 	components: {
 		uniSteps,
@@ -87,28 +87,140 @@ export default {
 	methods: {
 		//扫描包装码
 		scanPackegel: function(res) {
-			var result = {
-				BarCID: '484' + this.testIndex.toString(),
-				BillNum: 'ASN2019320-1',
-				BzBarCode: 'TMLSHZL2019320-484' + this.testIndex.toString(),
-				MNumber: '1001030001-B12',
-				MName: '后悬置总成',
-				InPackage: '1' + this.testIndex.toString(),
-				BzQty: '1' + this.testIndex.toString(),
-				IsScan: '1'
-			};
-			this.material.addPackege(result);
-			this.testIndex++;
-			this.currentSteps = 1;
+			var _this = this;
+			uni.scanCode({
+				onlyFromCamera: true,
+				success: function(res) {
+					console.log('res' + JSON.stringify(res));
+					if (res && res.result && res.result != '' && res.result.indexOf('TML') != '-1') {
+						getDeliBillBarcodeInfo(res.result).then(data => {
+							var [error, res] = data;
+							console.log('getDeliBillBarcodeInfo.data:' + JSON.stringify(data));
+							console.log('getDeliBillBarcodeInfo.res:' + JSON.stringify(res));
+							var result = parseForRule(res.data);
+							console.log('result:' + JSON.stringify(result));
+							if (result && result != {}) {
+								_this.setPackege(result);
+							} else {
+								uni.showModal({
+									title: '提示',
+									content: '没有获取到包装码信息，请检查包装',
+									showCancel: false,
+									success: function(res) {
+										if (res.confirm) {
+											console.log('用户点击确定');
+										}
+									}
+								});
+							}
+						});
+					} else {
+						uni.showToast({
+							icon: 'none',
+							duration: 2500,
+							title: '包装码错误,请重新扫描；'
+						});
+					}
+				}
+			});
 		},
 		//扫描库位码
 		scanWarehouse: function(res) {
-			var result = { id: 'K', code: 'A2-6层-06', codeid: '1934' };
-			this.material.addStorage(result);
-			this.currentSteps = 2;
+			var _this = this;
+			uni.scanCode({
+				onlyFromCamera: true,
+				success: function(res) {
+					console.log('res' + JSON.stringify(res));
+					var result = parseWarehouseCode(res.result);
+					console.log('result' + JSON.stringify(result));
+					if (result) {
+						checkLocal(_this.material.MNumber, result.code).then(data => {
+							var [error, res] = data;
+							console.log('checkLocal.data:' + JSON.stringify(data));
+							console.log('checkLocal.res:' + JSON.stringify(res));
+							var checkResult = parseForRule(res.data);
+							console.log('checkResult:' + JSON.stringify(checkResult));
+							if (checkResult.success) {
+								if (_this.material.addStorage(result)) {
+									_this.currentSteps = 2;
+								} else {
+									uni.showToast({
+										icon: 'none',
+										duration: 2500,
+										title: '库位信息错误：' + JSON.stringify(result)
+									});
+								}
+							} else {
+								uni.showModal({
+									title: '提示',
+									content: checkResult.ResponseText,
+									showCancel: false,
+									success: function(res) {
+										if (res.confirm) {
+											console.log('用户点击确定');
+										}
+									}
+								});
+							}
+						});
+					} else {
+						uni.showToast({
+							icon: 'none',
+							duration: 2500,
+							title: '库位信息错误:' + res.result
+						});
+					}
+				}
+			});
 		},
 		//确定入库
-		sureInlibrary: function(res) {},
+		sureInlibrary: function(res) {
+			var _this = this;
+			savePutInByDeliBill(this.material.generateModel()).then(data => {
+				var [error, res] = data;
+				console.log('data:' + JSON.stringify(data));
+				console.log('res:' + JSON.stringify(res));
+				var result = parseForRule(res.data);
+				console.log('result:' + JSON.stringify(result));
+				if (result.success) {
+					console.log(result);
+					_this.currentSteps = 3;
+					uni.showToast({
+						icon: 'success',
+						title: "入库成功"
+					});
+				} else {
+					uni.showModal({
+						title: '提示',
+						showCancel:false,
+						content: result.ResponseText,
+						success: function(res) {
+							if (res.confirm) {
+								console.log('用户点击确定');
+							} 
+						}
+					});
+				}
+			});
+		},
+		//设置包装码信息
+		setPackege: function(data) {
+			if (this.material.judgePackege(data)) {
+				this.material.addPackege(data);
+				this.currentSteps = 1;
+			} else {
+				uni.showModal({
+					title: '提示',
+					content: '送货单号不一致或物料不同！',
+					showCancel: false,
+					success: function(res) {
+						if (res.confirm) {
+							console.log('用户点击确定');
+						}
+					}
+				});
+			}
+		},
 		logMessage: function() {
 			debugger;
 		}

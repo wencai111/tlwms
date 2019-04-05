@@ -49,6 +49,33 @@ const inlibraryModel = {
 	totalAmount:0,//总货物
 	packages:[],//所有包装
 	storage:null,
+	//重置函数
+	reset:function(){
+		this.BillNum="";
+		this.BzBarCodes=[];
+		this.MNumber="";
+		this.MName="";
+		this.totalAmount=0;
+		this.packages=[];
+		this.storage=null;
+	},
+	//判断是否是相同的送货单和相同的物料
+	judgePackege:function(data){
+		var result=false;
+		if(this.BillNum==""){
+			result=true;
+		}
+		else{
+			if(this.BillNum==data.BillNum&&this.MNumber==data.MNumber){
+				result=true;
+			}
+			else {
+				result=false;
+			}
+		}
+		console.log("judgePackege:"+result)
+		return result;
+	},
 	//设置物料信息
 	addPackege: function(data) {
 		if(!data||!data.BillNum||data.BillNum==""){

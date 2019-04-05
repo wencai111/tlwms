@@ -11,7 +11,7 @@
 						<view class="uni-card__header-extra-text">{{ material.totalAmount }}</view>
 					</view>
 					<view class="uni-card__content uni-card__content--pd">
-						<view v-for="item in material.goods" v-bind:key="item" class="wxc-list">
+						<view v-for="(item, index) in material.goods" v-bind:key="index" class="wxc-list">
 							<view class="wxc-list-title-text">
 								{{ material.storage == null ? '正在等待库位码，可继续物料' : '入库货架' }}
 								<text style="color: #0FAEFF;margin-left: 4px;" v-if="material.storage != null">{{ material.storage.code }}</text>
@@ -26,6 +26,7 @@
 				</view>
 			</view>
 			<button type="primary" v-bind:disabled="!sureInlibrarys" @click="sureInlibrary">确认入库</button>
+			<button type="primary" v-show="currentSteps == 3" @click="goBack">返回</button>
 			<!-- <button type="primary"  @click="logMessage">
 				浏览器打印
 			</button> -->
@@ -36,14 +37,12 @@
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import inlibraryModel from '@/model/inlibraryModel.js';
-import { parseForRule,parseWarehouseCode } from '@/libs/util.js';
+import { authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
 import { checkLocal, saveEmergentInInfo } from '@/api/inlibrary.js';
 import { mapState } from 'vuex';
-import { authAccount } from '@/libs/util.js';
 export default {
 	data() {
 		return {
-			testIndex: 0, //测试使用
 			material: inlibraryModel,
 			currentSteps: 0, //当前执行步骤，
 			steps: [
@@ -58,6 +57,10 @@ export default {
 				}
 			]
 		};
+	},
+	created() {
+		this.currentSteps = 0;
+		this.material.reset();
 	},
 	components: {
 		uniSteps,
@@ -86,20 +89,33 @@ export default {
 					console.log('res' + JSON.stringify(res));
 					var result = parseForRule(res.result);
 					console.log('result' + JSON.stringify(result));
-					if (result) {
-						if (_this.material.setMateriaInfo(result)) {
-							_this.currentSteps = 1;
-						} else {
-							uni.showToast({
-								icon: 'none',
-								duration: 2000,
-								title: '物料信息错误:' + JSON.stringify(result)
+					if (result && result.code && result.code != '') {
+						if (_this.material.code != '' && result.code != _this.material.code) {
+							uni.showModal({
+								title: '提示',
+								showCancel: false,
+								content: '跟前一次物料不一致',
+								success: function(res) {
+									if (res.confirm) {
+										console.log('用户点击确定');
+									}
+								}
 							});
+						} else {
+							if (_this.material.setMateriaInfo(result)) {
+								_this.currentSteps = 1;
+							} else {
+								uni.showToast({
+									icon: 'none',
+									duration: 2500,
+									title: '物料信息错误:' + JSON.stringify(result)
+								});
+							}
 						}
 					} else {
 						uni.showToast({
 							icon: 'none',
-							duration: 2000,
+							duration: 2500,
 							title: '物料信息错误:' + res.result
 						});
 					}
@@ -116,19 +132,39 @@ export default {
 					var result = parseWarehouseCode(res.result);
 					console.log('result' + JSON.stringify(result));
 					if (result) {
-						if (_this.material.addStorage(result)) {
-							_this.currentSteps = 2;
-						} else {
-							uni.showToast({
-								icon: 'none',
-								duration: 2000,
-								title: '库位信息错误：' + JSON.stringify(result)
-							});
-						}
+						checkLocal(_this.material.code, result.code).then(data => {
+							var [error, res] = data;
+							console.log('checkLocal.data:' + JSON.stringify(data));
+							console.log('checkLocal.res:' + JSON.stringify(res));
+							var checkResult = parseForRule(res.data);
+							console.log('checkResult:' + JSON.stringify(checkResult));
+							if (checkResult.success) {
+								if (_this.material.addStorage(result)) {
+									_this.currentSteps = 2;
+								} else {
+									uni.showToast({
+										icon: 'none',
+										duration: 2500,
+										title: '库位信息错误：' + JSON.stringify(result)
+									});
+								}
+							} else {
+								uni.showModal({
+									title: '提示',
+									content: checkResult.ResponseText,
+									showCancel: false,
+									success: function(res) {
+										if (res.confirm) {
+											console.log('用户点击确定');
+										}
+									}
+								});
+							}
+						});
 					} else {
 						uni.showToast({
 							icon: 'none',
-							duration: 2000,
+							duration: 2500,
 							title: '库位信息错误:' + res.result
 						});
 					}
@@ -137,27 +173,37 @@ export default {
 		},
 		//确定入库
 		sureInlibrary: function() {
+			var _this = this;
 			saveEmergentInInfo(this.material.generateModel()).then(data => {
 				var [error, res] = data;
 				console.log('data:' + JSON.stringify(data));
 				console.log('res:' + JSON.stringify(res));
 				var result = parseForRule(res.data);
 				console.log('result:' + JSON.stringify(result));
-				var _this = this;
 				if (result.success) {
 					console.log(result);
 					_this.currentSteps = 3;
 					uni.showToast({
 						icon: 'success',
-						title: result.ResponseText
+						title: '入库成功！'
 					});
 				} else {
-					uni.showToast({
-						icon: 'fail',
-						title: result.ResponseText
+					uni.showModal({
+						title: '提示',
+						showCancel: false,
+						content: result.ResponseText,
+						success: function(res) {
+							if (res.confirm) {
+								console.log('用户点击确定');
+							}
+						}
 					});
 				}
 			});
+		},
+		//返回
+		goBack: function() {
+			uni.navigateBack();
 		},
 		logMessage: function() {
 			debugger;
