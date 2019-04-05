@@ -86,7 +86,7 @@ const dismountingModel = {
 		model.MNumber = this.code;
 		model.Quan = this.totalAmount;
 		model.LocalID = this.storage.codeid;
-		model.Reason=this.reason;
+		// model.Reason=this.reason;
 		return model;
 	}
 }

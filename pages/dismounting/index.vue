@@ -26,9 +26,9 @@
 					</view>
 				</view>
 			</view>
-			<view v-show="sureInlibrarys" class="uni-textarea">
+			<!-- <view v-show="sureInlibrarys" class="uni-textarea">
                 <textarea placeholder-style="color:#F76260" v-model="material.reason" placeholder="请填写分拆入库的原因"/>
-            </view>
+            </view> -->
 			<button type="primary" v-bind:disabled="!sureInlibrarys" @click="sureInlibrary">确认分拆入库</button>
 			<button type="primary" v-show="currentSteps == 3" @click="goBack">返回</button>
 			<!-- <button type="primary"  @click="logMessage">
