@@ -99,7 +99,6 @@ export default {
 	methods: {
 		//确定查询
 		sureQuery: function() {
-			var result = [];
 			if (this.MNumber == '') {
 				uni.showModal({
 					title: '提示',

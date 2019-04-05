@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<view class="example">
-			<button type="primary" v-bind:disabled="currentSteps > 1" @click="scanWarehouse">扫库位码</button>
+			<button type="primary" v-bind:disabled="currentSteps >= 1" @click="scanWarehouse">扫库位码</button>
 			<view v-if="LocalID != ''">
 				<view class="wxc-list">
 					<view class="wxc-list-title">库位ID号:</view>
@@ -33,7 +33,7 @@
 				</view>
 			</view>
 			<button type="primary" @click="updateAmount" v-bind:disabled="!sureUpdateAmount">确认盘点库存</button>
-			<button type="primary" v-show="currentSteps == 2" @click="goBack">返回</button>
+			<button type="default" @click="goBack">返回</button>
 		</view>
 	</view>
 </template>

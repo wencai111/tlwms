@@ -44,12 +44,5 @@ export const getLocationList = (data) => {
 		type: "POST",
 		dataType: "JSON",
 		data: data
-		// 		data: {
-		// 			"PdFlag": 1,
-		// 			"pageIndex": 0,
-		// 			"pageSize": 5,
-		// 			"sortField": LocalName,
-		// 			"sortOrder": asc,
-		// 		},
 	});
 }
