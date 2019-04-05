@@ -164,17 +164,18 @@
 			}
 		},
 		{
-			"path": "pages/return/index1",
+			"path": "pages/return/index",
 			"style": {
-				"navigationBarTitleText": "不良品退仓"
+				"navigationBarTitleText": "不良品退仓入库"
 			}
 		},
 		{
-			"path": "pages/return/index",
+			"path": "pages/return/index1",
 			"style": {
-				"navigationBarTitleText": "不良品返厂"
+				"navigationBarTitleText": "不良品返厂出库"
 			}
 		},
+		
 		{
 			"path": "pages/checkInventory/inway",
 			"style": {

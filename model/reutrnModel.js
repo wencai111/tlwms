@@ -8,37 +8,89 @@ function storageModel() {
 	this.codeid = '';
 }
 
-function returnfactoryModel() {
-	this.code = "";//物料名称
-	this.TotalAmount = 0;//物料总数
-	this.goods = [];//物料个数
-	this.codeid = "";//物料ID
-    this.storage=null;//库位信息
-	this.id = "";//物料货架
-	//首次新增物料
-	this.setMaterial = function(data) {
-			this.code = data.code;//物料名称赋值
-			this.TotalAmount = data.count;//物料总数
-			this.goods.push(data.count)//物料个数
-			this.codeid = data.codeid;//物料ID
-	};
-	//物料相加
-	this.addGoods = function(data) {
-        this.goods.push(data.count);//物料个数
-		this.TotalAmount = this.TotalAmount + data.count; //总数相加
-	}
-	this.setInlibrary=function(storage){
-		this.storage=new storageModel();
-		this.storage.id=storage.id;
-		this.storage.code=storage.code;
-		this.storage.codeid=storage.codeid;
+/**
+ *不良品退货模型对象
+ *物料数据：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
+ *库位数据：{id:'K',code:'A2-6层-06',codeid:'1934'}
+ */
+const returnModel = {
+	id: "", //物料ID
+	code: "", //物料code
+	codeid: "", //物料codeid
+	totalAmount: 0, //总货物
+	goods: [], //物料入库货物
+	storage: null,
+	reason:"线退",
+	//重置函数
+	reset: function() {
+		this.id = "";
+		this.code = "";
+		this.codeid = "";
+		this.totalAmount = 0;
+		this.goods = [];
+		this.storage = null;
+		this.reason="线退";
 	},
-		this.modifierNumber = function(index,number){
-		this.TotalAmount =this.TotalAmount+ (parseInt(number)-this.goods[index]) ;//物料总数
-		this.goods[index]=parseInt(number);
+	//设置物料信息
+	setMateriaInfo: function(data) {
+		if (!data || !data.id || data.id == "") {
+			return false;
+		}
+		try {
+			this.id = data.id;
+			this.code = data.code;
+			this.codeid = data.codeid;
+			this.totalAmount = this.totalAmount + data.count;
+			this.goods.push(data.count);
+			return true;
+
+		} catch (e) {
+			return false;
+		}
+
+	},
+	//物料入库
+	addStorage: function(data) {
+		if (!data || !data.id || data.id == "") {
+			return false;
+		}
+		try {
+			this.storage = new storageModel();
+			this.storage.id = data.id;
+			this.storage.code = data.code;
+			this.storage.codeid = data.codeid;
+			return true;
+		} catch (e) {
+			return false;
+		}
+
+	},
+	//修改数量
+	modifierNumber: function(index, number) {
+		console.log("当前索引："+index);
+		console.log("当前数字："+number);
+		try{
+			var adds=(number - this.goods[index]);
+			console.log("相加的值："+adds);
+			this.totalAmount =this.totalAmount+adds; //物料总数
+		    this.goods[index] = number;
+            console.log("改变值后的totalAmount："+this.totalAmount)
+		}catch(e){
+			console.log("异常："+JSON.stringify(e));
+		}
+		console.log("新的值："+this.goods[index] );
+	},
+	//生成提交入库model
+	generateModel(flag) {
+		var model = new Object();
+		model.MNumber = this.code;
+		model.Quan = this.totalAmount;
+		model.LocalID = this.storage.codeid;
+		if(flag&&flag==1){
+			model.Reason=this.reason;
+		}
+		return model;
 	}
 }
-
-	
-const reutrnModels = new returnfactoryModel();
-export default reutrnModels;
+//导出对象
+export default returnModel;
