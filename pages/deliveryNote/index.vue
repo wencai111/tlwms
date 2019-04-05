@@ -29,7 +29,7 @@
 				</view>
 				<view class="uni-form-item uni-column">
 					<view class="title">输入数量盘点数量</view>
-					<input class="uni-input" v-model="updateEndQuan" focus placeholder="请输需要盘点的数量" type="number" />
+					<input class="uni-input" v-model="updateEndQuan"  placeholder="请输需要盘点的数量" type="number" />
 				</view>
 			</view>
 			<button type="primary" @click="updateAmount" v-bind:disabled="!sureUpdateAmount">确认盘点库存</button>
