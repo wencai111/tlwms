@@ -4,8 +4,8 @@
 		<uni-list>
 			<uni-list-item title="备件下架" note="备件下架" v-on:click="goOutlibrary"></uni-list-item>
 			<uni-list-item title="备件打包" note="备件打包" v-on:click="goPackeged"></uni-list-item>
-			<uni-list-item title="备件物流扫码" note="备件物流扫码" v-on:click="goLogisticsScan"></uni-list-item>
 			<uni-list-item title="备件发货" note="备件发货" v-on:click="goShip"></uni-list-item>
+			<uni-list-item title="备件物流扫码" note="备件物流扫码" v-on:click="goLogisticsScan"></uni-list-item>
 			<uni-list-item title="备件物流查询" note="备件物流查询" v-on:click="goLogisticsQuery"></uni-list-item>
 		</uni-list>
 	</view>
@@ -40,7 +40,7 @@ export default {
 		},
 		//备件物流查询
 		goLogisticsQuery:function(){
-			uni.navigateTo({url:'/pages/checkInventory/logisticsQuery'});
+			uni.navigateTo({url:'/pages/checkInventory/queryWay'});
 		}
 		
 	},

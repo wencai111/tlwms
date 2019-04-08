@@ -207,6 +207,12 @@
 			}
 		},
 		{
+			"path": "pages/checkInventory/queryWay",
+			"style": {
+				"navigationBarTitleText": "备件物流查询方式"
+			}
+		},
+		{
 			"path": "pages/checkInventory/logisticsQuery",
 			"style": {
 				"navigationBarTitleText": "备件物流查询"
