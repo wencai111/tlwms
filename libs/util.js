@@ -18,6 +18,24 @@ export const parseForRule = (data) => {
 }
 
 /**
+ * @description 判断是否为空对象
+ */
+export const isEmptyObject =(data) => {
+	var result=true;
+	try{
+		for (var i in data) {
+			result=false;
+		}
+	}catch(e){
+		console.log("isEmptyObject异常："+JSON.stringify(e))
+		result=true;
+	}
+	console.log("isEmptyObject结果："+result)
+	return result;
+}
+
+
+/**
  * @description 库位码转换函数
  */
 export const parseWarehouseCode = (code) => {
