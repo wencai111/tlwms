@@ -102,31 +102,29 @@ export default {
 					console.log('res' + JSON.stringify(res));
 					var result = parseForRule(res.result);
 					console.log('result' + JSON.stringify(result));
-					if (result&&result.code&&result.code!="") {
-						if(_this.material.code!=""&&result.code!=_this.material.code){
+					if (result && result.code && result.code != '') {
+						if (_this.material.code != '' && result.code != _this.material.code) {
 							uni.showModal({
 								title: '提示',
-								showCancel:false,
-								content: "跟前一次物料不一致",
+								showCancel: false,
+								content: '跟前一次物料不一致',
 								success: function(res) {
 									if (res.confirm) {
 										console.log('用户点击确定');
-									} 
+									}
 								}
 							});
-						}
-						else{
-						if (_this.material.setMateriaInfo(result)) {
-							_this.currentSteps = 1;
 						} else {
-							uni.showToast({
-								icon: 'none',
-								duration: 2500,
-								title: '物料信息错误:' + JSON.stringify(result)
-							});
+							if (_this.material.setMateriaInfo(result)) {
+								_this.currentSteps = 1;
+							} else {
+								uni.showToast({
+									icon: 'none',
+									duration: 2500,
+									title: '物料信息错误:' + JSON.stringify(result)
+								});
+							}
 						}
-					}
-		
 					} else {
 						uni.showToast({
 							icon: 'none',
@@ -146,36 +144,16 @@ export default {
 					console.log('res' + JSON.stringify(res));
 					var result = parseWarehouseCode(res.result);
 					console.log('result' + JSON.stringify(result));
-					if (result) {
-						checkLocal(_this.material.code, result.code).then(data => {
-							var [error, res] = data;
-							console.log('checkLocal.data:' + JSON.stringify(data));
-							console.log('checkLocal.res:' + JSON.stringify(res));
-							var checkResult = parseForRule(res.data);
-							console.log('checkResult:' + JSON.stringify(checkResult));
-							if (checkResult.success) {
-								if (_this.material.addStorage(result)) {
-									_this.currentSteps = 2;
-								} else {
-									uni.showToast({
-										icon: 'none',
-										duration: 2500,
-										title: '库位信息错误：' + JSON.stringify(result)
-									});
-								}
-							} else {
-								uni.showModal({
-									title: '提示',
-									content: checkResult.ResponseText,
-									showCancel: false,
-									success: function(res) {
-										if (res.confirm) {
-											console.log('用户点击确定');
-										}
-									}
-								});
-							}
-						});
+					if (result && result.code && result.code != '') {
+						if (_this.material.addStorage(result)) {
+							_this.currentSteps = 2;
+						} else {
+							uni.showToast({
+								icon: 'none',
+								duration: 2500,
+								title: '库位信息错误：' + JSON.stringify(result)
+							});
+						}
 					} else {
 						uni.showToast({
 							icon: 'none',
@@ -222,18 +200,18 @@ export default {
 		},
 		modification: function(index) {
 			console.log('modification:' + index);
-			try{
+			try {
 				this.inputNumber = this.material.goods[index];
 				this.currentIndex = index;
 				this.show = true;
-			}catch(e){
-				console.log("异常："+JSON.stringify(e))
+			} catch (e) {
+				console.log('异常：' + JSON.stringify(e));
 			}
-			
+
 			console.log('modification:end');
 		},
 		//关闭弹框事件
-		closeModificationModal:function(data){
+		closeModificationModal: function(data) {
 			this.show = false;
 		},
 		modifierNumber: function(ref) {
@@ -241,7 +219,7 @@ export default {
 			try {
 				this.material.modifierNumber(this.currentIndex, this.inputNumber);
 			} catch (e) {
-				console.log("异常："+JSON.stringify(e))
+				console.log('异常：' + JSON.stringify(e));
 			}
 			this.show = false;
 		}
