@@ -10,12 +10,7 @@ const {
 export const getLocalMateInfo = (LocalID) => {
 	console.log("getLocalMateInfo入参：LocalID:" + LocalID);
 	return uni.request({
-		url: domian + 'common/wms_Server_Data.asp?action=GetLocalMateInfo',
-		type: "GET",
-		dataType: "JSON",
-		data: {
-			LocalID: 'LocalID'
-		}
+		url: domian + 'common/wms_Server_Data.asp?action=GetLocalMateInfo&LocalID='+LocalID
 	});
 }
 /**

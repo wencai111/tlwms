@@ -37,7 +37,7 @@
 			<!-- 	<button type="primary"  @click="logMessage">
 				浏览器打印
 			</button> -->
-		</view>
+		</view>f
 	</view>
 </template>
 
