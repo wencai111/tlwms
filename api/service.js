@@ -27,6 +27,7 @@ export const checkLocal = (MNumber,LocalID) => {
  *用于不良品维修后转换为良品入库的操作
 */
 export const saveRepairInInfo = (data) => {
+	console.log("saveRepairInInfo:入参 :" + JSON.stringify(data));
 	return uni.request({
 		url: domian + 'common/wms_Server_Data.asp?action=SaveRepairInInfo',
 		type: "POST",
@@ -39,6 +40,7 @@ export const saveRepairInInfo = (data) => {
 * 用于对不良品返修出库的操作，实际返修时物料出库到返修区
 */
 export const saveRepairOutInfo = (data) => {
+	console.log("saveRepairOutInfo:入参 :" + JSON.stringify(data));
 	return uni.request({
 		url: domian + 'common/wms_Server_Data.asp?action=SaveRepairOutInfo',
 		type: "POST",

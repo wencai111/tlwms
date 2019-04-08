@@ -41,6 +41,7 @@ export const saveExchangeInInfo = (data) => {
  * 用于主机厂不良品到仓储中心调换良品的过程，对不良品进行的换货入库的操作
 */
 export const saveExchangeOutInfo = (data) => {
+	console.log("saveExchangeOutInfo:入参 :" + JSON.stringify(data));
 	return uni.request({
 		url: domian + 'common/wms_Server_Data.asp?action=SaveExchangeOutInfo',
 		type: "POST",
