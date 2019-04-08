@@ -20,16 +20,18 @@ export const GetDeliBillBarcodeInfo = (BzBarCode) => {
 }
 
 
-export const SavePutInByDeliBill = (BzBarCodes,MNumber,Quan,LocalID) => {
+export const SavePutInByDeliBill = (data) => {
+		console.log("savePutInByDeliBill:入参 :" + JSON.stringify(data));
 	return uni.request({
 		url: domian + 'common/wms_Server_Data.asp?action= SavePutInByDeliBill',
 		type: "POST",
 		dataType: "JSON",
-		data: {
-			"BzBarCodes": BzBarCodes,
-			"MNumber":MNumber,
-			"Quan":Quan,
-			"LocalID":LocalID
-		}
+// 		data: {
+// 			"BzBarCodes": BzBarCodes,
+// 			"MNumber":MNumber,
+// 			"Quan":Quan,
+// 			"LocalID":LocalID
+// 		}
+	         data: data,
 	});
 }

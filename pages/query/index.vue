@@ -3,7 +3,7 @@
 		<view class="uni-padding-wrap uni-common-mt">
 			<view v-show="data.length <= 0">
 				<view class=""><input class="uni-input" name="input" v-model="MNumber" placeholder="请填写物料条码" /></view>
-				<view class="uni-form-item uni-column">
+				<!-- <view class="uni-form-item uni-column">
 					<view class="title">排序字段</view>
 					<radio-group name="radio">
 						<label>
@@ -15,7 +15,7 @@
 							默认
 						</label>
 					</radio-group>
-				</view>
+				</view> -->
 				<view class="uni-form-item uni-column">
 					<view class="title">升降序</view>
 					<radio-group name="radio">
@@ -43,8 +43,8 @@
 						<view class="wxc-card_list_header_extra1">{{ item.MNumber }}</view>
 					</view>
 					<view class="wxc-card_list_content">
-						<view class="wxc-card_list_content_text">入:{{ item.InPackage }}</view>
-						<view class="wxc-card_list_content_text">出:{{ item.OutPackage }}</view>
+						<view class="wxc-card_list_content_text">时间:{{ item.InDate }}</view>
+						<view class="wxc-card_list_content_text">物料:{{ item.MName }}</view>
 						<view class="wxc-card_list_content_text">库存:{{ item.EndQuan }}</view>
 					</view>
 				</view>
@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { parseForRule, authAccount } from '@/libs/util.js';
+import { parseForRule, authAccount,isEmptyObject} from '@/libs/util.js';
 import { getStockList } from '@/api/query.js';
 import { mapState } from 'vuex';
 export default {
@@ -119,7 +119,7 @@ export default {
 					console.log('getStockList.res:' + JSON.stringify(res));
 					var result = parseForRule(res.data);
 					console.log('getStockList.result:' + JSON.stringify(result));
-					if (result && result != {}) {
+					if (result &&!isEmptyObject(result)) {
 						_this.addMaterialModel(result);
 					} else {
 						uni.showModal({

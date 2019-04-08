@@ -43,7 +43,7 @@
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import inlibraryModel from '@/model/inlibraryByBillModel.js';
-import { authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
+import { authAccount, parseForRule, parseWarehouseCode,isEmptyObject} from '@/libs/util.js';
 import { checkLocal, getDeliBillBarcodeInfo, savePutInByDeliBill } from '@/api/inlibrary.js';
 import { mapState } from 'vuex';
 export default {
@@ -99,7 +99,7 @@ export default {
 							console.log('getDeliBillBarcodeInfo.res:' + JSON.stringify(res));
 							var result = parseForRule(res.data);
 							console.log('result:' + JSON.stringify(result));
-							if (result && result != {}) {
+							if (result &&!isEmptyObject(result)) {
 								_this.setPackege(result);
 							} else {
 								uni.showModal({
@@ -133,7 +133,7 @@ export default {
 					console.log('res' + JSON.stringify(res));
 					var result = parseWarehouseCode(res.result);
 					console.log('result' + JSON.stringify(result));
-					if (result) {
+					if (result && result.code && result.code != '') {
 						checkLocal(_this.material.MNumber, result.code).then(data => {
 							var [error, res] = data;
 							console.log('checkLocal.data:' + JSON.stringify(data));
@@ -206,8 +206,22 @@ export default {
 		//设置包装码信息
 		setPackege: function(data) {
 			if (this.material.judgePackege(data)) {
-				this.material.addPackege(data);
-				this.currentSteps = 1;
+				if(this.material.judgeCommonPackege(data)){
+					uni.showModal({
+						title: '提示',
+						content: data.BzBarCode+"包装码已经扫描过！",
+						showCancel: false,
+						success: function(res) {
+							if (res.confirm) {
+								console.log('用户点击确定');
+							}
+						}
+					});
+				}
+				else{
+					this.material.addPackege(data);
+					this.currentSteps = 1;
+				}
 			} else {
 				uni.showModal({
 					title: '提示',

@@ -32,8 +32,8 @@
 					</view>
 				</view>
 			</view>
-			<button type="primary" v-show="isCanOutlibrary" v-on:click="sureOutlibrary"><text>确定出库</text></button>
-			<button type="default" v-show="isCanOutlibrary" @click="resetPage">重置页面</button>
+			<button type="primary"  v-show="isShowOutlibrary" v-bind:disabled="!isCanOutlibrary" v-on:click="sureOutlibrary"><text>确定出库</text></button>
+			<button type="default" v-show="isShowOutlibrary" @click="resetPage">重置页面</button>
 			<!-- 	<button type="primary"  @click="logMessage">
 				浏览器打印
 			</button> -->
@@ -42,12 +42,13 @@
 </template>
 
 <script>
-import { authAccount, parseForRule } from '@/libs/util.js';
+import { authAccount, parseForRule,isEmptyObject} from '@/libs/util.js';
 import { getPickGoodsCodeInfo, sureStockOut } from '@/api/outlibrary.js';
 import { mapState } from 'vuex';
 export default {
 	data() {
 		return {
+			currentSteps: 0, //当前执行步骤，
 			TlJpdID: '', //拣货码ID号
 			OperBillNum: '', //需求单号
 			BillNum: '', //拣货码条码内容
@@ -58,6 +59,7 @@ export default {
 		};
 	},
 	created() {
+		this.currentSteps=0;
 		this.TlJpdID = '';
 		this.OperBillNum = '';
 		this.BillNum = '';
@@ -69,6 +71,13 @@ export default {
 	computed: {
 		...mapState(['forcedLogin', 'hasLogin', 'userName']),
 		isCanOutlibrary() {
+			if (this.currentSteps == 1) {
+				return true;
+			} else {
+				return false;
+			}
+		},
+		isShowOutlibrary() {
 			if (this.TlJpdID && this.TlJpdID != '') {
 				return true;
 			} else {
@@ -108,7 +117,9 @@ export default {
 								console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
 								var result = parseForRule(res.data);
 								console.log('result:' + JSON.stringify(result));
-								if (result && result != {}) {
+								var result = isEmptyObject(result);
+								if (result &&!isEmptyObject(result)) {
+									_this.currentSteps=1;
 									_this.setPackege(result);
 								} else {
 									uni.showModal({
@@ -152,8 +163,10 @@ export default {
 										console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
 										console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
 										var result = parseForRule(res.data);
+										var result = isEmptyObject(result);
 										console.log('result:' + JSON.stringify(result));
-										if (result && result != {}) {
+										if (result &&!isEmptyObject(result)) {
+											_this.currentSteps=1;
 											_this.setPackege(result);
 										} else {
 											uni.showModal({
@@ -184,6 +197,7 @@ export default {
 		},
 		//初始化拣货码信息
 		initPackege: function() {
+			this.currentSteps=0;
 			this.TlJpdID = '';
 			this.OperBillNum = '';
 			this.BillNum = '';
@@ -212,6 +226,7 @@ export default {
 				var result = parseForRule(res.data);
 				console.log('result:' + JSON.stringify(result));
 				if (result.success) {
+					_this.currentSteps=2;
 					console.log(result);
 					console.log('正确');
 					uni.showToast({

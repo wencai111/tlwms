@@ -114,10 +114,15 @@ export default {
 						_this.materials.setVehicleCode(result.code);
 						_this.currentSteps = 2;
 					} else {
-						uni.showToast({
-							icon: 'none',
-							duration: 2500,
-							title: '物料信息错误:' + res.result
+						uni.showModal({
+							title: '提示',
+							showCancel: false,
+							content: result.ResponseText,
+							success: function(res) {
+								if (res.confirm) {
+									console.log('用户点击确定');
+								}
+							}
 						});
 					}
 				}

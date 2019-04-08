@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { parseForRule, authAccount } from '@/libs/util.js';
+import { parseForRule, authAccount,isEmptyObject } from '@/libs/util.js';
 import { getLocationList } from '@/api/deliveryNote.js';
 import { mapState } from 'vuex';
 export default {
@@ -68,8 +68,9 @@ export default {
 				console.log('getStockList.data:' + JSON.stringify(data));
 				console.log('getStockList.res:' + JSON.stringify(res));
 				var result = parseForRule(res.data);
+				var result = isEmptyObject(result);
 				console.log('getStockList.result:' + JSON.stringify(result));
-				if (result && result != {}) {
+				if (result &&!isEmptyObject(result)) {
 					_this.addDeliveryNoteModel(result);
 				} else {
 					uni.showModal({
