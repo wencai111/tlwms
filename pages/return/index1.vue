@@ -33,7 +33,7 @@
 			<button type="primary" v-show="currentSteps == 3" @click="goBack">返回</button>
 			
 		</view>
-		<neil-modal :show="show" title="修改提示" @confirm="modifierNumber('modifierNumber')">
+		<neil-modal :show="show" title="修改提示" @close="closeModificationModal" @confirm="modifierNumber('modifierNumber')">
 			<view style="min-height: 90upx;padding: 32upx 24upx;">
 				<view style="text-align: center;">
 					请输入个数
@@ -232,6 +232,10 @@ export default {
 			}
 			
 			console.log('modification:end');
+		},
+		//关闭弹框事件
+		closeModificationModal:function(data){
+			this.show = false;
 		},
 		modifierNumber: function(ref) {
 			console.log('修改后的值：' + this.inputNumber);

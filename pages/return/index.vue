@@ -17,11 +17,11 @@
 								<text style="color: #0FAEFF;margin-left: 4px;" v-if="material.storage != null">{{ material.storage.code }}</text>
 							</view>
 							<view class="wxc-list-extra-text">{{ item }}</view>
-							<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="modification(index)">修改</span>
+							<view style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="modification(index)">修改</view>
 						</view>
 					</view>
 					<view class="uni-card__footer">
-						返回入库:{{ material.code }}
+						退仓入库:{{ material.code }}
 						<text v-if="material.storage != null">{{ material.storage.code }}</text>
 					</view>
 				</view>
@@ -41,7 +41,7 @@
 			<button type="primary" v-show="currentSteps == 3" @click="goBack">返回</button>
 			
 		</view>
-		<neil-modal :show="show" title="修改提示" @confirm="modifierNumber('modifierNumber')">
+		<neil-modal :show="show" title="修改提示" @close="closeModificationModal"  @confirm="modifierNumber('modifierNumber')">
 			<view style="min-height: 90upx;padding: 32upx 24upx;">
 				<view style="text-align: center;">
 					请输入个数
@@ -239,6 +239,10 @@ export default {
 				this.material.reason="检退";
 			}
 			
+		},
+		//关闭弹框事件
+		closeModificationModal:function(data){
+			this.show = false;
 		},
 		modification: function(index) {
 			console.log('modification:' + index);
