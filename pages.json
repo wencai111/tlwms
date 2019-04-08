@@ -46,7 +46,7 @@
 		{
 			"path": "pages/outlibrary/index",
 			"style": {
-				"navigationBarTitleText": "紧急入库"
+				"navigationBarTitleText": "紧急出库"
 			}
 		},
 		{
