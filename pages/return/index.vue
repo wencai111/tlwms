@@ -234,8 +234,10 @@ export default {
 			console.log("index:"+index)
 			if(index==1){
 				this.material.reason="线退";
+				console.log("reason:线退")
 			}
 			else{
+				console.log("reason:检退")
 				this.material.reason="检退";
 			}
 			
