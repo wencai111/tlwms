@@ -67,7 +67,7 @@ const inlibraryModel = {
 		var model = new Object();
 		model.MNumber = this.code;
 		model.Quan = this.totalAmount;
-		model.LocalID = this.storage.codeid;
+		model.LocalID = this.storage.code;
 		return model;
 	}
 };

@@ -122,7 +122,7 @@ const inlibraryModel = {
 		model.BillNum = this.BillNum;
 		model.MNumber = this.MNumber;
 		model.Quan = this.totalAmount;
-		model.LocalID = this.storage.codeid;
+		model.LocalID = this.storage.code;
 		if (this.BzBarCodes.length > 0) {
 			for (let item of this.BzBarCodes) {
 				tempBzBarCodes = tempBzBarCodes + item + "|";
@@ -132,7 +132,7 @@ const inlibraryModel = {
 			model.BzBarCodes = "";
 		}
 		var result="";
-		result="&BillNum="+model.BillNum+"&MNumber="+model.MNumber+"&Quan="+model.Quan+"&model.LocalID="+model.LocalID +"&BzBarCodes="+model.BzBarCodes;
+		result="&BillNum="+model.BillNum+"&MNumber="+model.MNumber+"&Quan="+model.Quan+"&LocalID="+model.LocalID +"&BzBarCodes="+model.BzBarCodes;
 		return result;
 	}
 };
