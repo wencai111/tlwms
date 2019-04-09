@@ -2,7 +2,7 @@
 	<view class="content">
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
-			<button type="primary" v-bind:disabled="currentSteps > 1" v-on:click="scanMaterial"><text>扫码入库码</text></button>
+			<button type="primary" v-bind:disabled="currentSteps > 1" v-on:click="scanMaterial"><text>扫码物料码</text></button>
 			<button type="primary" v-bind:disabled="currentSteps != 1" v-on:click="scanWarehouse"><text>扫码库位码</text></button>
 			<view v-if="material.id.length > 0">
 				<view class="uni-card">
@@ -47,7 +47,7 @@ export default {
 			currentSteps: 0, //当前执行步骤，
 			steps: [
 				{
-					title: '扫入库码'
+					title: '扫物料码'
 				},
 				{
 					title: '扫库位码'
@@ -131,7 +131,7 @@ export default {
 					console.log('res' + JSON.stringify(res));
 					var result = parseWarehouseCode(res.result);
 					console.log('result' + JSON.stringify(result));
-					if (result) {
+					if (result && result.code && result.code != '') {
 						checkLocal(_this.material.code, result.code).then(data => {
 							var [error, res] = data;
 							console.log('checkLocal.data:' + JSON.stringify(data));

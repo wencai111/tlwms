@@ -68,7 +68,6 @@ export default {
 				console.log('getStockList.data:' + JSON.stringify(data));
 				console.log('getStockList.res:' + JSON.stringify(res));
 				var result = parseForRule(res.data);
-				var result = isEmptyObject(result);
 				console.log('getStockList.result:' + JSON.stringify(result));
 				if (result &&!isEmptyObject(result)) {
 					_this.addDeliveryNoteModel(result);
