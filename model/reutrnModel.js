@@ -85,7 +85,7 @@ const returnModel = {
 		var model = new Object();
 		model.MNumber = this.code;
 		model.Quan = this.totalAmount;
-		model.LocalID = this.storage.code;
+		model.LocalID = this.storage.codeid;
 		if(flag&&flag==1){
 			model.Reason=this.reason;
 		}

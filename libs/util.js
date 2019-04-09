@@ -49,8 +49,8 @@ export const parseWarehouseCode = (code) => {
 		if (arr.length <= 4) {
 			result = {};
 			result["id"] = arr[0].replace("'", "").replace("'", "");
-			result["codeid"]= arr[1].replace("'", "").replace("'", "");
-			result["code"]  = arr[2].replace("'", "").replace("'", "");
+			result["code"]= arr[1].replace("'", "").replace("'", "");
+			result["codeid"]= arr[2].replace("'", "").replace("'", "");
 		} else {}
 	} catch (e) {
 		result = null;

@@ -83,7 +83,7 @@ const exchangeInlibraryModel = {
 		var model = new Object();
 		model.MNumber = this.code;
 		model.Quan = this.totalAmount;
-		model.LocalID = this.storage.code;
+		model.LocalID = this.storage.codeid;
 		return model;
 	}
 }
