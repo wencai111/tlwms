@@ -116,6 +116,7 @@ const inlibraryModel = {
 	},
 	//生成提交入库model
 	generateModel() {
+		console.log("this:"+JSON.stringify(this));
 		var tempBzBarCodes = "";
 		var model = new Object();
 		model.BillNum = this.BillNum;
@@ -126,11 +127,13 @@ const inlibraryModel = {
 			for (let item of this.BzBarCodes) {
 				tempBzBarCodes = tempBzBarCodes + item + "|";
 			}
-			model.BzBarCode = tempBzBarCodes.trim("").substr(0, tempBzBarCodes.length - 1);
+			model.BzBarCodes = tempBzBarCodes.trim("").substr(0, tempBzBarCodes.length - 1);
 		} else {
 			model.BzBarCodes = "";
 		}
-		return model;
+		var result="";
+		result="&BillNum="+model.BillNum+"&MNumber="+model.MNumber+"&Quan="+model.Quan+"&model.LocalID="+model.LocalID +"&BzBarCodes="+model.BzBarCodes;
+		return result;
 	}
 };
 //导出对象

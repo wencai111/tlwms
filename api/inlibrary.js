@@ -10,16 +10,9 @@ const {
  * 冻结库位不能存放物料，不同批次的物料不能存放在同一库位。
  */
 export const checkLocal = (MNumber,LocalID) => {
-	console.log("MNumber:入参:" +MNumber);
-	console.log("checkLocal:入参:" +MNumber,+LocalID);
+	console.log("checkLocal:入参:MNumber:" +MNumber+"  LocalID:"+LocalID);
 	return uni.request({
-		url: domian + 'common/wms_Server_Data.asp?action=CheckLocal',
-		type: "POST",
-		dataType: "JSON",
-		data:{
-			"MNumber":MNumber,
-			"LocalID":LocalID
-			}
+		url: domian + 'common/wms_Server_Data.asp?action=CheckLocal&MNumber='+MNumber+"&LocalID="+LocalID
 	});
 }
 
@@ -65,11 +58,8 @@ export const getDeliBillBarcodeInfo = (BzBarCode) => {
  * 在货物上架之前扫描包装码
  */
 export const savePutInByDeliBill = (data) => {
-	console.log("savePutInByDeliBill:入参 :" + JSON.stringify(data));
+	console.log("savePutInByDeliBill:入参 :" + data);
 	return uni.request({
-		url: domian + 'common/wms_Server_Data.asp?action=SavePutInByDeliBill',
-		type: "GET",
-		dataType: "JSON",
-		data: data,
+		url: domian + 'common/wms_Server_Data.asp?action=SavePutInByDeliBill'+data
 	});
 }

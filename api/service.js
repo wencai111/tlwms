@@ -12,13 +12,7 @@ const {
 export const checkLocal = (MNumber,LocalID) => {
 	console.log("checkLocal:入参:" +MNumber,+LocalID);
 	return uni.request({
-		url: domian + 'common/wms_Server_Data.asp?action=CheckLocal',
-		type: "POST",
-		dataType: "JSON",
-		data:{
-			"MNumber":MNumber,
-			"LocalID":LocalID
-			}
+		url: domian + 'common/wms_Server_Data.asp?action=CheckLocal&MNumber='+MNumber+"&LocalID="+LocalID
 	});
 }
 

@@ -149,7 +149,7 @@ export default {
 					console.log('res' + JSON.stringify(res));
 					var result = parseWarehouseCode(res.result);
 					console.log('result' + JSON.stringify(result));
-					if (result) {
+					if (result && result.code && result.code != '') {
 						checkLocal(_this.material.code, result.code).then(data => {
 							var [error, res] = data;
 							console.log('checkLocal.data:' + JSON.stringify(data));
