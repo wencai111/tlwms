@@ -58,11 +58,8 @@ export const getDeliBillBarcodeInfo = (BzBarCode) => {
  * 在货物上架之前扫描包装码
  */
 export const savePutInByDeliBill = (data) => {
-	console.log("savePutInByDeliBill:入参 :" + JSON.stringify(data));
+	console.log("savePutInByDeliBill:入参 :" + data);
 	return uni.request({
-		url: domian + 'common/wms_Server_Data.asp?action=SavePutInByDeliBill',
-		type: "GET",
-		dataType: "JSON",
-		data: data
+		url: domian + 'common/wms_Server_Data.asp?action=SavePutInByDeliBill'+data
 	});
 }
