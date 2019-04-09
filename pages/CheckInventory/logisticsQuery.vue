@@ -77,7 +77,10 @@ export default {
 	onLoad(option) {
 		console.log('option:' + JSON.stringify(option));
 		if (option && option.code && option.code != '') {
+			getLogisInfo(option.code).then(data => {
+			var [error, res] = data;
 			this.MNumber = option.code;
+			})
 		}
 		authAccount(this.hasLogin, this.forcedLogin, this.userName);
 	}
