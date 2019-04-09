@@ -88,7 +88,7 @@ export default {
 					console.log('res' + JSON.stringify(res));
 					var result = parseForRule(res.result);
 					console.log('result' + JSON.stringify(result));
-					if (result && result.codeid && result.codeid != '') {
+					if (result && result.code && result.code != '') {
 						if (_this.material.code != '' && result.code != _this.material.code) {
 							uni.showModal({
 								title: '提示',

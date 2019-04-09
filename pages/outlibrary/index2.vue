@@ -101,7 +101,7 @@ export default {
 				}
 			});
 		},
-		//扫描库位码
+		//扫描车辆码
 		scanVehicle: function(res) {
 			var _this = this;
 			uni.scanCode({
