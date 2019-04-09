@@ -144,7 +144,7 @@ export default {
 					console.log('res' + JSON.stringify(res));
 					var result = parseWarehouseCode(res.result);
 					console.log('result' + JSON.stringify(result));
-					if (result && result.code && result.code != '') {
+					if (result && result.codeid && result.codeid != '') {
 						if (_this.material.addStorage(result)) {
 							_this.currentSteps = 2;
 						} else {

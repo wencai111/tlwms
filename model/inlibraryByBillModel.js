@@ -122,7 +122,7 @@ const inlibraryModel = {
 		model.BillNum = this.BillNum;
 		model.MNumber = this.MNumber;
 		model.Quan = this.totalAmount;
-		model.LocalID = this.storage.code;
+		model.LocalID = this.storage.codeid;
 		if (this.BzBarCodes.length > 0) {
 			for (let item of this.BzBarCodes) {
 				tempBzBarCodes = tempBzBarCodes + item + "|";
