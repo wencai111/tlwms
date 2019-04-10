@@ -3,7 +3,7 @@
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
 			<button type="primary" v-bind:disabled="currentSteps > 1" v-on:click="scanMaterial"><text>扫描物料码</text></button>
-			<button type="primary" v-bind:disabled="currentSteps != 1" v-on:click="scanVehicle"><text>扫描车辆码</text></button>
+			<button type="primary" v-bind:disabled="!(currentSteps == 1&&materials.materials.length>0)" v-on:click="scanVehicle"><text>扫描车辆码</text></button>
 			<view v-if="materials.materials.length > 0">
 				<view class="uni-card" v-for="material in materials.materials" v-bind:key="material.id">
 					<view class="uni-card__header">
@@ -22,6 +22,7 @@
 					<view class="uni-card__footer">
 						生成装车单:
 						<text>{{ materials.vehicleCode }}</text>
+						<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="removeMaterials(material)">删除</span>
 					</view>
 				</view>
 			</view>
@@ -164,6 +165,11 @@ export default {
 		goBack: function() {
 			uni.navigateBack();
 		},
+		//移除物料
+		removeMaterials: function(data) {
+			console.log("removeMaterials:"+JSON.stringify(data));
+			this.materials.removeMaterials(data);
+		},
 		logMessage: function() {
 			debugger;
 		}
@@ -183,6 +189,7 @@ export default {
 button {
 	margin-top: 10px;
 }
+
 .bank {
 	width: auto;
 	height: 100%;
@@ -292,6 +299,7 @@ $card-extra-width: 30%;
 		padding-top: 0;
 	}
 }
+
 .wxc-list {
 	position: relative;
 	display: flex;

@@ -26,7 +26,7 @@
 					</view>
 				</view>
 			</view>
-			<button type="primary" v-bind:disabled="!sureInlibrarys" @click="sureInlibrary">确认出货</button>
+			<button type="primary" v-bind:disabled="!sureInlibrarys" @click="sureInlibrary">确认出库</button>
 			<button type="primary" v-show="currentSteps == 3" @click="goBack">返回</button>
 			<!-- <button type="primary"  @click="logMessage">
 					浏览器打印

@@ -33,14 +33,13 @@ const outlibraryModel = {
 		if(!data||!data.id||data.id==""){
 			return false;
 		}
-			try {
+			try { 
 		this.id=data.id;
 		this.code=data.code;
 		this.codeid=data.codeid;
 		this.totalAmount=this.totalAmount+data.count;
 		this.goods.push(data.count);
 			return true;
-		
 		} catch (e) {
 			return false;
 		}
@@ -51,7 +50,6 @@ const outlibraryModel = {
 			return false;
 		}
 		try {
-		this.storage=new storageModel();
 		this.storage=new storageModel();
 		this.storage.id=data.id;
 		this.storage.code=data.code;
