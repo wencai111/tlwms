@@ -52,7 +52,7 @@ export const saveLogisInfo = (data) => {
  * 扫描或输入包装码后，界面显示包装物流信息（参照淘宝）
  */
 export const getLogisInfo = (data) => {
-	console.log("getLogisInfo入参:PackNum:" + data);
+	console.log("getLogisInfo入参:" + JSON.stringify(data));
 	return uni.request({
 		url: domian + 'common/wms_Server_Data.asp?action=GetLogisInfo',
 		type: "GET",

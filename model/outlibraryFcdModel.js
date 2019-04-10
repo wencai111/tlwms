@@ -32,45 +32,43 @@ function materialModel(option) {
  */
 const outlibraryModel = {
 	materials: [], //所有的物料
-	materialKey: "", //物料keys,通过物料key 的索引，给materials叠加物料
 	vehicleCode: '', //车辆码
 	//重置函数
-	reset:function(){
-		this.materials=[];
-		this.materialKey="";
-		this.vehicleCode="";
+	reset: function() {
+		this.materials = [];
+		this.vehicleCode = "";
 	},
 	//添加新物料
 	addNewMaterials: function(data) {
 		this.materials.push(new materialModel(data));
 	},
-// 	deleteMaterials: function(data){
-// 		console.log(data)
-// 		for(var i=0;i<this.materials.length;i++) {
-// 			if(data.count==this.materials[i].count){
-// 			this.materials.remove(this.materials[i])
-// 			// this.materials.remove(data)
-// 			break;
-// 			}
-// 		}
-// 	},
+	//移除物料
+	removeMaterials: function(data) {
+		for (var i = 0; i < this.materials.length; i++) {
+			if (this.materials[i].codeid == data.codeid) {
+				this.materials.splice(i, 1);
+				break;
+			}
+		}
+	},
 	//叠加物料
 	updateMaterial: function(data, i) {
 		this.materials[i].addGoods(data);
 	},
 	//设置物料信息
 	setMaterial: function(data) {
-		if (this.materialKey.indexOf(data.code) != -1) {
-			let index = parseInt(this.materialKey.substr(this.materialKey.indexOf(data.code) + data.code.length + 1, 1)) - 1;
-			this.updateMaterial(data, index);
-		} else {
-			this.addNewMaterials(data);
-			this.deleteMaterials(data);
+		var index=-1;
+		for (var i = 0; i < this.materials.length; i++) {
+			if(data.code==this.materials[i].code){
+				index=i;
+				break;
+			}
 		}
-		if (this.materialKey == "") {
-			this.materialKey = data.code + ":" + this.materials.length.toString();
-		} else {
-			this.materialKey = this.materialKey + "," + data.code + ":" + this.materials.length.toString();
+		if(index>-1){
+			this.updateMaterial(data, index);
+		}
+		else{
+			this.addNewMaterials(data);
 		}
 	},
 	//设置车辆码
