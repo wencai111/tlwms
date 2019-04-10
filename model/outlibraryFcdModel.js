@@ -44,6 +44,16 @@ const outlibraryModel = {
 	addNewMaterials: function(data) {
 		this.materials.push(new materialModel(data));
 	},
+// 	deleteMaterials: function(data){
+// 		console.log(data)
+// 		for(var i=0;i<this.materials.length;i++) {
+// 			if(data.count==this.materials[i].count){
+// 			this.materials.remove(this.materials[i])
+// 			// this.materials.remove(data)
+// 			break;
+// 			}
+// 		}
+// 	},
 	//叠加物料
 	updateMaterial: function(data, i) {
 		this.materials[i].addGoods(data);
@@ -55,6 +65,7 @@ const outlibraryModel = {
 			this.updateMaterial(data, index);
 		} else {
 			this.addNewMaterials(data);
+			this.deleteMaterials(data);
 		}
 		if (this.materialKey == "") {
 			this.materialKey = data.code + ":" + this.materials.length.toString();

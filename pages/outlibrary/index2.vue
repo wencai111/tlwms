@@ -22,11 +22,11 @@
 					<view class="uni-card__footer">
 						生成装车单:
 						<text>{{ materials.vehicleCode }}</text>
-		<!-- 				<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="deleteItem(index)">删除</span> -->
+<!-- 						<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="deleteMaterials()">删除</span> -->
 					</view>
 				</view>
 			</view>
-			<button type="primary" v-bind:disabled="!isCanGenerateFcd" @click="sureGenerateFcd">确认生成装车单</button>
+			<button type="primary" v-bind:disabled="!isCanGenerateFcd" @click="deleteMateroals()">确认生成装车单</button>
 			<button type="primary" v-show="currentSteps == 3" @click="goBack">返回</button>
 			<!-- <button type="primary"  @click="logMessage">
 				浏览器打印
@@ -91,6 +91,7 @@
 			}
 		},
 		methods: {
+
 			//扫描物料码
 			scanMaterial: function(res) {
 				var _this = this;
@@ -176,14 +177,11 @@
 			goBack: function() {
 				uni.navigateBack();
 			},
-// 			deleteItem(index) {
-// 				console.log(index)
-// 				if (index >= 0) {
-// 					this.materials.materials.splice(index,1);
-// 					this.currentSteps = index;
-// 				} else {
-//                 this.currentSteps = 1;
-// 				}
+			// 			deleteItem(index) {
+			// 
+			// 			},
+// 			deleteMaterials: function() {
+// 				this.materials.deleteMaterials()
 // 			},
 			logMessage: function() {
 				debugger;
