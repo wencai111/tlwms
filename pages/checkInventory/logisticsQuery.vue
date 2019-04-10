@@ -63,11 +63,11 @@ export default {
 		addSteps: function(res) {
 			console.log("data入参:PackNum:" + res);
 			var result = [
-// 				{ title: '江苏发出', desc: '2018-11-11' },
-// 				{ title: '达到武汉市', desc: '2018-11-12' },
-// 				{ title: '武汉武昌集散中心发出', desc: '2018-11-13' },
-// 				{ title: '到达武昌保利华都', desc: '2018-11-14' },
-				{PackNum:'TLWL201949-1',ArriDate:'2019/4/10 17:07:32',InOutFlag:'到达',ArriAdds:'wuhan',title: '江苏发出', desc: '2018-11-11'}
+				{ title: '江苏发出', desc: '2018-11-11' },
+				{ title: '达到武汉市', desc: '2018-11-12' },
+				{ title: '武汉武昌集散中心发出', desc: '2018-11-13' },
+				{ title: '到达武昌保利华都', desc: '2018-11-14' },
+				// {PackNum:'TLWL201949-1',ArriDate:'2019/4/10 17:07:32',InOutFlag:'到达',ArriAdds:'wuhan',title: '江苏发出', desc: '2018-11-11'}
 			];
 			// 				this.PackNum='';
 			// 				this.ArriDate='';

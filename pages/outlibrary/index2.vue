@@ -22,6 +22,7 @@
 					<view class="uni-card__footer">
 						生成装车单:
 						<text>{{ materials.vehicleCode }}</text>
+		<!-- 				<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="deleteItem(index)">删除</span> -->
 					</view>
 				</view>
 			</view>
@@ -35,85 +36,129 @@
 </template>
 
 <script>
-import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
-import { bulidFcd } from '@/api/outlibrary.js';
-import outlibraryModel from '@/model/outlibraryFcdModel.js';
-import { mapState } from 'vuex';
-import { authAccount, parseForRule } from '@/libs/util.js';
-export default {
-	data() {
-		return {
-			materials: outlibraryModel,
-			currentSteps: 0, //当前执行步骤，
-			steps: [
-				{
-					title: '扫物料码'
-				},
-				{
-					title: '扫车辆码'
-				},
-				{
-					title: '生成装车单'
-				}
-			]
-		};
-	},
-	created() {
-		this.currentSteps = 0;
-		this.materials.reset();
-	},
-	components: {
+	import {
 		uniSteps,
 		uniCard,
 		uniList,
 		uniListItem
-	},
-	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName']),
-		isCanGenerateFcd() {
-			if (this.currentSteps == 2) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-	},
-	methods: {
-		//扫描物料码
-		scanMaterial: function(res) {
-			var _this = this;
-			uni.scanCode({
-				onlyFromCamera: true,
-				success: function(res) {
-					console.log('res' + JSON.stringify(res));
-					var result = parseForRule(res.result);
-					console.log('result' + JSON.stringify(result));
-					if (result && result.code && result.code != '' && result.count) {
-						_this.materials.setMaterial(result);
-						_this.currentSteps = 1;
-					} else {
-						uni.showToast({
-							icon: 'none',
-							duration: 2500,
-							title: '物料信息错误:' + res.result
-						});
+	} from '@dcloudio/uni-ui';
+	import {
+		bulidFcd
+	} from '@/api/outlibrary.js';
+	import outlibraryModel from '@/model/outlibraryFcdModel.js';
+	import {
+		mapState
+	} from 'vuex';
+	import {
+		authAccount,
+		parseForRule
+	} from '@/libs/util.js';
+	export default {
+		data() {
+			return {
+				materials: outlibraryModel,
+				currentSteps: 0, //当前执行步骤，
+				steps: [{
+						title: '扫物料码'
+					},
+					{
+						title: '扫车辆码'
+					},
+					{
+						title: '生成装车单'
 					}
-				}
-			});
+				]
+			};
 		},
-		//扫描车辆码
-		scanVehicle: function(res) {
-			var _this = this;
-			uni.scanCode({
-				onlyFromCamera: true,
-				success: function(res) {
-					console.log('res' + JSON.stringify(res));
-					var result = parseForRule(res.result);
-					console.log('result' + JSON.stringify(result));
-					if (result && result.code && result.code != '') {
-						_this.materials.setVehicleCode(result.code);
-						_this.currentSteps = 2;
+		created() {
+			this.currentSteps = 0;
+			this.materials.reset();
+		},
+		components: {
+			uniSteps,
+			uniCard,
+			uniList,
+			uniListItem
+		},
+		computed: {
+			...mapState(['forcedLogin', 'hasLogin', 'userName']),
+			isCanGenerateFcd() {
+				if (this.currentSteps == 2) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		},
+		methods: {
+			//扫描物料码
+			scanMaterial: function(res) {
+				var _this = this;
+				uni.scanCode({
+					onlyFromCamera: true,
+					success: function(res) {
+						console.log('res' + JSON.stringify(res));
+						var result = parseForRule(res.result);
+						console.log('result' + JSON.stringify(result));
+						if (result && result.code && result.code != '' && result.count) {
+							_this.materials.setMaterial(result);
+							_this.currentSteps = 1;
+						} else {
+							uni.showToast({
+								icon: 'none',
+								duration: 2500,
+								title: '物料信息错误:' + res.result
+							});
+						}
+					}
+				});
+			},
+			//扫描车辆码
+			scanVehicle: function(res) {
+				var _this = this;
+				uni.scanCode({
+					onlyFromCamera: true,
+					success: function(res) {
+						console.log('res' + JSON.stringify(res));
+						var result = parseForRule(res.result);
+						console.log('result' + JSON.stringify(result));
+						if (result && result.code && result.code != '') {
+							_this.materials.setVehicleCode(result.code);
+							_this.currentSteps = 2;
+						} else {
+							uni.showModal({
+								title: '提示',
+								showCancel: false,
+								content: result.ResponseText,
+								success: function(res) {
+									if (res.confirm) {
+										console.log('用户点击确定');
+									}
+								}
+							});
+						}
+					}
+				});
+			},
+			//确定生成发车单
+			sureGenerateFcd: function(res) {
+				var _this = this;
+				bulidFcd(this.materials.generateModel()).then(data => {
+					var [error, res] = data;
+					console.log('data:' + JSON.stringify(data));
+					console.log('res:' + JSON.stringify(res));
+					var result = parseForRule(res.data);
+					console.log('result:' + JSON.stringify(result));
+					if (result.success) {
+						console.log(result);
+						_this.currentSteps = 3;
+						console.log('正确');
+						uni.showToast({
+							icon: 'success',
+							title: '生成装车单！'
+						});
 					} else {
+						console.log('错误');
 						uni.showModal({
 							title: '提示',
 							showCancel: false,
@@ -125,111 +170,159 @@ export default {
 							}
 						});
 					}
-				}
-			});
+				});
+			},
+			//返回
+			goBack: function() {
+				uni.navigateBack();
+			},
+// 			deleteItem(index) {
+// 				console.log(index)
+// 				if (index >= 0) {
+// 					this.materials.materials.splice(index,1);
+// 					this.currentSteps = index;
+// 				} else {
+//                 this.currentSteps = 1;
+// 				}
+// 			},
+			logMessage: function() {
+				debugger;
+			}
 		},
-		//确定生成发车单
-		sureGenerateFcd: function(res) {
-			var _this = this;
-			bulidFcd(this.materials.generateModel()).then(data => {
-				var [error, res] = data;
-				console.log('data:' + JSON.stringify(data));
-				console.log('res:' + JSON.stringify(res));
-				var result = parseForRule(res.data);
-				console.log('result:' + JSON.stringify(result));
-				if (result.success) {
-					console.log(result);
-					_this.currentSteps = 3;
-					console.log('正确');
-					uni.showToast({
-						icon: 'success',
-						title: '生成装车单！'
-					});
-				} else {
-					console.log('错误');
-					uni.showModal({
-						title: '提示',
-						showCancel: false,
-						content: result.ResponseText,
-						success: function(res) {
-							if (res.confirm) {
-								console.log('用户点击确定');
-							}
-						}
-					});
-				}
-			});
-		},
-		//返回
-		goBack: function() {
-			uni.navigateBack();
-		},
-		logMessage: function() {
-			debugger;
+		onLoad() {
+			authAccount(this.hasLogin, this.forcedLogin, this.userName);
 		}
-	},
-	onLoad() {
-		authAccount(this.hasLogin, this.forcedLogin, this.userName);
-	}
-};
+	};
 </script>
 <style lang="scss">
-.materialnumber {
-	width: auto;
-	height: 100%;
-	float: right;
-}
-
-button {
-	margin-top: 10px;
-}
-.bank {
-	width: auto;
-	height: 100%;
-	margin: 0 60%;
-	position: absolute;
-}
-
-$card-extra-width: 30%;
-
-@mixin text-omit {
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	overflow: hidden;
-}
-
-.uni-card {
-	margin: $uni-spacing-col-base;
-	background: $uni-bg-color;
-	position: relative;
-	display: flex;
-	flex-direction: column;
-
-	&:after {
-		content: '';
-		position: absolute;
-		transform-origin: center;
-		box-sizing: border-box;
-		pointer-events: none;
-		top: -50%;
-		left: -50%;
-		right: -50%;
-		bottom: -50%;
-		border: 1px solid $uni-border-color;
-		border-radius: $uni-border-radius-lg;
-		transform: scale(0.5);
+	.materialnumber {
+		width: auto;
+		height: 100%;
+		float: right;
 	}
 
-	&__footer,
-	&__header {
+	button {
+		margin-top: 10px;
+	}
+
+	.bank {
+		width: auto;
+		height: 100%;
+		margin: 0 60%;
+		position: absolute;
+	}
+
+	$card-extra-width: 30%;
+
+	@mixin text-omit {
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+	}
+
+	.uni-card {
+		margin: $uni-spacing-col-base;
+		background: $uni-bg-color;
+		position: relative;
+		display: flex;
+		flex-direction: column;
+
+		&:after {
+			content: '';
+			position: absolute;
+			transform-origin: center;
+			box-sizing: border-box;
+			pointer-events: none;
+			top: -50%;
+			left: -50%;
+			right: -50%;
+			bottom: -50%;
+			border: 1px solid $uni-border-color;
+			border-radius: $uni-border-radius-lg;
+			transform: scale(0.5);
+		}
+
+		&__footer,
+		&__header {
+			position: relative;
+			display: flex;
+			flex-direction: row;
+			padding: $uni-spacing-col-base;
+			align-items: center;
+		}
+
+		&__header {
+			&:after {
+				position: absolute;
+				bottom: 0;
+				right: 0;
+				left: 0;
+				height: 1px;
+				content: '';
+				-webkit-transform: scaleY(0.5);
+				transform: scaleY(0.5);
+				background-color: $uni-border-color;
+			}
+
+			&-title {
+				flex: 1;
+				margin-right: $uni-spacing-col-base;
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				align-items: center;
+
+				&-text {
+					font-size: $uni-font-size-lg;
+					flex: 1;
+					@include text-omit;
+				}
+			}
+
+			&-extra {
+				&-img-view {
+					display: flex;
+				}
+
+				&-img {
+					height: $uni-img-size-sm;
+					width: $uni-img-size-sm;
+					margin-right: $uni-spacing-col-base;
+				}
+
+				&-text {
+					flex: 0 0 auto;
+					width: $card-extra-width;
+					margin-left: $uni-spacing-col-base;
+					font-size: $uni-font-size-base;
+					text-align: right;
+					@include text-omit;
+				}
+			}
+		}
+
+		&__content {
+			&--pd {
+				padding: $uni-spacing-col-base;
+			}
+		}
+
+		&__footer {
+			justify-content: space-between;
+			color: $uni-text-color-grey;
+			font-size: $uni-font-size-sm;
+			padding-top: 0;
+		}
+	}
+
+	.wxc-list {
 		position: relative;
 		display: flex;
 		flex-direction: row;
 		padding: $uni-spacing-col-base;
+		padding-right: 0px;
 		align-items: center;
-	}
 
-	&__header {
 		&:after {
 			position: absolute;
 			bottom: 0;
@@ -251,7 +344,7 @@ $card-extra-width: 30%;
 			align-items: center;
 
 			&-text {
-				font-size: $uni-font-size-lg;
+				font-size: $uni-font-size-base;
 				flex: 1;
 				@include text-omit;
 			}
@@ -270,7 +363,7 @@ $card-extra-width: 30%;
 
 			&-text {
 				flex: 0 0 auto;
-				width: $card-extra-width;
+				width: 10%;
 				margin-left: $uni-spacing-col-base;
 				font-size: $uni-font-size-base;
 				text-align: right;
@@ -278,74 +371,4 @@ $card-extra-width: 30%;
 			}
 		}
 	}
-
-	&__content {
-		&--pd {
-			padding: $uni-spacing-col-base;
-		}
-	}
-
-	&__footer {
-		justify-content: space-between;
-		color: $uni-text-color-grey;
-		font-size: $uni-font-size-sm;
-		padding-top: 0;
-	}
-}
-.wxc-list {
-	position: relative;
-	display: flex;
-	flex-direction: row;
-	padding: $uni-spacing-col-base;
-	padding-right: 0px;
-	align-items: center;
-
-	&:after {
-		position: absolute;
-		bottom: 0;
-		right: 0;
-		left: 0;
-		height: 1px;
-		content: '';
-		-webkit-transform: scaleY(0.5);
-		transform: scaleY(0.5);
-		background-color: $uni-border-color;
-	}
-
-	&-title {
-		flex: 1;
-		margin-right: $uni-spacing-col-base;
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		align-items: center;
-
-		&-text {
-			font-size: $uni-font-size-base;
-			flex: 1;
-			@include text-omit;
-		}
-	}
-
-	&-extra {
-		&-img-view {
-			display: flex;
-		}
-
-		&-img {
-			height: $uni-img-size-sm;
-			width: $uni-img-size-sm;
-			margin-right: $uni-spacing-col-base;
-		}
-
-		&-text {
-			flex: 0 0 auto;
-			width: 10%;
-			margin-left: $uni-spacing-col-base;
-			font-size: $uni-font-size-base;
-			text-align: right;
-			@include text-omit;
-		}
-	}
-}
 </style>
