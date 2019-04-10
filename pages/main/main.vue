@@ -4,7 +4,7 @@
 			<uni-grid :data="menu" v-on:click="goMainPage"></uni-grid>
 			<view style="height: 40upx;"></view>
 			<uni-list>
-				<uni-list-item title="退出登录" show-extra-icon="true" :extra-icon="{ color: '#4cd964', size: '22', type: 'closeempty' }"></uni-list-item>
+				<uni-list-item title="退出登录" v-on:click="logOut" show-extra-icon="true" :extra-icon="{ color: '#4cd964', size: '22', type: 'closeempty' }"></uni-list-item>
 			</uni-list>
 		</view>
 		<view v-if="!hasLogin" class="message-container">
@@ -93,6 +93,11 @@
 				console.log(JSON.stringify(e));
 				uni.navigateTo({
 					url: this.$data.menu[e.index].url
+				});
+			},
+			logOut: function() {
+				uni.navigateTo({
+					url: '/pages/login/login'
 				});
 			}
 		},
