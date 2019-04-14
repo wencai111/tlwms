@@ -63,3 +63,15 @@ export const savePutInByDeliBill = (data) => {
 		url: domian + 'common/wms_Server_Data.asp?action=SavePutInByDeliBill'+data
 	});
 }
+
+
+
+export const ResearchDeliBill = (data) => {
+	console.log("ResearchDeliBill入参：" + JSON.stringify(data))
+	return uni.request({
+		url: domian + 'common/wms_Server_Data.asp?action=ResearchDeliBill',
+		type: "POST",
+		dataType: "JSON",
+		data: data,
+	});
+}

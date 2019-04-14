@@ -37,6 +37,18 @@
 				"navigationBarTitleText": "包装码入库"
 			}
 		},
+			{
+			"path": "pages/inlibrary/index2",
+			"style": {
+				"navigationBarTitleText": "是否完成收货"
+			}
+		},
+				{
+			"path": "pages/inlibrary/way",
+			"style": {
+				"navigationBarTitleText": "收货方式"
+			}
+		},
 		{
 			"path": "pages/outlibrary/inway",
 			"style": {

@@ -2,27 +2,21 @@
 	<view class="content">
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
-			<button type="primary" v-bind:disabled="currentSteps > 1" v-on:click="scanMaterial"><text>扫描物料码</text></button>
-			<button type="primary" v-bind:disabled="!(currentSteps == 1&&materials.materials.length>0)" v-on:click="scanVehicle"><text>扫描车辆码</text></button>
+			<button type="primary" v-bind:disabled="currentSteps > 1" v-on:click="scanPackege"><text>扫描拣货码</text></button>
+			<button type="primary" v-bind:disabled="!scanVehicles" v-on:click="scanVehicle"><text>扫描车辆码</text></button>
 			<view v-if="materials.materials.length > 0">
-				<view class="uni-card" v-for="material in materials.materials" v-bind:key="material.id">
-					<view class="uni-card__header">
-						<view class="uni-card__header-title-text">{{ material.code }}</view>
-						<view class="uni-card__header-extra-text">{{ material.totalAmount }}</view>
-					</view>
-					<view class="uni-card__content uni-card__content--pd">
-						<view v-for="(item, _index) in material.goods" v-bind:key="_index" class="wxc-list">
-							<view class="wxc-list-title-text">
-								{{ materials.vehicleCode == '' ? '正在等待扫码车辆码，可继续扫描物料' : '物料已经对应车辆码' }}
-								<text style="color: #0FAEFF;margin-left: 4px;">{{ materials.vehicleCode }}</text>
-							</view>
-							<view class="wxc-list-extra-text">{{ item }}</view>
-						</view>
+				<view class="uni-card" v-for="material in materials.materials" v-bind:key="material.BillNum">
+					<view class="">
+						<view class="wxc-list-extra">需求单号:{{ material.OperBillNum }}</view>
+						<view class="wxc-list-extra">条码内容:{{ material.BillNum }}</view>
+						<view class="wxc-list-extra">物料编码:{{ material.MNumber }}</view>
+						<view class="wxc-list-extra">物料名称:{{ material.MName }}</view>
+						<view class="wxc-list-extra">包装数量:{{ material.OutPackage }}</view>
+						<view class="wxc-list-extra">对应数量:{{ material.Qty }}</view>
+						<view class="wxc-list-extra">出库库位:{{ material.LocalName }}</view>
 					</view>
 					<view class="uni-card__footer">
-						生成装车单:
-						<text>{{ materials.vehicleCode }}</text>
-						<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="removeMaterials(material)">删除</span>
+						<text>生成装车单:{{ materials.vehicleCode }}</text>
 					</view>
 				</view>
 			</view>
@@ -37,10 +31,10 @@
 
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
-import { bulidFcd } from '@/api/outlibrary.js';
+import { bulidFcd, getPickGoodsCodeInfo } from '@/api/outlibrary.js';
 import outlibraryModel from '@/model/outlibraryFcdModel.js';
 import { mapState } from 'vuex';
-import { authAccount, parseForRule } from '@/libs/util.js';
+import { authAccount, parseForRule, isEmptyObject } from '@/libs/util.js';
 export default {
 	data() {
 		return {
@@ -48,7 +42,7 @@ export default {
 			currentSteps: 0, //当前执行步骤，
 			steps: [
 				{
-					title: '扫物料码'
+					title: '扫拣货码'
 				},
 				{
 					title: '扫车辆码'
@@ -71,7 +65,14 @@ export default {
 	},
 	computed: {
 		...mapState(['forcedLogin', 'hasLogin', 'userName']),
-		isCanGenerateFcd() {
+		scanVehicles() {
+			if (this.currentSteps == 1) {
+				return true;
+			} else {
+				return false;
+			}
+		},
+		isCanGenerateFcd(){
 			if (this.currentSteps == 2) {
 				return true;
 			} else {
@@ -81,23 +82,96 @@ export default {
 	},
 	methods: {
 		//扫描物料码
-		scanMaterial: function(res) {
+		scanPackege: function(res) {
+			if (this.isCanOutlibrary) {
+				this.resetScanPackege();
+			} else {
+				var _this = this;
+				uni.scanCode({
+					onlyFromCamera: true,
+					success: function(res) {
+						console.log('res' + JSON.stringify(res));
+						if (res && res.result && res.result != ''&& res.result.indexOf('PGC') != '-1') {
+							getPickGoodsCodeInfo(res.result).then(data => {
+								var [error, res] = data;
+								console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
+								console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
+								var result = parseForRule(res.data);
+								console.log('result:' + JSON.stringify(result));
+								if (result && !isEmptyObject(result)) {
+									_this.currentSteps = 1;
+									console.log('测:' + JSON.stringify(result));
+									_this.materials.setPackege(result);
+								} else {
+									uni.showModal({
+										title: '提示',
+										content: '没有获取到拣货码信息，请检查拣货码',
+										showCancel: false,
+										success: function(res) {
+											if (res.confirm) {
+												console.log('用户点击确定');
+											}
+										}
+									});
+								}
+							});
+						} else {
+							uni.showToast({
+								icon: 'none',
+								duration: 2500,
+								title: '拣货码错误,请重新扫描；'
+							});
+						}
+					}
+				});
+			}
+		},
+		resetScanPackege: function(res) {
 			var _this = this;
-			uni.scanCode({
-				onlyFromCamera: true,
+			uni.showModal({
+				title: '提示',
+				content: '是否放弃当前拣货码，重新扫描拣货码',
 				success: function(res) {
-					console.log('res' + JSON.stringify(res));
-					var result = parseForRule(res.result);
-					console.log('result' + JSON.stringify(result));
-					if (result && result.code && result.code != '' && result.count) {
-						_this.materials.setMaterial(result);
-						_this.currentSteps = 1;
-					} else {
-						uni.showToast({
-							icon: 'none',
-							duration: 2500,
-							title: '物料信息错误:' + res.result
+					if (res.confirm) {
+						_this.initPackege();
+						uni.scanCode({
+							onlyFromCamera: true,
+							success: function(res) {
+								console.log('res' + JSON.stringify(res));
+								if (res && res.result && res.result != '' && res.result.indexOf('PGC') != '-1') {
+									getPickGoodsCodeInfo(res.result).then(data => {
+										var [error, res] = data;
+										console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
+										console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
+										var result = parseForRule(res.data);
+										var result = isEmptyObject(result);
+										console.log('result:' + JSON.stringify(result));
+										if (result && !isEmptyObject(result)) {
+											_this.currentSteps = 1;
+											_this.materials.setPackege(result);
+										} else {
+											uni.showModal({
+												title: '提示',
+												content: '没有获取到拣货码信息，请检查拣货码',
+												showCancel: false,
+												success: function(res) {
+													if (res.confirm) {
+														console.log('用户点击确定');
+													}
+												}
+											});
+										}
+									});
+								} else {
+									uni.showToast({
+										icon: 'none',
+										duration: 2500,
+										title: '拣货码错误,请重新扫描；'
+									});
+								}
+							}
 						});
+					} else if (res.cancel) {
 					}
 				}
 			});
@@ -111,8 +185,8 @@ export default {
 					console.log('res' + JSON.stringify(res));
 					var result = parseForRule(res.result);
 					console.log('result' + JSON.stringify(result));
-					if (result && result.code && result.code != '') {
-						_this.materials.setVehicleCode(result.code);
+					if (result && result.codeid && result.codeid != '') {
+						_this.materials.setVehicleCode(result.codeid);
 						_this.currentSteps = 2;
 					} else {
 						uni.showModal({
@@ -166,10 +240,6 @@ export default {
 			uni.navigateBack();
 		},
 		//移除物料
-		removeMaterials: function(data) {
-			console.log("removeMaterials:"+JSON.stringify(data));
-			this.materials.removeMaterials(data);
-		},
 		logMessage: function() {
 			debugger;
 		}

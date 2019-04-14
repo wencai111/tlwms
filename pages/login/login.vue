@@ -46,40 +46,7 @@ export default {
 			this.positionTop = uni.getSystemInfoSync().windowHeight - 100;
 		},
 		bindLogin(e) {
-			uni.request({
-				header: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				},
-				method: 'POST',
-				success: e => {
-					console.log(66, e);
-					if (e.statusCode !== 200) {
-						uni.showModal({
-							content: '用户名密码错误！',
-							showCancel: false
-						});
-						return;
-					}
-					if (e.data.code === 0) {
-						this.login(e.data);
-						uni.navigateBack();
-					} else {
-						uni.showModal({
-							content: e.data.message,
-							showCancel: false
-						});
-					}
-				},
-				fail: e => {
-					uni.showModal({
-						content: '请求失败，请重试！',
-						showCancel: false
-					});
-				},
-				complete: () => {
-					this.loading = false;
-				}
-			});
+			
 			//参数校验
 			if (!this.account || this.account.length <= 0) {
 				uni.showToast({
@@ -116,7 +83,6 @@ export default {
 				}
 			});
 		},
-		...mapMutations(['login']),
 		toMain(userName) {
 			this.login(userName);
 			/**

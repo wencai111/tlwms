@@ -2,25 +2,31 @@
  *物料对象
  *案例：{id:'W',code:'1001030001-B12',codeid:'1',count:12}
  */
-function materialModel(option) {
-	this.id = ""; //物料ID
-	this.code = ""; //物料code
-	this.codeid = ""; //物料codeid
-	this.totalAmount = 0; //总货物
-	this.goods = []; //物料入库货物
+function pickingModel(option) {
+	this.TlJpdID = '';
+	this.OperBillNum = '';
+	this.BillNum = '';
+	this.MNumber = '';
+	this.MName = '';
+	this.OutPackage = '';
+	this.LocalName = ''
+	this.Qty = '';
 	//初始化
 	this.init = function(option) {
-		this.id = option.id;
-		this.code = option.code;
-		this.codeid = option.codeid;
-		this.totalAmount = parseInt(option.count);
-		this.goods.push(parseInt(option.count));
+		this.TlJpdID = option.TlJpdID;
+		this.OperBillNum = option.OperBillNum;
+		this.BillNum = option.BillNum;
+		this.MNumber = option.MNumber;
+		this.MName = option.MName;
+		this.OutPackage = option.OutPackage;
+		this.LocalName = option.LocalName
+		this.Qty = option.Qty;
 	};
 	//设置物料信息
-	this.addGoods = function(data) {
-		this.totalAmount = this.totalAmount + parseInt(data.count);
-		this.goods.push(parseInt(data.count));
-	};
+	// 	this.addGoods = function(data) {
+	// 		this.totalAmount = this.totalAmount + parseInt(data.count);
+	// 		this.goods.push(parseInt(data.count));
+	// 	};
 	if (option) {
 		this.init(option)
 	}
@@ -38,56 +44,48 @@ const outlibraryModel = {
 		this.materials = [];
 		this.vehicleCode = "";
 	},
+	setPackege: function(result) {
+		this.addNewPicking(result);
+
+	},
 	//添加新物料
-	addNewMaterials: function(data) {
-		this.materials.push(new materialModel(data));
+	addNewPicking: function(data) {
+		this.materials.push(new pickingModel(data));
 	},
-	//移除物料
-	removeMaterials: function(data) {
-		for (var i = 0; i < this.materials.length; i++) {
-			if (this.materials[i].codeid == data.codeid) {
-				this.materials.splice(i, 1);
-				break;
-			}
-		}
-	},
-	//叠加物料
+	//叠加拣货信息
 	updateMaterial: function(data, i) {
 		this.materials[i].addGoods(data);
 	},
-	//设置物料信息
+	//设置拣货信息
 	setMaterial: function(data) {
-		var index=-1;
+		var index = -1;
 		for (var i = 0; i < this.materials.length; i++) {
-			if(data.code==this.materials[i].code){
-				index=i;
-				break;
-			}
+			// if(data.code==this.materials[i].code){
+			index = i;
+			break;
+			// }
 		}
-		if(index>-1){
+		if (index > -1) {
 			this.updateMaterial(data, index);
-		}
-		else{
-			this.addNewMaterials(data);
+		} else {
+			this.addNewPicking(data);
 		}
 	},
 	//设置车辆码
-	setVehicleCode: function(code) {
-		this.vehicleCode = code;
+	setVehicleCode: function(codeid) {
+		console.log('result' + JSON.stringify(codeid));
+		this.vehicleCode = codeid;
 	},
 	generateModel: function() {
 		var model = new Object();
-		model.MNumbers = "";
-		model.Qtys = "";
+		model.BillNums = "";
 		if (this.materials.length > 0) {
 			for (let item of this.materials) {
-				model.MNumbers = model.MNumbers + item.code + "|";
-				model.Qtys = model.Qtys + item.totalAmount + "|";
+				model.BillNums = model.BillNums + item.BillNum + "|";
 			}
 		}
-		model.MNumbers = model.MNumbers.trim("").substr(0, model.MNumbers.length - 1)
-		model.Qtys = model.Qtys.trim("").substr(0, model.Qtys.length - 1)
-		model.VehiCode = this.vehicleCode;
+		model.BillNums = model.BillNums.trim("").substr(0, model.BillNums.length - 1)
+		model.VehiCodeID = this.vehicleCode;
 		return model;
 	}
 }
