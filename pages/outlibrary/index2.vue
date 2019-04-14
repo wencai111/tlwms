@@ -81,7 +81,7 @@ export default {
 		}
 	},
 	methods: {
-		//扫描物料码
+		//扫描拣货码
 		scanPackege: function(res) {
 			if (this.isCanOutlibrary) {
 				this.resetScanPackege();

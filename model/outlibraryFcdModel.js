@@ -53,9 +53,9 @@ const outlibraryModel = {
 		this.materials.push(new pickingModel(data));
 	},
 	//叠加拣货信息
-	updateMaterial: function(data, i) {
-		this.materials[i].addGoods(data);
-	},
+// 	updateMaterial: function(data, i) {
+// 		this.materials[i].addGoods(data);
+// 	},
 	//设置拣货信息
 	setMaterial: function(data) {
 		var index = -1;
@@ -65,11 +65,11 @@ const outlibraryModel = {
 			break;
 			// }
 		}
-		if (index > -1) {
-			this.updateMaterial(data, index);
-		} else {
-			this.addNewPicking(data);
-		}
+// 		if (index > -1) {
+// 			this.updateMaterial(data, index);
+// 		} else {
+// 			this.addNewPicking(data);
+// 		}
 	},
 	//设置车辆码
 	setVehicleCode: function(codeid) {
