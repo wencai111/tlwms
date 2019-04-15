@@ -78,7 +78,17 @@
 						image: '/static/img/checkInventory.png',
 						text: '备件',
 						url: '../checkInventory/inway'
-					}
+					},
+					{
+						image: '/static/img/shifting.png',
+						text: '移库',
+						url: '../shifting/index'
+					},
+										{
+						image: '/static/img/zhongtai.png',
+						text: '众泰收货',
+						url: '../zhongtai/inway'
+					},
 				]
 			};
 		},

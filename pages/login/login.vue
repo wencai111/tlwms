@@ -7,28 +7,14 @@
 		<view class="input-group">
 			<view class="input-row border">
 				<text class="title">账号：</text>
-				<m-input
-					class="m-input"
-					type="text"
-					clearable
-					focus
-					v-model="account"
-					placeholder="请输入账号"
-				></m-input>
+				<m-input class="m-input" type="text" clearable focus v-model="account" placeholder="请输入账号"></m-input>
 			</view>
 			<view class="input-row">
 				<text class="title">密码：</text>
-				<m-input
-					type="password"
-					displayable
-					v-model="password"
-					placeholder="请输入密码"
-				></m-input>
+				<m-input type="password" displayable v-model="password" placeholder="请输入密码"></m-input>
 			</view>
 		</view>
-		<view class="btn-row">
-			<button type="primary" class="primary" @tap="bindLogin">登录</button>
-		</view>
+		<view class="btn-row"><button type="primary" class="primary" @tap="bindLogin">登录</button></view>
 	</view>
 </template>
 
@@ -59,7 +45,8 @@ export default {
 			// 反向使用 top 进行定位，可以避免此问题。
 			this.positionTop = uni.getSystemInfoSync().windowHeight - 100;
 		},
-		bindLogin() {
+		bindLogin(e) {
+			
 			//参数校验
 			if (!this.account || this.account.length <= 0) {
 				uni.showToast({
@@ -118,14 +105,14 @@ export default {
 </script>
 
 <style>
-view{
-	font-size:34upx;
-}	
-	
+view {
+	font-size: 34upx;
+}
+
 .logo-row {
 	margin: 0 auto;
 }
-.logo-row >image {
+.logo-row > image {
 	width: 250upx;
 	height: 250upx;
 }
@@ -133,69 +120,67 @@ view{
 	margin: 0 auto;
 	font-size: 45upx;
 }
- 
- 
-  .input-group {
-     background-color: #ffffff;
-     margin-top: 40upx;
-     position: relative;
- }
- .input-group::before {
-     position: absolute;
-     right: 0;
-     top: 0;
-     left: 0;
-     height: 1upx;
-     content: '';
-     -webkit-transform: scaleY(.5);
-     transform: scaleY(.5);
-     background-color: #c8c7cc;
- }
- 
- .input-group::after {
-     position: absolute;
-     right: 0;
-     bottom: 0;
-     left: 0;
-     height: 1upx;
-     content: '';
-     -webkit-transform: scaleY(.5);
-     transform: scaleY(.5);
-     background-color: #c8c7cc;
- }
- 
- .input-row {
-     display: flex;
-     flex-direction: row;
-     position: relative;
- }
- 
- .input-row .title {
-     width: 20%;
-     height: 50upx;
-     min-height: 50upx;
-     padding: 15upx 0;
-     padding-left: 30upx;
-     line-height: 50upx;
- }
- 
- .input-row.border::after {
-     position: absolute;
-     right: 0;
-     bottom: 0;
-     left: 15upx;
-     height: 1upx;
-     content: '';
-     -webkit-transform: scaleY(.5);
-     transform: scaleY(.5);
-     background-color: #c8c7cc;
- }
-  button.primary {
-     background-color: #0faeff;
- }
- 
- 
- /* 
+
+.input-group {
+	background-color: #ffffff;
+	margin-top: 40upx;
+	position: relative;
+}
+.input-group::before {
+	position: absolute;
+	right: 0;
+	top: 0;
+	left: 0;
+	height: 1upx;
+	content: '';
+	-webkit-transform: scaleY(0.5);
+	transform: scaleY(0.5);
+	background-color: #c8c7cc;
+}
+
+.input-group::after {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	height: 1upx;
+	content: '';
+	-webkit-transform: scaleY(0.5);
+	transform: scaleY(0.5);
+	background-color: #c8c7cc;
+}
+
+.input-row {
+	display: flex;
+	flex-direction: row;
+	position: relative;
+}
+
+.input-row .title {
+	width: 20%;
+	height: 50upx;
+	min-height: 50upx;
+	padding: 15upx 0;
+	padding-left: 30upx;
+	line-height: 50upx;
+}
+
+.input-row.border::after {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 15upx;
+	height: 1upx;
+	content: '';
+	-webkit-transform: scaleY(0.5);
+	transform: scaleY(0.5);
+	background-color: #c8c7cc;
+}
+button.primary {
+	background-color: #0faeff;
+}
+
+/* 
  .example{
      padding: 0 30upx 30upx;
  }
