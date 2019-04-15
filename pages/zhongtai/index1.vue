@@ -11,8 +11,7 @@
 			<view v-show="data.length > 0 && !flag" class="wxc-card">
 				<view class="wxc-card_list" v-for="item in data" v-bind:key="item.NowQuanId">
 					<view class="wxc-card_list_header">
-						<view class="wxc-card_list_header_title">单据状态{{ item.StateFlag}}</view>
-						<view class="wxc-card_list_header_title">{{ item.BzBarcode}}</view>
+						<view class="wxc-card_list_header_title">拣货码{{ item.PickGoodsCode}}</view>
 						<view class="wxc-card_list_header_extra">件号{{ item.MNumber}}</view>
 					</view>
 					<view class="wxc-card_list_header">
@@ -33,15 +32,14 @@
 
 <script>
 import { parseForRule, authAccount, isEmptyObject } from '@/libs/util.js';
-import { ResearchDeliBill } from '@/api/inlibrary.js';
+import { ResearchZoteRecGoods } from '@/api/zhongtai.js';
 import { mapState } from 'vuex';
 export default {
 	data() {
 		return {
 			flag: false, //在有数据的情况下，是否显示查询按钮
 			total: 0,
-			StateFlag:'',
-			BzBarcode:'', 
+			PickGoodsCode:'', 
 			MNumber:'', 
 			IsScan: '', 
 			MName: '',
@@ -52,9 +50,8 @@ export default {
 	created() {
 		this.flag = false;
 		this.total = 0;
-		this.StateFlag='',
 		this.MNumber = '';
-		this.BzBarcode = '';
+		this.PickGoodsCode = '';
 		this.IsScan = '';
 		this.MName = '';
 		this.BzQty = '';
@@ -87,7 +84,7 @@ export default {
 				});
 			} else {
 				var _this = this;
-				ResearchDeliBill(this.generateModel()).then(data => {
+				ResearchZoteRecGoods(this.generateModel()).then(data => {
 						var [error, res] = data;
 						console.log('getStockList.data:' + JSON.stringify(data));
 						console.log('getStockList.res:' + JSON.stringify(res));
@@ -118,8 +115,7 @@ export default {
 		//重置函数
 		reset: function() {
 			this.total = 0;
-			this.StateFlag='';
-			this.BzBarcode = '';
+			this.PickGoodsCode = '';
 			this.MNumber = '';
 			this.MName = '';
 			this.IsScan = '';
@@ -139,8 +135,7 @@ export default {
 		//生成提交查询入库model
 		generateModel: function() {
 			var model = new Object();
-			model.BzBarcode = this.BzBarcode;
-			model.StateFlag =this.StateFlag;
+			model.PickGoodsCode = this.PickGoodsCode;
 			model.MNumber = this.MNumber;
 			model.MName = this.MName;
 			model.IsScan = this.IsScan;

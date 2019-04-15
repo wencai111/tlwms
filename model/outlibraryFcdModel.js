@@ -52,29 +52,35 @@ const outlibraryModel = {
 	addNewPicking: function(data) {
 		this.materials.push(new pickingModel(data));
 	},
-	//叠加拣货信息
-// 	updateMaterial: function(data, i) {
-// 		this.materials[i].addGoods(data);
-// 	},
 	//设置拣货信息
 	setMaterial: function(data) {
 		var index = -1;
 		for (var i = 0; i < this.materials.length; i++) {
-			// if(data.code==this.materials[i].code){
 			index = i;
 			break;
-			// }
 		}
-// 		if (index > -1) {
-// 			this.updateMaterial(data, index);
-// 		} else {
-// 			this.addNewPicking(data);
-// 		}
 	},
 	//设置车辆码
 	setVehicleCode: function(codeid) {
 		console.log('result' + JSON.stringify(codeid));
 		this.vehicleCode = codeid;
+	},
+	//判断是否重复扫描拣货
+	judgeCommonPackege: function(data) {
+		console.log('judgeCommonPackege.data:' + data);
+		var result = true;
+		try {
+			for (var i = 0; i < this.materials.length; i++) {
+				if (this.materials[i].BillNum == data) {
+					result = false;
+					break;
+				}
+			}
+		} catch (e) {
+			result = true;
+		}
+		console.log("judgeCommonStorage结果：" + result)
+		return result;
 	},
 	generateModel: function() {
 		var model = new Object();

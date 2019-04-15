@@ -75,3 +75,13 @@ export const ResearchDeliBill = (data) => {
 		data: data,
 	});
 }
+
+export const saveMateMoveInfo = (data) => {
+	console.log("SaveMateMoveInfo入参：" + JSON.stringify(data))
+	return uni.request({
+		url: domian + 'common/wms_Server_Data.asp?action=SaveMateMoveInfo',
+		type: "POST",
+		dataType: "JSON",
+		data: data,
+	});
+}

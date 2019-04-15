@@ -20,7 +20,7 @@ export default {
 		...mapState(['forcedLogin', 'hasLogin', 'userName'])
 	},
 	methods: {
-		//扫描送货单
+		//扫描送货单号
 		scanMateria: function() {
 			var _this = this;
 			uni.scanCode({
@@ -50,9 +50,9 @@ export default {
 		goQueryPage: function(res) {
 			if (res) {
 				console.log('res' + JSON.stringify(res));
-				uni.navigateTo({ url: '/pages/inlibrary/index2?res=' + res });
+				uni.navigateTo({ url: '/pages/zhongtai/index1?res=' + res });
 			} else {
-				uni.navigateTo({ url: '/pages/inlibrary/index2' });
+				uni.navigateTo({ url: '/pages/zhongtai/index1' });
 			}
 		}
 	},

@@ -20,11 +20,9 @@ export default {
 	components: { uniList, uniListItem },
 	computed: mapState(['forcedLogin', 'hasLogin', 'userName','code']),
 	methods: {
-		//紧急入库
 		goInlibraryByMaterial: function() {
 			uni.navigateTo({url:'/pages/inlibrary/index'});
 		},
-		//包装码入库
 		goInlibraryByPackege: function() {
 			uni.navigateTo({ url: '/pages/inlibrary/index1' });
 		},

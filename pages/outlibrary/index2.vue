@@ -72,7 +72,7 @@ export default {
 				return false;
 			}
 		},
-		isCanGenerateFcd(){
+		isCanGenerateFcd() {
 			if (this.currentSteps == 2) {
 				return true;
 			} else {
@@ -91,35 +91,48 @@ export default {
 					onlyFromCamera: true,
 					success: function(res) {
 						console.log('res' + JSON.stringify(res));
-						if (res && res.result && res.result != ''&& res.result.indexOf('PGC') != '-1') {
-							getPickGoodsCodeInfo(res.result).then(data => {
-								var [error, res] = data;
-								console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
-								console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
-								var result = parseForRule(res.data);
-								console.log('result:' + JSON.stringify(result));
-								if (result && !isEmptyObject(result)) {
-									_this.currentSteps = 1;
-									console.log('测:' + JSON.stringify(result));
-									_this.materials.setPackege(result);
-								} else {
-									uni.showModal({
-										title: '提示',
-										content: '没有获取到拣货码信息，请检查拣货码',
-										showCancel: false,
-										success: function(res) {
-											if (res.confirm) {
-												console.log('用户点击确定');
+						if (res && res.result && res.result != '' && res.result.indexOf('PGC') != '-1') {
+							if (_this.materials.judgeCommonPackege(res.result)) {
+								getPickGoodsCodeInfo(res.result).then(data => {
+									var [error, res] = data;
+									console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
+									console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
+									var result = parseForRule(res.data);
+									console.log('result:' + JSON.stringify(result));
+									if (result && !isEmptyObject(result)) {
+										_this.currentSteps = 1;
+										console.log('测:' + JSON.stringify(result));
+										_this.materials.setPackege(result);
+									} else {
+										uni.showModal({
+											title: '提示',
+											content: '没有获取到拣货码信息，请检查拣货码',
+											showCancel: false,
+											success: function(res) {
+												if (res.confirm) {
+													console.log('用户点击确定');
+												}
 											}
-										}
-									});
-								}
-							});
+										});
+									}
+								});
+							} else {
+								uni.showToast({
+									icon: 'none',
+									duration: 2500,
+									title: '拣货码错误,请重新扫描；'
+								});
+							}
 						} else {
-							uni.showToast({
-								icon: 'none',
-								duration: 2500,
-								title: '拣货码错误,请重新扫描；'
+							uni.showModal({
+								title: '提示',
+								content: data.BzBarCode + '包装码已经扫描过！',
+								showCancel: false,
+								success: function(res) {
+									if (res.confirm) {
+										console.log('用户点击确定');
+									}
+								}
 							});
 						}
 					}
