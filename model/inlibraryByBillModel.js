@@ -134,6 +134,7 @@ const inlibraryModel = {
 	generateModel() {
 		console.log("this:"+JSON.stringify(this));
 		var tempBzBarCodes = "";
+		var BzQtys="";
 		var model = new Object();
 		model.BillNum = this.BillNum;
 		model.MNumber = this.MNumber;
@@ -147,8 +148,14 @@ const inlibraryModel = {
 		} else {
 			model.BzBarCodes = "";
 		}
+		
+		
+		for (let item of this.packages) {
+			BzQtys = BzQtys + item.BzQty + "|";
+		}
+		model.BzQtys = BzQtys.trim("").substr(0, BzQtys.length - 1);
 		var result="";
-		result="&BillNum="+model.BillNum+"&MNumber="+model.MNumber+"&Quan="+model.Quan+"&LocalID="+model.LocalID +"&BzBarCodes="+model.BzBarCodes;
+		result="&BillNum="+model.BillNum+"&MNumber="+model.MNumber+"&Quan="+model.Quan+"&LocalID="+model.LocalID +"&BzBarCodes="+model.BzBarCodes+"&BzQtys="+model.BzQtys;
 		return result;
 	}
 };
