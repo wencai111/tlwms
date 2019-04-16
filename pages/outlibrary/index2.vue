@@ -117,22 +117,22 @@ export default {
 									}
 								});
 							} else {
-								uni.showToast({
-									icon: 'none',
-									duration: 2500,
-									title: '拣货码错误,请重新扫描；'
+								uni.showModal({
+									title: '提示',
+									content: res.result + '包装码已经扫描过！',
+									showCancel: false,
+									success: function(res) {
+										if (res.confirm) {
+											console.log('用户点击确定');
+										}
+									}
 								});
 							}
 						} else {
-							uni.showModal({
-								title: '提示',
-								content: data.BzBarCode + '包装码已经扫描过！',
-								showCancel: false,
-								success: function(res) {
-									if (res.confirm) {
-										console.log('用户点击确定');
-									}
-								}
+							uni.showToast({
+								icon: 'none',
+								duration: 2500,
+								title: '拣货码错误,请重新扫描；'
 							});
 						}
 					}

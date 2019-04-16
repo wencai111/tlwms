@@ -2,73 +2,48 @@
 	<view class="content">
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
-			<button type="primary" v-bind:disabled="currentSteps > 1" v-on:click="scanMaterial"><text>扫不良品</text></button>
-			<button type="primary" v-bind:disabled="currentSteps != 1" v-on:click="scanWarehouse"><text>扫码库位码</text></button>
-			<view v-if="material.id.length > 0">
+			<button type="primary" v-bind:disabled="currentSteps > 1" v-on:click="scanPackege"><text>扫描拣货码</text></button>
+			<view v-if="material.TlJpdID!=''">
 				<view class="uni-card">
-					<view class="uni-card__header">
-						<view class="uni-card__header-title-text">{{ material.code }}</view>
-						<view class="uni-card__header-extra-text">{{ material.totalAmount }}</view>
-					</view>
-					<view class="uni-card__content uni-card__content--pd">
-						<view v-for="(item, index) in material.goods" v-bind:key="index" class="wxc-list">
-							<view class="wxc-list-title-text">
-								{{ material.storage == null ? '正在等待库位码，可继续物料' : '出库货架' }}
-								<text style="color: #0FAEFF;margin-left: 4px;" v-if="material.storage != null">{{ material.storage.code }}</text>
-							</view>
-							<view class="wxc-list-extra-text">{{ item }}</view>
-							<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="modification(index)">修改</span>
-						</view>
-					</view>
-					<view class="uni-card__footer">
-						返厂出库:{{ material.code }}
-						<text v-if="material.storage != null">{{ material.storage.code }}</text>
+					<view class="">
+						<view class="wxc-list-extra">需求单号:{{ material.OperBillNum }}</view>
+						<view class="wxc-list-extra">条码内容:{{ material.BillNum }}</view>
+						<view class="wxc-list-extra">物料编码:{{ material.MNumber }}</view>
+						<view class="wxc-list-extra">物料名称:{{ material.MName }}</view>
+						<view class="wxc-list-extra">包装数量:{{ material.OutPackage }}</view>
+						<view class="wxc-list-extra">对应数量:{{ material.Qty }}</view>
+						<view class="wxc-list-extra">出库库位:{{ material.LocalName }}</view>
 					</view>
 				</view>
 			</view>
-			<!-- <view v-show="sureInlibrarys" class="uni-textarea">
-                <textarea placeholder-style="color:#F76260" v-model="material.reason" placeholder="请填写分拆入库的原因"/>
-            </view> -->
-			<button type="primary" v-bind:disabled="!sureInlibrarys" @click="sureInlibrary">确定返厂出库</button>
-			<button type="primary" v-show="currentSteps == 3" @click="goBack">返回</button>
-			
+			<button type="primary" v-bind:disabled="!isCanOutlibrary" @click="surePickGoods">确认返厂出库</button>
+			<button type="primary" v-show="currentSteps == 1" @click="goBack">返回</button>
+			<!-- <button type="primary"  @click="logMessage">
+				浏览器打印
+			</button> -->
 		</view>
-		<neil-modal :show="show" title="修改提示" @close="closeModificationModal" @confirm="modifierNumber('modifierNumber')">
-			<view style="min-height: 90upx;padding: 32upx 24upx;">
-				<view style="text-align: center;">
-					请输入个数
-					<input type="number" step="0.0000000001" v-enter-number v-model="inputNumber" placeholder="输入个数...." />
-				</view>
-			</view>
-		</neil-modal>
 	</view>
 </template>
+
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
-import { addUserParam,authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
-import neilModal from '@/components/neil-modal/neil-modal.vue';
-import { checkLocal, saveStockOutByBadMate } from '@/api/return.js';
-import returnModel from '@/model/reutrnModel.js';
+import { getPickGoodsCodeInfo, getBadMatePickGoodsInfo } from '@/api/return.js';
+import outlibraryModel from '@/model/returnOutlibraryModel.js';
 import { mapState } from 'vuex';
+import { addUserParam, authAccount, parseForRule, isEmptyObject } from '@/libs/util.js';
 export default {
 	data() {
 		return {
-			material: returnModel,
+			material: outlibraryModel,
 			currentSteps: 0, //当前执行步骤，
 			steps: [
 				{
-					title: '扫不良品'
-				},
-				{
-					title: '扫库位码'
+					title: '扫拣货码'
 				},
 				{
 					title: '返厂出库'
 				}
-			],
-			currentIndex: 0, //当前需要修改数量的货物索引
-			show: false,
-			inputNumber: 12
+			]
 		};
 	},
 	created() {
@@ -76,16 +51,15 @@ export default {
 		this.material.reset();
 	},
 	components: {
-		neilModal,
 		uniSteps,
 		uniCard,
 		uniList,
 		uniListItem
 	},
 	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
-		sureInlibrarys() {
-			if (this.currentSteps == 2) {
+		...mapState(['forcedLogin', 'hasLogin', 'userName', 'password', 'userID']),
+		isCanOutlibrary() {
+			if (this.currentSteps == 1) {
 				return true;
 			} else {
 				return false;
@@ -93,104 +67,111 @@ export default {
 		}
 	},
 	methods: {
-		//扫描物料码
-		// { id: 'W', code: '1001030001-B12', codeid: '1', count: 12 }
-		scanMaterial: function(res) {
-			var _this = this;
-			uni.scanCode({
-				onlyFromCamera: true,
-				success: function(res) {
-					console.log('res' + JSON.stringify(res));
-					var result = parseForRule(res.result);
-					console.log('result' + JSON.stringify(result));
-					if (result&&result.code&&result.code!="") {
-						if(_this.material.code!=""&&result.code!=_this.material.code){
+		//扫描拣货码
+		scanPackege: function(res) {
+			if (this.isCanOutlibrary) {
+				this.resetScanPackege();
+			} else {
+				var _this = this;
+				uni.scanCode({
+					onlyFromCamera: true,
+					success: function(res) {
+						console.log('res' + JSON.stringify(res));
+						if (res && res.result && res.result != '' && res.result.indexOf('PGC') != '-1') {
+							getPickGoodsCodeInfo(res.result, _this.userName, _this.password, _this.userID).then(data => {
+								var [error, res] = data;
+								console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
+								console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
+								var result = parseForRule(res.data);
+								console.log('result:' + JSON.stringify(result));
+								if (result && !isEmptyObject(result)) {
+									_this.currentSteps = 1;
+									console.log('测:' + JSON.stringify(result));
+									_this.material.setPackege(result);
+								} else {
+									uni.showModal({
+										title: '提示',
+										content: '没有获取到拣货码信息，请检查拣货码',
+										showCancel: false,
+										success: function(res) {
+											if (res.confirm) {
+												console.log('用户点击确定');
+											}
+										}
+									});
+								}
+							});
+						} else {
 							uni.showModal({
 								title: '提示',
-								showCancel:false,
-								content: "跟前一次物料不一致",
+								content: '拣货码错误,请重新扫描！',
+								showCancel: false,
 								success: function(res) {
 									if (res.confirm) {
 										console.log('用户点击确定');
-									} 
+									}
 								}
 							});
 						}
-						else{
-						if (_this.material.setMateriaInfo(result)) {
-							_this.currentSteps = 1;
-						} else {
-							uni.showToast({
-								icon: 'none',
-								duration: 2500,
-								title: '物料信息错误:' + JSON.stringify(result)
-							});
-						}
 					}
-		
-					} else {
-						uni.showToast({
-							icon: 'none',
-							duration: 2500,
-							title: '物料信息错误:' + res.result
-						});
-					}
-				}
-			});
+				});
+			}
 		},
-		//扫描库位码
-		scanWarehouse: function(res) {
+		//重新扫描
+		resetScanPackege: function(res) {
 			var _this = this;
-			uni.scanCode({
-				onlyFromCamera: true,
+			uni.showModal({
+				title: '提示',
+				content: '是否放弃当前拣货码，重新扫描拣货码',
 				success: function(res) {
-					console.log('res' + JSON.stringify(res));
-					var result = parseWarehouseCode(res.result);
-					console.log('result' + JSON.stringify(result));
-					if (result && result.codeid && result.codeid != '') {
-						checkLocal(_this.material.code, result.codeid,_this.userName,_this.password,_this.userID).then(data => {
-							var [error, res] = data;
-							console.log('checkLocal.data:' + JSON.stringify(data));
-							console.log('checkLocal.res:' + JSON.stringify(res));
-							var checkResult = parseForRule(res.data);
-							console.log('checkResult:' + JSON.stringify(checkResult));
-							if (checkResult.success) {
-								if (_this.material.addStorage(result)) {
-									_this.currentSteps = 2;
+					if (res.confirm) {
+						_this.material.reset();
+						uni.scanCode({
+							onlyFromCamera: true,
+							success: function(res) {
+								console.log('res' + JSON.stringify(res));
+								if (res && res.result && res.result != '' && res.result.indexOf('PGC') != '-1') {
+									getPickGoodsCodeInfo(res.result, _this.userName, _this.password, _this.userID).then(data => {
+										var [error, res] = data;
+										console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
+										console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
+										var result = parseForRule(res.data);
+										var result = isEmptyObject(result);
+										console.log('result:' + JSON.stringify(result));
+										if (result && !isEmptyObject(result)) {
+											_this.currentSteps = 1;
+											_this.material.setPackege(result);
+										} else {
+											uni.showModal({
+												title: '提示',
+												content: '没有获取到拣货码信息，请检查拣货码',
+												showCancel: false,
+												success: function(res) {
+													if (res.confirm) {
+														console.log('用户点击确定');
+													}
+												}
+											});
+										}
+									});
 								} else {
 									uni.showToast({
 										icon: 'none',
 										duration: 2500,
-										title: '库位信息错误：' + JSON.stringify(result)
+										title: '拣货码错误,请重新扫描；'
 									});
 								}
-							} else {
-								uni.showModal({
-									title: '提示',
-									content: checkResult.ResponseText,
-									showCancel: false,
-									success: function(res) {
-										if (res.confirm) {
-											console.log('用户点击确定');
-										}
-									}
-								});
 							}
 						});
-					} else {
-						uni.showToast({
-							icon: 'none',
-							duration: 2500,
-							title: '库位信息错误:' + res.result
-						});
+					} else if (res.cancel) {
 					}
 				}
 			});
 		},
-		//确定返厂出库
-		sureInlibrary: function() {
+		//确定出库
+		surePickGoods: function(res) {
 			var _this = this;
-			saveStockOutByBadMate(addUserParam(this.material.generateModel(),this.userName,this.password,this.userID)).then(data => {
+			getBadMatePickGoodsInfo(addUserParam(this.material.generateModel(), this.userName, this.password, this.userID)).then(data => {
 				var [error, res] = data;
 				console.log('data:' + JSON.stringify(data));
 				console.log('res:' + JSON.stringify(res));
@@ -198,12 +179,14 @@ export default {
 				console.log('result:' + JSON.stringify(result));
 				if (result.success) {
 					console.log(result);
-					_this.currentSteps = 3;
+					_this.currentSteps = 2;
+					console.log('正确');
 					uni.showToast({
 						icon: 'success',
 						title: '返厂出库成功！'
 					});
 				} else {
+					console.log('错误');
 					uni.showModal({
 						title: '提示',
 						showCancel: false,
@@ -221,30 +204,9 @@ export default {
 		goBack: function() {
 			uni.navigateBack();
 		},
-		modification: function(index) {
-			console.log('modification:' + index);
-			try{
-				this.inputNumber = this.material.goods[index];
-				this.currentIndex = index;
-				this.show = true;
-			}catch(e){
-				console.log("异常："+JSON.stringify(e))
-			}
-			
-			console.log('modification:end');
-		},
-		//关闭弹框事件
-		closeModificationModal:function(data){
-			this.show = false;
-		},
-		modifierNumber: function(ref) {
-			console.log('修改后的值：' + this.inputNumber);
-			try {
-				this.material.modifierNumber(this.currentIndex, this.inputNumber);
-			} catch (e) {
-				console.log("异常："+JSON.stringify(e))
-			}
-			this.show = false;
+		//移除物料
+		logMessage: function() {
+			debugger;
 		}
 	},
 	onLoad() {
@@ -252,16 +214,17 @@ export default {
 	}
 };
 </script>
-
 <style lang="scss">
 .materialnumber {
 	width: auto;
 	height: 100%;
 	float: right;
 }
+
 button {
 	margin-top: 10px;
 }
+
 .bank {
 	width: auto;
 	height: 100%;
@@ -356,12 +319,9 @@ $card-extra-width: 30%;
 				@include text-omit;
 			}
 		}
-		&__content {
-			&--pd {
-				padding: $uni-spacing-col-base;
-			}
-		}
+	}
 
+	&__content {
 		&--pd {
 			padding: $uni-spacing-col-base;
 		}
@@ -423,7 +383,7 @@ $card-extra-width: 30%;
 
 		&-text {
 			flex: 0 0 auto;
-			width: $card-extra-width;
+			width: 10%;
 			margin-left: $uni-spacing-col-base;
 			font-size: $uni-font-size-base;
 			text-align: right;

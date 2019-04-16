@@ -43,3 +43,31 @@ export const saveStockOutByBadMate = (data) => {
 		data: data
 	});
 }
+
+export const getPickGoodsCodeInfo = (BillNum,userName,password,userID) => {
+	console.log("getPickGoodsCodeInfo入参BillNum：" + BillNum);
+	console.log("getPickGoodsCodeInfo入参userName：" + userName);
+	console.log("getPickGoodsCodeInfo入参password：" + password);
+	console.log("getPickGoodsCodeInfo入参userID：" + userID);
+	return uni.request({
+		url: domian + 'common/wms_Server_Data.asp?action=GetPickGoodsCodeInfo'+"&BillNum="+BillNum+"&UserName="+userName+"&Password="+password+"&UserID="+userID
+	});
+}
+
+
+
+
+
+/**
+ * @description 不良品返厂出库（从仓库出库退回给供应商）
+ * 仓库中的不良品退回给供应商（从仓库中出库））
+ */
+export const getBadMatePickGoodsInfo = (data) => {
+    console.log("GetBadMatePickGoodsInfo 入参："+JSON.stringify(data));
+	return uni.request({
+		url: domian + 'common/wms_Server_Data.asp?action=GetBadMatePickGoodsInfo',
+		type: "GET",
+		dataType: "JSON",
+		data: data
+	});
+}
