@@ -68,7 +68,7 @@ import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import { bulidBzd } from '@/api/checkInventory.js';
 import checkInventoryPackegeModel from '@/model/checkInventoryPackegeModel.js';
 import { mapState } from 'vuex';
-import { authAccount, parseForRule } from '@/libs/util.js';
+import { addUserParam,authAccount, parseForRule } from '@/libs/util.js';
 export default {
 	data() {
 		return {
@@ -95,7 +95,7 @@ export default {
 		uniListItem
 	},
 	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName']),
+		...mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
 		isCanGenerateBzd() {
 			if (this.currentSteps == 1) {
 				return true;
@@ -142,7 +142,7 @@ export default {
 				});
 			} else {
 				var _this = this;
-				bulidBzd(this.materials.generateModel()).then(data => {
+				bulidBzd(addUserParam(this.materials.generateModel(),this.userName,this.password,this.userID)).then(data => {
 					var [error, res] = data;
 					console.log('data:' + JSON.stringify(data));
 					console.log('res:' + JSON.stringify(res));

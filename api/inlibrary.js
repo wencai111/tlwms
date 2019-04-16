@@ -9,10 +9,10 @@ const {
  * 检查通过则提交数据保存并更新库存。库位存放要求：良品区库位只能存放一种物料，
  * 冻结库位不能存放物料，不同批次的物料不能存放在同一库位。
  */
-export const checkLocal = (MNumber, LocalID) => {
-	console.log("checkLocal:入参:MNumber:" + MNumber + "  LocalID:" + LocalID);
+export const checkLocal = (MNumber,LocalID,userName,password,userID) => {
+	console.log("checkLocal:入参:" +MNumber,+LocalID);
 	return uni.request({
-		url: domian + 'common/wms_Server_Data.asp?action=CheckLocal&MNumber=' + MNumber + "&LocalID=" + LocalID
+		url: domian + 'common/wms_Server_Data.asp?action=CheckLocal&MNumber='+MNumber+"&LocalID="+LocalID+"&UserName="+userName+"&Password="+password+"&UserID="+userID
 	});
 }
 
@@ -40,15 +40,13 @@ export const saveEmergentInInfo = (data) => {
  * 后如果连续扫描物料放置在同一库位时，前端需要检查
  * 送货单号和物料是否一致，如果一致则累加当前包装数量。不一致则提醒用户错误原因。
  */
-export const getDeliBillBarcodeInfo = (BzBarCode) => {
+export const getDeliBillBarcodeInfo = (BzBarCode,userName,password,userID) => {
 	console.log("getDeliBillBarcodeInfo:入参 number:" + BzBarCode);
+	console.log("getDeliBillBarcodeInfo:入参 userName:" + userName);
+	console.log("getDeliBillBarcodeInfo:入参 password:" + password);
+	console.log("getDeliBillBarcodeInfo:入参 userID:" + userID);
 	return uni.request({
-		url: domian + 'common/wms_Server_Data.asp?action=GetDeliBillBarcodeInfo',
-		type: "GET",
-		dataType: "JSON",
-		data: {
-			"BzBarCode": BzBarCode
-		},
+		url: domian + 'common/wms_Server_Data.asp?action=GetDeliBillBarcodeInfo'+"&BzBarCode="+BzBarCode+"&UserName="+userName+"&Password="+password+"&UserID="+userID
 	});
 }
 

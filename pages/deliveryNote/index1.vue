@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { parseForRule, authAccount,isEmptyObject } from '@/libs/util.js';
+import { addUserParam,parseForRule, authAccount,isEmptyObject } from '@/libs/util.js';
 import { getLocationList } from '@/api/deliveryNote.js';
 import { mapState } from 'vuex';
 export default {
@@ -50,7 +50,7 @@ export default {
 		this.sureQuery();
 	},
 	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName']),
+		...mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
 		isNext() {
 			if (this.total > this.data.length) {
 				return true;
@@ -63,12 +63,12 @@ export default {
 		//确定查询
 		sureQuery: function() {
 			var _this = this;
-			getLocationList(this.generateModel()).then(data => {
+			getLocationList(addUserParam(this.generateModel(),this.userName,this.password,this.userID)).then(data => {
 				var [error, res] = data;
-				console.log('getStockList.data:' + JSON.stringify(data));
-				console.log('getStockList.res:' + JSON.stringify(res));
+				console.log('getLocationList.data:' + JSON.stringify(data));
+				console.log('getLocationList.res:' + JSON.stringify(res));
 				var result = parseForRule(res.data);
-				console.log('getStockList.result:' + JSON.stringify(result));
+				console.log('getLocationList.result:' + JSON.stringify(result));
 				if (result &&!isEmptyObject(result)) {
 					_this.addDeliveryNoteModel(result);
 				} else {

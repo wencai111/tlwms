@@ -34,7 +34,7 @@ import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import { bulidFcd, getPickGoodsCodeInfo } from '@/api/outlibrary.js';
 import outlibraryModel from '@/model/outlibraryFcdModel.js';
 import { mapState } from 'vuex';
-import { authAccount, parseForRule, isEmptyObject } from '@/libs/util.js';
+import { addUserParam,authAccount, parseForRule, isEmptyObject } from '@/libs/util.js';
 export default {
 	data() {
 		return {
@@ -64,7 +64,7 @@ export default {
 		uniListItem
 	},
 	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName']),
+		...mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
 		scanVehicles() {
 			if (this.currentSteps == 1) {
 				return true;
@@ -93,7 +93,7 @@ export default {
 						console.log('res' + JSON.stringify(res));
 						if (res && res.result && res.result != '' && res.result.indexOf('PGC') != '-1') {
 							if (_this.materials.judgeCommonPackege(res.result)) {
-								getPickGoodsCodeInfo(res.result).then(data => {
+								getPickGoodsCodeInfo(res.result,_this.userName,_this.password,_this.userID).then(data => {
 									var [error, res] = data;
 									console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
 									console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
@@ -219,7 +219,7 @@ export default {
 		//确定生成发车单
 		sureGenerateFcd: function(res) {
 			var _this = this;
-			bulidFcd(this.materials.generateModel()).then(data => {
+			bulidFcd(addUserParam(this.materials.generateModel(),this.userName,this.password,this.userID)).then(data => {
 				var [error, res] = data;
 				console.log('data:' + JSON.stringify(data));
 				console.log('res:' + JSON.stringify(res));

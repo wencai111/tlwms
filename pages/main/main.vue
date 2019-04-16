@@ -29,6 +29,9 @@
 	import {
 		authAccount
 	} from '@/libs/util.js';
+		import {
+		appLogin
+	} from '@/api/user.js';
 
 	export default {
 		data() {
@@ -97,7 +100,7 @@
 			uniList,
 			uniListItem
 		},
-		computed: mapState(['forcedLogin', 'hasLogin', 'userName']),
+		computed: mapState(['forcedLogin', 'hasLogin', 'userName','password',]),
 		methods: {
 			goMainPage: function(e) {
 				console.log(JSON.stringify(e));
@@ -113,6 +116,8 @@
 		},
 		onLoad() {
 			console.log('登录状态：' + this.hasLogin);
+			console.log('登录状态2：' + this.forcedLogin);
+		    console.log('登录状态3：' + this.userName);
 			authAccount(this.hasLogin, this.forcedLogin, this.userName);
 		}
 	};

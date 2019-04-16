@@ -10,14 +10,14 @@
 
 <script>
 import { mapState } from 'vuex';
-import { authAccount } from '@/libs/util.js';
+import { addUserParam,authAccount } from '@/libs/util.js';
 import { uniList, uniListItem } from '@dcloudio/uni-ui';
 export default {
 	data() {
 		return {};
 	},
 	components: { uniList, uniListItem },
-	computed: mapState(['forcedLogin', 'hasLogin', 'userName','code']),
+	computed: mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
 	methods: {
 		//盘点
 		goDeliveryNote: function() {

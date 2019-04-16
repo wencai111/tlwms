@@ -2,19 +2,17 @@
 	<view class="content">
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
-			<view v-show="PackNum!=''" style="text-align: center;font-size: 36upx;font-weight: 120;">
-				{{PackNum}}
-			</view>
+			<view v-show="PackNum != ''" style="text-align: center;font-size: 36upx;font-weight: 120;">{{ PackNum }}</view>
 			<button type="primary" v-bind:disabled="currentSteps > 1" v-on:click="scanPackege"><text>扫备件包装码</text></button>
 			<view class="uni-padding-wrap uni-common-mt" v-show="currentSteps >= 1">
-			<view class="uni-form-item uni-column">
-				<view class="title">当前位置</view>
-				<input class="uni-input" name="input" v-model="ArriAdds" placeholder="请输入当前位置" />
-			</view>
+				<view class="uni-form-item uni-column">
+					<view class="title">当前位置</view>
+					<input class="uni-input" name="input" v-model="ArriAdds" placeholder="请输入当前位置" />
+				</view>
 				<view class="uni-form-item uni-column">
 					<radio-group name="radio">
 						<label>
-							<radio value="到达" @click="logisticsFlagChange(1)"  />
+							<radio value="到达" @click="logisticsFlagChange(1)" />
 							到达
 						</label>
 						<label>
@@ -35,7 +33,7 @@
 
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
-import { authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
+import {addUserParam, authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
 import { saveLogisInfo } from '@/api/checkInventory.js';
 import { mapState } from 'vuex';
 export default {
@@ -67,7 +65,7 @@ export default {
 		uniListItem
 	},
 	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName']),
+		...mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
 		isCanLogistics() {
 			if (this.currentSteps == 1) {
 				return true;
@@ -121,7 +119,7 @@ export default {
 				});
 			} else {
 				var _this = this;
-				saveLogisInfo("&PackNum="+_this.PackNum+"&InOutFlag="+ _this.InOutFlag+"&ArriAdds="+_this.ArriAdds).then(data => {
+				saveLogisInfo(_this.PackNum,_this.InOutFlag,_this.ArriAdds,_this.userName,_this.password,_this.userID).then(data => {
 					var [error, res] = data;
 					console.log('data:' + JSON.stringify(data));
 					console.log('res:' + JSON.stringify(res));

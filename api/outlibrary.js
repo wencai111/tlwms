@@ -24,15 +24,13 @@ export const saveEmergentOutInfo = (data) => {
  * @description 获取拣货码信息
  * 用于根据拣货码扫描出库前获取的相关信息，并进行界面的内容显示。
  */
-export const getPickGoodsCodeInfo = (BillNum) => {
-	console.log("getPickGoodsCodeInfo入参：" + JSON.stringify(BillNum))
+export const getPickGoodsCodeInfo = (BillNum,userName,password,userID) => {
+	console.log("getPickGoodsCodeInfo入参BillNum：" + BillNum);
+	console.log("getPickGoodsCodeInfo入参userName：" + userName);
+	console.log("getPickGoodsCodeInfo入参password：" + password);
+	console.log("getPickGoodsCodeInfo入参userID：" + userID);
 	return uni.request({
-		url: domian + 'common/wms_Server_Data.asp?action=GetPickGoodsCodeInfo',
-		type: "GET",
-		dataType: "JSON",
-		data: {
-			"BillNum":BillNum
-		},
+		url: domian + 'common/wms_Server_Data.asp?action=GetPickGoodsCodeInfo'+"&BillNum="+BillNum+"&UserName="+userName+"&Password="+password+"&UserID="+userID
 	});
 }
 
@@ -42,15 +40,14 @@ export const getPickGoodsCodeInfo = (BillNum) => {
  * 用于的出库。用户可先通过手机端查看所需要
  * 出库的物料所在的库位分布信息，然后进行的出库操作。
  */
-export const sureStockOut = (BillNum) => {
-	console.log("sureStockOut入参：" + JSON.stringify(BillNum))
+export const sureStockOut = (BillNum,userName,password,userID) => {
+	console.log("sureStockOut入参：" + BillNum)
+	console.log("sureStockOut入参BillNum：" + BillNum);
+	console.log("sureStockOut入参userName：" + userName);
+	console.log("sureStockOut入参password：" + password);
+	console.log("sureStockOut入参userID：" + userID);
 	return uni.request({
-		url: domian + 'common/wms_Server_Data.asp?action=SureStockOut',
-		type: "GET",
-		dataType: "JSON",
-		data: {
-			"BillNum":BillNum
-		},
+		url: domian + 'common/wms_Server_Data.asp?action=SureStockOut'+"&BillNum="+BillNum+"&UserName="+userName+"&Password="+password+"&UserID="+userID
 	});
 }
 

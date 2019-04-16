@@ -2,20 +2,24 @@
 	<view style="width: 100%;">
 		<view class="uni-padding-wrap uni-common-mt">
 			<view v-show="data.length <= 0 || flag">
-				<view class=""><input class="uni-input" name="input" v-model="MNumber" placeholder="请填写送货单" /></view>
+				<view class=""><input class="uni-input" name="input" v-model="BillNum" placeholder="请填写送货单" /></view>
 				<view class="uni-btn-v">
 					<button type="primary" @click="sureQuery">确定</button>
 					<button type="default" @click="goBack">返回</button>
 				</view>
 			</view>
 			<view v-show="data.length > 0 && !flag" class="wxc-card">
+			    <view class="">单据状态:{{ StateFlag}}</view>
 				<view class="wxc-card_list" v-for="item in data" v-bind:key="item.NowQuanId">
-					<view class="wxc-card_list_header">
-						<view class="wxc-card_list_header_title">单据状态{{ item.StateFlag}}</view>
-						<view class="wxc-card_list_header_title">{{ item.BzBarcode}}</view>
-						<view class="wxc-card_list_header_extra">件号{{ item.MNumber}}</view>
+					<view class="wxc-card_list_content">
+						<view class="wxc-card_list_content_text">包装码:</view>
+						<view class="wxc-card_list_content_text">{{ item.BzBarcode}}</view>
 					</view>
-					<view class="wxc-card_list_header">
+					<view class="wxc-card_list_content">
+						<view class="wxc-card_list_content_text">件号:</view>
+						<view class="wxc-card_list_content_text">{{ item.MNumber}}</view>
+					</view>
+					<view class="wxc-card_list_content">
 						<view class="wxc-card_list_content_text">名称:{{ item.MName}}</view>
 						<view class="wxc-card_list_content_text">是否扫描:{{ item.IsScan}}</view>
 					</view>
@@ -23,16 +27,16 @@
 						<view class="wxc-card_list_content_text">包装数量:{{item.BzQty}}</view>
 					</view>
 				</view>
-				<view>
+				<!-- <view>
 					<view v-show="!isNext" style="text-align: center;">没有更多数据</view>
-				</view>
+				</view> -->
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
-import { parseForRule, authAccount, isEmptyObject } from '@/libs/util.js';
+import {addUserParam, parseForRule, authAccount, isEmptyObject } from '@/libs/util.js';
 import { ResearchDeliBill } from '@/api/inlibrary.js';
 import { mapState } from 'vuex';
 export default {
@@ -40,43 +44,34 @@ export default {
 		return {
 			flag: false, //在有数据的情况下，是否显示查询按钮
 			total: 0,
-			StateFlag:'',
-			BzBarcode:'', 
-			MNumber:'', 
-			IsScan: '', 
-			MName: '',
-			BzQty:'' ,
+			StateFlag:'',//单据状态
+			BillNum:'',//当前扫描/手工输入的送货单号
 			data: []
 		};
 	},
 	created() {
 		this.flag = false;
 		this.total = 0;
-		this.StateFlag='',
-		this.MNumber = '';
-		this.BzBarcode = '';
-		this.IsScan = '';
-		this.MName = '';
-		this.BzQty = '';
+		this.BillNum='';
 		this.data = [];
 	},
 	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName']),
-		isNext() {
-			if (this.total > this.data.length) {
-				return true;
-			} else {
-				return false;
-			}
-		}
+		...mapState(['forcedLogin', 'hasLogin', 'userName','password','userID'])
+// 		isNext() {
+// 			if (this.total > this.data.length) {
+// 				return true;
+// 			} else {
+// 				return false;
+// 			}
+// 		}
 	},
 	methods: {
 		//确定查询
 		sureQuery: function() {
-			if (this.MNumber == '') {
+			if (this.BillNum == '') {
 				uni.showModal({
 					title: '提示',
-					content: '请填写物料编码',
+					content: '请填写送货单号',
 					showCancel: false,
 					success: function(res) {
 						if (res.confirm) {
@@ -87,18 +82,18 @@ export default {
 				});
 			} else {
 				var _this = this;
-				ResearchDeliBill(this.generateModel()).then(data => {
+				ResearchDeliBill(addUserParam(this.generateModel(),this.userName,this.password,this.userID)).then(data => {
 						var [error, res] = data;
-						console.log('getStockList.data:' + JSON.stringify(data));
-						console.log('getStockList.res:' + JSON.stringify(res));
+						console.log('ResearchDeliBill.data:' + JSON.stringify(data));
+						console.log('ResearchDeliBill.res:' + JSON.stringify(res));
 						var result = parseForRule(res.data);
-						console.log('getStockList.result:' + JSON.stringify(result));
+						console.log('ResearchDeliBill.result:' + JSON.stringify(result));
 						if (result && !isEmptyObject(result)) {
 							_this.addMaterialModel(result);
 						} else {
 							uni.showModal({
 								title: '提示',
-								content: '没有查询出拣货信息',
+								content: '没有查询出送货单信息',
 								showCancel: false,
 								success: function(res) {
 									if (res.confirm) {
@@ -118,16 +113,12 @@ export default {
 		//重置函数
 		reset: function() {
 			this.total = 0;
-			this.StateFlag='';
-			this.BzBarcode = '';
-			this.MNumber = '';
-			this.MName = '';
-			this.IsScan = '';
-			this.BzQty = '';
+			this.BillNum = '';	
 		},
 		//添加物料信息
 		addMaterialModel: function(data, flag) {
 			this.total = data.total;
+			this.StateFlag=data.StateFlag;
 			if (this.flag) {
 				this.data = [];
 			}
@@ -139,12 +130,7 @@ export default {
 		//生成提交查询入库model
 		generateModel: function() {
 			var model = new Object();
-			model.BzBarcode = this.BzBarcode;
-			model.StateFlag =this.StateFlag;
-			model.MNumber = this.MNumber;
-			model.MName = this.MName;
-			model.IsScan = this.IsScan;
-			model.BzQty = this.BzQty;
+			model.BillNum = this.BillNum;
 			return model;
 		},
 		//退仓入库原因
@@ -152,7 +138,7 @@ export default {
 	onLoad(option) {
 		console.log('option:' + JSON.stringify(option));
 		if (option.res) {
-			this.MNumber = option.res;
+			this.BillNum = option.res;
 		}
 		authAccount(this.hasLogin, this.forcedLogin, this.userName);
 	}
@@ -201,6 +187,7 @@ export default {
 			display: flex;
 			flex-direction: row;
 			padding: 0 $uni-spacing-col-base;
+			padding-top: 10upx;
 			align-items: left;
 
 			&_text {

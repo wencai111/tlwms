@@ -21,7 +21,7 @@ export const parseForRule = (data) => {
  * @description 判断是否为空对象
  */
 export const isEmptyObject =(data) => {
-	var result=true;
+	var result=true;//默认是空对象
 	try{
 		for (var i in data) {
 			result=false;
@@ -85,4 +85,37 @@ export const authAccount = (hasLogin, forcedLogin, userName) => {
 			}
 		});
 	}
+}
+
+
+/**
+ * @传入当前登陆用户
+ */
+export const addUserParam = (data,userName,password,userID) =>{
+	console.log("addUserParam.data:"+JSON.stringify(data));
+	console.log("addUserParam.userName:"+userName);
+	console.log("addUserParam.password:"+password);
+	console.log("addUserParam.userID:"+userID);
+	var result=false;//默认不是是对象
+	try{
+		for (var i in data) {
+			result=true;
+			break;
+		}
+	}catch(e){
+		result=false;
+	}
+	console.log("data是否是对象："+result)
+	if(result){
+		data.UserName=userName;
+		data.Password=password;
+		data.UserID=userID;
+	}
+	else{
+		data=data+"&UserName="+userName;
+		data=data+"&Password="+password;
+		data=data+"&UserID="+userID;
+	}
+	console.log("addUserParam结束后的出参："+JSON.stringify(data));
+	return data;
 }

@@ -29,7 +29,7 @@
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import zhongtaiModel from '@/model/zhongtaiModel.js';
-import { authAccount, parseForRule, isEmptyObject } from '@/libs/util.js';
+import {addUserParam, authAccount, parseForRule, isEmptyObject } from '@/libs/util.js';
 import { getPickGoodsCodeInfo, ZoteRecGoods} from '@/api/zhongtai.js';
 import { mapState } from 'vuex';
 export default {
@@ -58,7 +58,7 @@ export default {
 		uniListItem
 	},
 	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName']),
+		...mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
 		sureOutlibrarys() {
 			if (this.currentSteps == 1) {
 				return true;
@@ -86,7 +86,7 @@ export default {
 					success: function(res) {
 						console.log('res' + JSON.stringify(res));
 						if (res && res.result && res.result != '' && res.result.indexOf('PGC') != '-1') {
-								getPickGoodsCodeInfo(res.result).then(data => {
+								getPickGoodsCodeInfo(res.result,_this.userName,_this.password,_this.userID).then(data => {
 									console.log('res' + JSON.stringify(res));
 									var [error, res] = data;
 									console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
@@ -125,7 +125,7 @@ export default {
 		sureOutlibrary: function(res) {
 			var _this = this;
 			console.log('测:' + JSON.stringify(res));
-			ZoteRecGoods(this.materials.generateModel()).then(data => {
+			ZoteRecGoods(addUserParam(this.materials.generateModel(),this.userName,this.password,this.userID)).then(data => {
 				var [error, res] = data;
 				console.log('data:' + JSON.stringify(data));
 				console.log('res:' + JSON.stringify(res));

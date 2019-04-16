@@ -13,7 +13,7 @@
 
 <script>
 import { uniSteps } from '@dcloudio/uni-ui';
-import { parseForRule, authAccount } from '@/libs/util.js';
+import { addUserParam,parseForRule, authAccount } from '@/libs/util.js';
 import { getLogisInfo } from '@/api/checkInventory.js';
 import { mapState } from 'vuex';
 export default {
@@ -31,9 +31,7 @@ export default {
 	created() {
 		this.data = [];
 	},
-	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName'])
-	},
+    computed: mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
 	methods: {
 		//确定查询
 		sureQuery: function() {

@@ -44,7 +44,7 @@
 </template>
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
-import { authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
+import {addUserParam,authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
 import neilModal from '@/components/neil-modal/neil-modal.vue';
 import {saveRepairOutInfo } from '@/api/service.js';
 import serviceOutlibraryModel from '@/model/serviceOutlibraryModel.js';
@@ -82,7 +82,7 @@ export default {
 		uniListItem
 	},
 	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName']),
+		...mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
 		sureInlibrarys() {
 			if (this.currentSteps == 2) {
 				return true;
@@ -169,7 +169,7 @@ export default {
 		//确定出库
 		sureInlibrary: function() {
 			var _this = this;
-			saveRepairOutInfo(this.material.generateModel()).then(data => {
+			saveRepairOutInfo(addUserParam(this.material.generateModel(),this.userName,this.password,this.userID)).then(data => {
 				var [error, res] = data;
 				console.log('data:' + JSON.stringify(data));
 				console.log('res:' + JSON.stringify(res));

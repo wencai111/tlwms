@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { parseForRule, authAccount,isEmptyObject} from '@/libs/util.js';
+import {addUserParam, parseForRule, authAccount,isEmptyObject} from '@/libs/util.js';
 import { getStockList } from '@/api/query.js';
 import { mapState } from 'vuex';
 export default {
@@ -82,7 +82,7 @@ export default {
 		this.data = [];
 	},
 	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName']),
+		...mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
 		isNext() {
 			if (this.total > this.data.length) {
 				return true;
@@ -108,7 +108,7 @@ export default {
 				});
 			} else {
 				var _this = this;
-				getStockList(this.generateModel()).then(data => {
+				getStockList(addUserParam(this.generateModel(),this.userName,this.password,this.userID)).then(data => {
 					var [error, res] = data;
 					console.log('getStockList.data:' + JSON.stringify(data));
 					console.log('getStockList.res:' + JSON.stringify(res));
