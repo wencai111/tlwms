@@ -17,6 +17,7 @@
 					</view>
 					<view class="uni-card__footer">
 						<text>生成装车单:{{ materials.vehicleCode }}</text>
+					<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="removeMaterials()">删除</span>
 					</view>
 				</view>
 			</view>
@@ -81,6 +82,9 @@ export default {
 		}
 	},
 	methods: {
+		removeMaterials:function(){
+			this.splice(index, 1);
+		},
 		//扫描拣货码
 		scanPackege: function(res) {
 			if (this.isCanOutlibrary) {
