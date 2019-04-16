@@ -22,7 +22,7 @@
 				</view>
 			</view>
 			<button type="primary" v-bind:disabled="!isCanGenerateFcd" @click="sureGenerateFcd">确认生成装车单</button>
-			<button type="primary" v-show="currentSteps == 3" @click="goBack">返回</button>
+			<button type="default" v-show="currentSteps == 3" @click="goBack">返回</button>
 			<!-- <button type="primary"  @click="logMessage">
 				浏览器打印
 			</button> -->
@@ -121,22 +121,22 @@ export default {
 									}
 								});
 							} else {
-								uni.showToast({
-									icon: 'none',
-									duration: 2500,
-									title: '拣货码错误,请重新扫描；'
+								uni.showModal({
+									title: '提示',
+									content: res.result + '包装码已经扫描过！',
+									showCancel: false,
+									success: function(res) {
+										if (res.confirm) {
+											console.log('用户点击确定');
+										}
+									}
 								});
 							}
 						} else {
-							uni.showModal({
-								title: '提示',
-								content: data.BzBarCode + '包装码已经扫描过！',
-								showCancel: false,
-								success: function(res) {
-									if (res.confirm) {
-										console.log('用户点击确定');
-									}
-								}
+							uni.showToast({
+								icon: 'none',
+								duration: 2500,
+								title: '拣货码错误,请重新扫描；'
 							});
 						}
 					}
@@ -161,7 +161,6 @@ export default {
 										console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
 										console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
 										var result = parseForRule(res.data);
-										var result = isEmptyObject(result);
 										console.log('result:' + JSON.stringify(result));
 										if (result && !isEmptyObject(result)) {
 											_this.currentSteps = 1;
