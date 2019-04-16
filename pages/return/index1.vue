@@ -17,7 +17,7 @@
 				</view>
 			</view>
 			<button type="primary" v-bind:disabled="!isCanOutlibrary" @click="surePickGoods">确认返厂出库</button>
-			<button type="primary" v-show="currentSteps == 1" @click="goBack">返回</button>
+			<button type="default" v-show="currentSteps == 2" @click="goBack">返回</button>
 			<!-- <button type="primary"  @click="logMessage">
 				浏览器打印
 			</button> -->
@@ -27,7 +27,7 @@
 
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
-import { getPickGoodsCodeInfo, getBadMatePickGoodsInfo } from '@/api/return.js';
+import { getBadMatePickGoodsInfo, sureBadMateStockOut } from '@/api/return.js';
 import outlibraryModel from '@/model/returnOutlibraryModel.js';
 import { mapState } from 'vuex';
 import { addUserParam, authAccount, parseForRule, isEmptyObject } from '@/libs/util.js';
@@ -78,10 +78,10 @@ export default {
 					success: function(res) {
 						console.log('res' + JSON.stringify(res));
 						if (res && res.result && res.result != '' && res.result.indexOf('PGC') != '-1') {
-							getPickGoodsCodeInfo(res.result, _this.userName, _this.password, _this.userID).then(data => {
+							getBadMatePickGoodsInfo(res.result, _this.userName, _this.password, _this.userID).then(data => {
 								var [error, res] = data;
-								console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
-								console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
+								console.log('getBadMatePickGoodsInfo.data:' + JSON.stringify(data));
+								console.log('getBadMatePickGoodsInfo.res:' + JSON.stringify(res));
 								var result = parseForRule(res.data);
 								console.log('result:' + JSON.stringify(result));
 								if (result && !isEmptyObject(result)) {
@@ -125,20 +125,20 @@ export default {
 				content: '是否放弃当前拣货码，重新扫描拣货码',
 				success: function(res) {
 					if (res.confirm) {
-						_this.material.reset();
+						
 						uni.scanCode({
 							onlyFromCamera: true,
 							success: function(res) {
 								console.log('res' + JSON.stringify(res));
 								if (res && res.result && res.result != '' && res.result.indexOf('PGC') != '-1') {
-									getPickGoodsCodeInfo(res.result, _this.userName, _this.password, _this.userID).then(data => {
+									getBadMatePickGoodsInfo(res.result, _this.userName, _this.password, _this.userID).then(data => {
 										var [error, res] = data;
-										console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
-										console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
+										console.log('getBadMatePickGoodsInfo.data:' + JSON.stringify(data));
+										console.log('getBadMatePickGoodsInfo.res:' + JSON.stringify(res));
 										var result = parseForRule(res.data);
-										var result = isEmptyObject(result);
 										console.log('result:' + JSON.stringify(result));
 										if (result && !isEmptyObject(result)) {
+											_this.material.reset();
 											_this.currentSteps = 1;
 											_this.material.setPackege(result);
 										} else {
@@ -171,7 +171,7 @@ export default {
 		//确定出库
 		surePickGoods: function(res) {
 			var _this = this;
-			getBadMatePickGoodsInfo(addUserParam(this.material.generateModel(), this.userName, this.password, this.userID)).then(data => {
+			sureBadMateStockOut(_this.material.BillNum, _this.userName, _this.password, _this.userID).then(data => {
 				var [error, res] = data;
 				console.log('data:' + JSON.stringify(data));
 				console.log('res:' + JSON.stringify(res));
