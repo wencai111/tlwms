@@ -32,14 +32,12 @@ export const ZoteRecGoods = (data) => {
 }
 
 
-export const getPickGoodsCodeInfo = (BillNum) => {
-	console.log("getPickGoodsCodeInfo入参：" + JSON.stringify(BillNum))
+export const getPickGoodsCodeInfo = (BillNum,userName,password,userID) => {
+	console.log("getPickGoodsCodeInfo入参BillNum：" + BillNum);
+	console.log("getPickGoodsCodeInfo入参userName：" + userName);
+	console.log("getPickGoodsCodeInfo入参password：" + password);
+	console.log("getPickGoodsCodeInfo入参userID：" + userID);
 	return uni.request({
-		url: domian + 'common/wms_Server_Data.asp?action=GetPickGoodsCodeInfo',
-		type: "GET",
-		dataType: "JSON",
-		data: {
-			"BillNum":BillNum
-		},
+		url: domian + 'common/wms_Server_Data.asp?action=GetPickGoodsCodeInfo'+"&BillNum="+BillNum+"&UserName="+userName+"&Password="+password+"&UserID="+userID
 	});
 }

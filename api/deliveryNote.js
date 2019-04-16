@@ -7,10 +7,13 @@ const {
  * @description 扫描库位，获取库位中相关物料信息
  * 用于盘点前扫描库位码，获取对应库位中的物料信息。
  */
-export const getLocalMateInfo = (LocalID) => {
+export const getLocalMateInfo = (LocalID,userName,password,userID) => {
 	console.log("getLocalMateInfo入参：LocalID:" + LocalID);
+	console.log("getLocalMateInfo入参：userName:" + userName);
+	console.log("getLocalMateInfo入参：password:" + password);
+	console.log("getLocalMateInfo入参：userID:" + userID);
 	return uni.request({
-		url: domian + 'common/wms_Server_Data.asp?action=GetLocalMateInfo&LocalID='+LocalID
+		url: domian + 'common/wms_Server_Data.asp?action=GetLocalMateInfo&LocalID='+LocalID+"&UserName="+userName+"&Password="+password+"&UserID="+userID
 	});
 }
 /**

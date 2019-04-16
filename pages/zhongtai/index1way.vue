@@ -29,7 +29,7 @@ export default {
 					console.log('res' + JSON.stringify(res));
 					var result = parseForRule(res.result);
 					console.log('result' + JSON.stringify(res.result));
-					if (res && res.result && res.result != '' && res.result.indexOf('ASN') != '-1') {
+					if (res && res.result && res.result != '' && res.result.indexOf('FCB') != '-1') {
 						_this.goQueryPage(res.result);
 					} else {
 						uni.showModal({

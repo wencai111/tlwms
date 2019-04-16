@@ -19,7 +19,7 @@ export default {
 		return {};
 	},
 	components: { uniList, uniListItem },
-	computed: mapState(['forcedLogin', 'hasLogin', 'userName', 'code']),
+	computed: mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
 	methods: {
 		//分拆入库
 		goSpinoffIn: function() {

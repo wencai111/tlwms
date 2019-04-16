@@ -40,10 +40,15 @@ export const bulidBzd = (data) => {
  * @description 备件扫描记录物流信息
  * 用于在物流途中，司机扫描外包装条码，记录当前物流信息
  */
-export const saveLogisInfo = (data) => {
-	console.log("saveLogisInfo入参:" + data);
+export const saveLogisInfo = (PackNum,InOutFlag,ArriAdds,userName,password,userID) => {
+	console.log("saveLogisInfo入参:PackNum" + PackNum);
+	console.log("saveLogisInfo入参:InOutFlag" + InOutFlag);
+	console.log("saveLogisInfo入参:ArriAdds" + ArriAdds);
+	console.log("saveLogisInfo入参:userName" + userName);
+	console.log("saveLogisInfo入参:password" + password);
+	console.log("saveLogisInfo入参:userID" + userID);
 	return uni.request({
-		url: domian + '/common/wms_Server_Data.asp?action=SaveLogisInfo'+data
+		url: domian + '/common/wms_Server_Data.asp?action=SaveLogisInfo'+"&PackNum="+PackNum+"&InOutFlag="+ InOutFlag+"&ArriAdds="+ArriAdds+"&UserName"+userName+"&Password="+password+"&UserID="+userID
 	});
 }
 

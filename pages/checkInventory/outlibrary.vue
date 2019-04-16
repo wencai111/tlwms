@@ -37,7 +37,7 @@
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import outlibraryModel from '@/model/checkInventory0utlibraryModel.js';
-import { authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
+import { addUserParam,authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
 import { savePackageInfo } from '@/api/checkInventory.js';
 import { mapState } from 'vuex';
 export default {
@@ -69,7 +69,7 @@ export default {
 		uniListItem
 	},
 	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName']),
+		...mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
 		sureOutlibrarys() {
 			if (this.currentSteps == 2) {
 				return true;
@@ -153,7 +153,7 @@ export default {
 		//确定出库
 		sureOutlibrary: function(res) {
 			var _this = this;
-			savePackageInfo(this.material.generateModel()).then(data => {
+			savePackageInfo(addUserParam(this.material.generateModel(),this.userName,this.password,this.userID)).then(data => {
 				var [error, res] = data;
 				console.log('data:' + JSON.stringify(data));
 				console.log('res:' + JSON.stringify(res));

@@ -40,7 +40,7 @@
 
 <script>
 import neilModal from '@/components/neil-modal/neil-modal.vue';
-import { authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
+import { addUserParam,authAccount, parseForRule, parseWarehouseCode} from '@/libs/util.js';
 import { getLocalMateInfo, saveInventoryInfo } from '@/api/deliveryNote.js';
 import { mapState } from 'vuex';
 export default {
@@ -58,7 +58,7 @@ export default {
 		};
 	},
 	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName']),
+		...mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
 		sureUpdateAmount() {
 			if (this.currentSteps == 1) {
 				return true;
@@ -94,7 +94,7 @@ export default {
 					var result = parseWarehouseCode(res.result);
 					console.log('result' + JSON.stringify(result));
 					if (result && result.codeid && result.codeid != '') {
-						getLocalMateInfo(result.codeid).then(data => {
+						getLocalMateInfo(result.codeid,this.userName,this.password,this.userID).then(data => {
 							var [error, res] = data;
 							console.log('getLocalMateInfo.data:' + JSON.stringify(data));
 							console.log('getLocalMateInfo.res:' + JSON.stringify(res));
@@ -137,7 +137,7 @@ export default {
 		updateAmount: function() {
 			var _this = this;
 			console.log('updateEndQuan:' + this.updateEndQuan);
-			saveInventoryInfo({"MNumber":this.MNumber,"PdQuan":this.updateEndQuan,"LocalID":this.LocalID}).then(data => {
+			saveInventoryInfo(addUserParam({"MNumber":this.MNumber,"PdQuan":this.updateEndQuan,"LocalID":this.LocalID},this.userName,this.password,this.userID)).then(data => {
 				var [error, res] = data;
 				console.log('saveInventoryInfo.data:' + JSON.stringify(data));
 				console.log('saveInventoryInfo.res:' + JSON.stringify(res));

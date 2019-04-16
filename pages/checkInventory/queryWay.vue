@@ -10,34 +10,34 @@
 </template>
 
 <script>
-import { authAccount, parseForRule } from '@/libs/util.js';
+import { addUserParam, authAccount, parseForRule } from '@/libs/util.js';
 import { mapState } from 'vuex';
 export default {
 	data() {
 		return {};
 	},
 	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName'])
+		...mapState(['forcedLogin', 'hasLogin', 'userName', 'password', 'userID'])
 	},
 	methods: {
 		//扫描物料码
 		scanCode: function() {
 			var _this = this;
 			uni.scanCode({
-					onlyFromCamera: true,
-					success: function(res) {
-						console.log('res' + JSON.stringify(res));
-						if (res && res.result && res.result != '' && res.result.indexOf('TLWL') != '-1') {
-							_this.goQueryPage(res.result);
-						} else {
-							uni.showToast({
-								icon: 'none',
-								duration: 2500,
-								title: '拣货码错误,请重新扫描；'
-							});
-						}
+				onlyFromCamera: true,
+				success: function(res) {
+					console.log('res' + JSON.stringify(res));
+					if (res && res.result && res.result != '' && res.result.indexOf('TLWL') != '-1') {
+						_this.goQueryPage(res.result);
+					} else {
+						uni.showToast({
+							icon: 'none',
+							duration: 2500,
+							title: '拣货码错误,请重新扫描；'
+						});
 					}
-		});
+				}
+			});
 		},
 		//进入查询界面
 		goQueryPage: function(code) {

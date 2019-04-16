@@ -43,7 +43,7 @@
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import inlibraryModel from '@/model/inlibraryByBillModel.js';
-import { authAccount, parseForRule, parseWarehouseCode,isEmptyObject} from '@/libs/util.js';
+import {addUserParam, authAccount, parseForRule, parseWarehouseCode,isEmptyObject} from '@/libs/util.js';
 import { checkLocal, getDeliBillBarcodeInfo, savePutInByDeliBill } from '@/api/inlibrary.js';
 import { mapState } from 'vuex';
 export default {
@@ -75,7 +75,7 @@ export default {
 		uniListItem
 	},
 	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName']),
+		...mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
 		sureInlibrarys() {
 			if (this.currentSteps == 2) {
 				return true;
@@ -93,7 +93,7 @@ export default {
 				success: function(res) {
 					console.log('res' + JSON.stringify(res));
 					if (res && res.result && res.result != '' && res.result.indexOf('TML') != '-1') {
-						getDeliBillBarcodeInfo(res.result).then(data => {
+						getDeliBillBarcodeInfo(res.result,_this.userName,_this.password,_this.userID).then(data => {
 							var [error, res] = data;
 							console.log('getDeliBillBarcodeInfo.data:' + JSON.stringify(data));
 							console.log('getDeliBillBarcodeInfo.res:' + JSON.stringify(res));
@@ -134,7 +134,7 @@ export default {
 					var result = parseWarehouseCode(res.result);
 					console.log('result' + JSON.stringify(result));
 					if (result && result.codeid && result.codeid != '') {
-						checkLocal(_this.material.MNumber, result.codeid).then(data => {
+						checkLocal(_this.material.MNumber, result.codeid,_this.userName,_this.password,_this.userID).then(data => {
 							var [error, res] = data;
 							console.log('checkLocal.data:' + JSON.stringify(data));
 							console.log('checkLocal.res:' + JSON.stringify(res));
@@ -176,7 +176,7 @@ export default {
 		//确定入库
 		sureInlibrary: function(res) {
 			var _this = this;
-			savePutInByDeliBill(this.material.generateModel()).then(data => {
+			savePutInByDeliBill(addUserParam(this.material.generateModel(),this.userName,this.password,this.userID)).then(data => {
 				var [error, res] = data;
 				console.log('data:' + JSON.stringify(data));
 				console.log('res:' + JSON.stringify(res));

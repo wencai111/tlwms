@@ -18,7 +18,7 @@ export default {
 		return {};
 	},
 	components: { uniList, uniListItem },
-	computed: mapState(['forcedLogin', 'hasLogin', 'userName','code']),
+	computed: mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
 	methods: {
 		goInlibraryByMaterial: function() {
 			uni.navigateTo({url:'/pages/inlibrary/index'});

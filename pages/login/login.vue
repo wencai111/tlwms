@@ -37,7 +37,7 @@ export default {
 	components: {
 		mInput
 	},
-	computed: mapState(['forcedLogin']),
+	computed: mapState(['forcedLogin','login']),
 	methods: {
 		...mapMutations(['login']),
 		initPosition() {
@@ -46,7 +46,6 @@ export default {
 			this.positionTop = uni.getSystemInfoSync().windowHeight - 100;
 		},
 		bindLogin(e) {
-			
 			//参数校验
 			if (!this.account || this.account.length <= 0) {
 				uni.showToast({
@@ -74,7 +73,7 @@ export default {
 						password: this.password,
 						id: result.UserID
 					});
-					this.toMain(this.account);
+					this.toMain(this.account,this.password,result.UserID);
 				} else {
 					uni.showToast({
 						icon: 'none',
@@ -83,8 +82,10 @@ export default {
 				}
 			});
 		},
-		toMain(userName) {
-			this.login(userName);
+		toMain(userName,password,userID) {
+			console.log("userName"+userName)
+			console.log("password"+password)
+			this.login({"userName":userName,"password":password,"userID":userID});
 			/**
 			 * 强制登录时使用reLaunch方式跳转过来
 			 * 返回首页也使用reLaunch方式
