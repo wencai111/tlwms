@@ -1,7 +1,7 @@
 <template>
 	<view style="width: 100%;">
 		<view class="uni-padding-wrap uni-common-mt">
-			<view><input class="uni-input" v-model="MNumber" confirm-type="search" placeholder="请填写物流编码" /></view>
+			<view><input class="uni-input" v-model="PackNum" confirm-type="search" placeholder="请填写物流编码" /></view>
 			<view class="uni-btn-v" v-show="steps.length <= 0">
 				<button type="primary" @click="sureQuery">查询物流信息</button>
 				<button type="default" @click="cancle">取消</button>
@@ -13,14 +13,15 @@
 
 <script>
 import { uniSteps } from '@dcloudio/uni-ui';
-import { addUserParam,parseForRule, authAccount } from '@/libs/util.js';
+import { addUserParam,parseForRule, authAccount,isEmptyObject } from '@/libs/util.js';
 import { getLogisInfo } from '@/api/checkInventory.js';
 import { mapState } from 'vuex';
 export default {
 	data() {
 		return {
-			MNumber: '', //查询物料编码
-			currentSteps: 0,
+			flag: false, //在有数据的情况下，是否显示查询按钮
+			total: 0,
+			PackNum: '', //查询包装码编码
 			steps: [],
 			data: []
 		};
@@ -29,13 +30,17 @@ export default {
 		uniSteps
 	},
 	created() {
+		this.flag = false;
+		this.total = 0;
+		this.PackNum='';
 		this.data = [];
+		this.steps = [];
 	},
     computed: mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
 	methods: {
 		//确定查询
 		sureQuery: function() {
-			if (this.MNumber == '') {
+			if (this.PackNum == '') {
 				uni.showModal({
 					title: '提示',
 					content: '请填写物流编号',
@@ -49,36 +54,70 @@ export default {
 				});
 			} else {
 				var _this = this;
-				this.addSteps();
+				getLogisInfo(addUserParam(this.generateModel(),this.userName,this.password,this.userID)).then(data => {
+						var [error, res] = data;
+						console.log('getLogisInfo.data:' + JSON.stringify(data));
+						console.log('getLogisInfo.res:' + JSON.stringify(res));
+						var result = parseForRule(res.data);
+						console.log('getLogisInfo.result:' + JSON.stringify(result));
+						if (result && !isEmptyObject(result)) {
+							_this.addStepsModel(result);
+						} else {
+							uni.showModal({
+								title: '提示',
+								content: '没有查询出物流信息',
+								showCancel: false,
+								success: function(res) {
+									if (res.confirm) {
+										console.log('用户点击确定');
+										return;
+									}
+								}
+							});
+						}
+				});
 			}
 		},
 		//返回
 		cancle: function() {
 			uni.navigateBack();
 		},
+			//添加物料信息
+		addStepsModel: function(data, flag) {
+			this.total = data.total;
+			if (this.flag) {
+				this.data = [];
+			}
+			for (let item of data.data) {
+				this.steps.push({ title: item.InOutFlag+item.ArriAdds, desc: item.ArriDate });
+				this.data.push(item);
+			}
+			this.flag = false;
+		},
+	    //重置函数
+		reset: function() {
+			this.total = 0;
+			this.PackNum = '';	
+		},
 		//添加步骤信息
 		// {PackNum:'TLWL201949-1',ArriDate:'2019/4/10 17:07:32',InOutFlag:'到达',ArriAdds:'wuhan'}
-		addSteps: function(res) {
-			console.log('data入参:PackNum:' + res);
-			var result = [
-				{ title: '江苏发出', desc: '2018-11-11' },
-				{ title: '达到武汉市', desc: '2018-11-12' },
-				{ title: '武汉武昌集散中心发出', desc: '2018-11-13' },
-				{ title: '到达武昌保利华都', desc: '2018-11-14' }
-				// {PackNum:'TLWL201949-1',ArriDate:'2019/4/10 17:07:32',InOutFlag:'到达',ArriAdds:'wuhan',title: '江苏发出', desc: '2018-11-11'}
-			];
-			// 				this.PackNum='';
-			// 				this.ArriDate='';
-			// 				this.InOutFlag='';
-			// 				this.ArriAdds='';
-			// 				result.PackNum = this.PackNum;
-			// 				result.ArriDate = this.ArriDate;
-			// 				result.InOutFlag = this.InOutFlag;
-			// 				result.ArriAdds =this. ArriAdds;
-			// ];
-			for (let item of result) {
-				this.steps.push(item);
-			}
+// 		addSteps: function(res) {
+// 			console.log('data入参:PackNum:' + res);
+// 			var result = [
+// 				{ title: '江苏发出', desc: '2018-11-11' },
+// 				{ title: '达到武汉市', desc: '2018-11-12' },
+// 				{ title: '武汉武昌集散中心发出', desc: '2018-11-13' },
+// 				{ title: '到达武昌保利华都', desc: '2018-11-14' }
+// 			];
+// 			for (let item of result) {
+// 				this.steps.push(item);
+// 			}
+// 		},
+		//生成提交查询入库model
+		generateModel: function() {
+			var model = new Object();
+			model.PackNum = this.PackNum;
+			return model;
 		},
 		addLogis: function(data) {
 			this.addSteps();
@@ -89,7 +128,7 @@ export default {
 		if (option && option.code && option.code != '') {
 			getLogisInfo(option.code).then(data => {
 				var [error, res] = data;
-				this.MNumber = option.code;
+				this.PackNum = option.code;
 			});
 		}
 		authAccount(this.hasLogin, this.forcedLogin, this.userName);

@@ -91,7 +91,7 @@ export default {
 				onlyFromCamera: true,
 				success: function(res) {
 					console.log('res' + JSON.stringify(res));
-					if (res && res.result && res.result != '' && res.result.indexOf('TLWL') != '-1') {
+					if (res && res.result && res.result != ''&& res.result.indexOf('TLWL') != '-1' ) {
 						_this.PackNum = res.result;
 						_this.currentSteps=1;
 					} else {
