@@ -171,7 +171,6 @@ export default {
 										console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
 										console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
 										var result = parseForRule(res.data);
-										var result = isEmptyObject(result);
 										console.log('result:' + JSON.stringify(result));
 										if (result && !isEmptyObject(result)) {
 											_this.currentSteps = 1;

@@ -34,7 +34,7 @@
 			</view>
 			<button type="primary" @click="updateAmount" v-bind:disabled="!sureUpdateAmount">确认盘点库存</button>
 			<button type="default" v-show="isReseatPage" @click="resetPage">返回扫描</button>
-			<button type="default" @click="goBack">返回</button>
+		<!-- 	<button type="default" @click="goBack">返回</button> -->
 		</view>
 	</view>
 </template>
