@@ -22,6 +22,7 @@
 				</view>
 			</view>
 			<button type="primary" v-bind:disabled="!isCanGenerateFcd" @click="sureGenerateFcd">确认生成装车单</button>
+			<button type="default" v-bind:disabled="!isReseatPage"  @click="reset">返回扫描</button>
 			<button type="default" v-show="currentSteps == 3" @click="goBack">返回</button>
 			<!-- <button type="primary"  @click="logMessage">
 				浏览器打印
@@ -79,9 +80,20 @@ export default {
 			} else {
 				return false;
 			}
+		},
+		isReseatPage() {
+			if (this.currentSteps == 2) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	},
 	methods: {
+		reset:function(){
+			this.currentSteps = 0;
+			this.materials.reset();
+		},
 		removeMaterials:function(index){
 			this.materials.materials.splice(index, 1);
 		},
